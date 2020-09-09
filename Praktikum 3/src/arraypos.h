@@ -9,13 +9,13 @@
 #include "boolean.h"
 
 /*  Kamus Umum */
-#define IdxMax 100
-/* Indeks maksimum array, sekaligus ukuran maksimum array dalam C */
-#define IdxMin 1
+#define IdxMax 99
+/* Indeks maksimum array */
+#define IdxMin 0
 /* Indeks minimum array */
 #define IdxUndef -999 
 /* Indeks tak terdefinisi*/
-#define ValUndef 0 
+#define ValUndef -1
 /* Nilai elemen tak terdefinisi*/
 
 /* Definisi elemen dan koleksi objek */
