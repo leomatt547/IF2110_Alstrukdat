@@ -12,7 +12,6 @@ Deskripsi: Matriks
 /* ********** DEFINISI PROTOTIPE PRIMITIF ********** */              
 /* *** Konstruktor membentuk MATRIKS *** */
 void MakeMATRIKS (int NB, int NK, MATRIKS * M){
-    indeks i,j;
     NBrsEff(*M)=NB;
     NKolEff(*M)=NK;
 }
@@ -75,13 +74,13 @@ void CopyMATRIKS (MATRIKS MIn, MATRIKS * MHsl){
 /* ********** KELOMPOK BACA/TULIS ********** */ 
 void BacaMATRIKS (MATRIKS * M, int NB, int NK){
     indeks i,j;
-    scanf("%d", &NB);
-    scanf("%d", &NK);
-    if (IsIdxEff(*M,NB,NK)){
+    ElType input;
+    if (IsIdxValid(NB,NK)){
         MakeMATRIKS(NB, NK, M);
         for (i = BrsMin; i <= NB-1+BrsMin; i++){
             for (j = BrsMin; j <= NB-1+BrsMin; j++){
-                scanf("%d",&Elmt(*M,i,j));
+                scanf("%d",&input);
+                Elmt(*M,i,j)=input;
             }
     }
     NBrsEff(*M)=NB;
@@ -101,7 +100,7 @@ void TulisMATRIKS (MATRIKS M){
     indeks i,j;
     for (i = GetFirstIdxBrs(M); i <= GetLastIdxBrs(M); i++){
         for (j = GetFirstIdxKol(M); j <= GetLastIdxKol(M); j++){
-            printf("%ls",&Elmt(M,i,j));
+            printf("%d", Elmt(M,i,j));
             if (j!=GetLastIdxKol(M)){
                 printf(" ");
             }
@@ -149,16 +148,24 @@ MATRIKS KurangMATRIKS (MATRIKS M1, MATRIKS M2){
 /* Prekondisi : M berukuran sama dengan M */
 /* Mengirim hasil pengurangan matriks: salinan M1 – M2 */ 
 MATRIKS KaliMATRIKS (MATRIKS M1, MATRIKS M2){
+    indeks i, j, k;
+    ElType sum;
     MATRIKS M;
-    indeks i,j;
-    MakeMATRIKS(NBrsEff(M1), NKolEff(M1), &M);
-    if ((NBrsEff(M1)==NBrsEff(M2))&&(NKolEff(M1)==NKolEff(M2))){
-        for (i = GetFirstIdxBrs(M1); i <= GetLastIdxBrs(M1); i++){
-            for (j = GetFirstIdxKol(M1); j <= GetLastIdxKol(M1); j++){
-                Elmt(M,i,j)=Elmt(M1,i,j)*Elmt(M2,j,i);
+
+    MakeMATRIKS(NBrsEff(M1), NKolEff(M2), &M);
+
+    for (i = BrsMin; i <= NBrsEff(M); i++){
+        for (j = KolMin; j <= NKolEff(M); j++){
+
+            sum = 0;
+            for (k = KolMin; k <= NKolEff(M1) ; k++){
+                sum += Elmt(M1,i,k) * Elmt(M2,k, j);
             }
+
+            Elmt(M, i, j) = sum;
         }
     }
+
     return M;
 }
 /* Prekondisi : Ukuran kolom efektif M1 = ukuran baris efektif M2 */
@@ -166,7 +173,7 @@ MATRIKS KaliMATRIKS (MATRIKS M1, MATRIKS M2){
 MATRIKS KaliKons (MATRIKS M, ElType X){
     MATRIKS M1;
     indeks i,j;
-    MakeMATRIKS(NBrsEff(M1), NKolEff(M1), &M1);
+    MakeMATRIKS(NBrsEff(M), NKolEff(M), &M1);
     for (i = GetFirstIdxBrs(M1); i <= GetLastIdxBrs(M1); i++){
         for (j = GetFirstIdxKol(M1); j <= GetLastIdxKol(M1); j++){
             Elmt(M1,i,j)=Elmt(M,i,j)*X;
@@ -231,34 +238,30 @@ boolean IsBujurSangkar (MATRIKS M){
 }
 /* Mengirimkan true jika M adalah matriks dg ukuran baris dan kolom sama */
 boolean IsSimetri (MATRIKS M){
-    boolean equal = true;
-    indeks i,j;
-    i= BrsMin;
-    j= KolMin;
-    if (!IsSimetri(M)){
-        equal = false;
-    }else{
-        i = BrsMin;
-        while (((i<=GetLastIdxBrs(M)/2)+1)&&(equal)){
-            j = KolMin;
-            while (j<=GetLastIdxKol(M)&&(equal)){
-                equal = equal && (Elmt(M, i, j)==Elmt(M, j, i));
-                j++;
+    indeks i, j;
+
+    if (!(IsBujurSangkar(M))){
+        return false;
+    }
+    else {
+        for (i = BrsMin; i <= NBrsEff(M); i++){
+            for (j = KolMin; j <= NKolEff(M); j++){
+                if (Elmt(M, i, j) != Elmt(M, j, i)){
+                    return false;
+                }
             }
-            i++;
         }
     }
-    return equal;
+
+    return true;
 }
 /* Mengirimkan true jika M adalah matriks simetri : IsBujurSangkar(M) 
    dan untuk setiap elemen M, M(i,j)=M(j,i) */
 boolean IsSatuan (MATRIKS M){
     boolean equal = true;
     indeks i,j;
-    i= BrsMin;
-    j= KolMin;
-    if (!IsSimetri(M)){
-        equal = true;
+    if (!IsBujurSangkar(M)){
+        equal = false;
     }else{
         i = BrsMin;
         while ((i<=GetLastIdxBrs(M))&&(equal)){
@@ -279,30 +282,19 @@ boolean IsSatuan (MATRIKS M){
 /* Mengirimkan true jika M adalah matriks satuan: IsBujurSangkar(M) dan 
    setiap elemen diagonal M bernilai 1 dan elemen yang bukan diagonal bernilai 0 */ 
 boolean IsSparse (MATRIKS M){
-    boolean equal = true;
-    indeks i,j;
-    int max;
-    int curr = 0;
-    max = 0.05*NBElmt(M);
-    i= BrsMin;
-    j= KolMin;
-    if (!IsSimetri(M)){
-        equal = true;
-    }else{
-        i = BrsMin;
-        while ((i<=GetLastIdxBrs(M))&&(equal)){
-            j = KolMin;
-            while (j<=GetLastIdxKol(M)&&(equal)){
-                if (Elmt(M,i,j)!=0){
-                    curr+=1;
+   indeks i,j;
+    int count = 0;
+    float batas = NBElmt(M) * 0.05;
+
+    for (i = BrsMin; i <= NBrsEff(M); i++){
+        for (j = KolMin; j <= NKolEff(M); j++){
+            if (Elmt(M, i, j) != 0){
+                count += 1;
                 }
-                equal = equal && (curr<max);
-                j++;
             }
-            i++;
         }
-    }
-    return equal;
+
+    return (count <= batas);
 }
 /* Mengirimkan true jika M adalah matriks sparse: mariks “jarang” dengan definisi: 
    hanya maksimal 5% dari memori matriks yang efektif bukan bernilai 0 */ 
@@ -310,8 +302,35 @@ MATRIKS Inverse1 (MATRIKS M){
     return KaliKons(M, -1);
 }
 /* Menghasilkan salinan M dengan setiap elemen "di-invers", yaitu dinegasikan (dikalikan -1) */
+
 float Determinan (MATRIKS M){
-    return 0;
+    if (NBrsEff(M) == 1){
+        return Elmt(M,GetFirstIdxBrs(M), GetLastIdxBrs(M));
+    }else{
+		float det = 0;
+		int i;
+        for (i = GetFirstIdxKol(M); i <= GetLastIdxKol(M); i++) {
+		MATRIKS X;
+		MakeMATRIKS(NBrsEff(M)-1, NBrsEff(M)-1,&X);
+		int j, k;
+		for (j = GetFirstIdxBrs(M) + 1; j <= GetLastIdxBrs(M); j++){
+			for (k = GetFirstIdxKol(M); k <= GetLastIdxKol(M); k++){
+				if (k < i){
+					Elmt(X,j-1,k) = Elmt(M,j,k);
+                }else if (k > i){
+					Elmt(X,j-1,k-1) = Elmt(M,j,k);
+                }
+            }
+        }
+		if (i % 2 == 0){
+            det -= Elmt(M,GetFirstIdxBrs(M),i) * Determinan(X);
+        }
+		else{
+			det += Elmt(M,GetFirstIdxBrs(M),i) * Determinan(X);
+		}
+        }
+		return det;
+	}
 }
 /* Prekondisi: IsBujurSangkar(M) */
 /* Menghitung nilai determinan M */
@@ -321,17 +340,16 @@ void PInverse1 (MATRIKS * M){
 /* I.S. M terdefinisi */
 /* F.S. M di-invers, yaitu setiap elemennya dinegasikan (dikalikan -1) */
 void Transpose (MATRIKS * M){
-    MATRIKS MHsl;
-    indeks i, j;
+    ElType temp;
+    indeks i,j;
 
-    MakeMATRIKS(NBrsEff(*M), NKolEff(*M), &MHsl);
-    for (i = GetFirstIdxBrs(*M); i <= GetLastIdxBrs(*M); i++){
-        for (j = GetFirstIdxKol(*M); j <= GetLastIdxKol(*M); j++){
-            Elmt(MHsl, i, j) = Elmt(*M, i, j);
+    for (i = BrsMin; i <= NBrsEff(*M); i++){
+        for (j = i; j <= NKolEff(*M); j++){
+            temp = Elmt(*M, i, j);
+            Elmt(*M, i, j) = Elmt(*M, j, i);
+            Elmt(*M, j, i) = temp;
         }
     }
-    NKolEff(MHsl)=NKolEff(*M);
-    NBrsEff(MHsl)=NBrsEff(*M);
 }
 /* I.S. M terdefinisi dan IsBujursangkar(M) */
 /* F.S. M "di-transpose", yaitu setiap elemen M(i,j) ditukar nilainya dengan elemen M(j,i) */
