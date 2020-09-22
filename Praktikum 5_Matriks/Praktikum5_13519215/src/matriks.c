@@ -14,6 +14,13 @@ Deskripsi: Matriks
 void MakeMATRIKS (int NB, int NK, MATRIKS * M){
     NBrsEff(*M)=NB;
     NKolEff(*M)=NK;
+
+    indeks i,j;
+    for (i = BrsMin; i < NB; i++){
+        for (j = KolMin; j < NK; j++){
+            Elmt(*M, i, j) = 0;
+        }
+    }
 }
 /* Membentuk sebuah MATRIKS "kosong" yang siap diisi berukuran NB x NK di "ujung kiri" memori */
 /* I.S. NB dan NK adalah valid untuk memori matriks yang dibuat */
@@ -141,8 +148,8 @@ MATRIKS KurangMATRIKS (MATRIKS M1, MATRIKS M2){
     for (i = GetFirstIdxBrs(M1); i <= GetLastIdxBrs(M1); i++){
         for (j = GetFirstIdxKol(M1); j <= GetLastIdxKol(M1); j++){
             Elmt(M,i,j)=Elmt(M1,i,j)-Elmt(M2,i,j);
-            }
         }
+    }
     return M;
 }
 /* Prekondisi : M berukuran sama dengan M */
@@ -161,11 +168,9 @@ MATRIKS KaliMATRIKS (MATRIKS M1, MATRIKS M2){
             for (k = KolMin; k <= NKolEff(M1) ; k++){
                 sum += Elmt(M1,i,k) * Elmt(M2,k, j);
             }
-
             Elmt(M, i, j) = sum;
         }
     }
-
     return M;
 }
 /* Prekondisi : Ukuran kolom efektif M1 = ukuran baris efektif M2 */
@@ -195,22 +200,16 @@ void PKaliKons (MATRIKS * M, ElType K){
 
 /* ********** KELOMPOK OPERASI RELASIONAL TERHADAP MATRIKS ********** */
 boolean EQ (MATRIKS M1, MATRIKS M2){
-    boolean equal = true;
-    indeks i,j;
-    if ((GetFirstIdxBrs(M1)!=GetFirstIdxBrs(M2))||(GetLastIdxKol(M1)!=GetLastIdxBrs(M2))){
-        equal = false;
-    }else{
-        i = BrsMin;
-        while (i<=GetLastIdxBrs(M1)&&(equal)){
-            j = KolMin;
-            while (j<=GetLastIdxKol(M1)&&(equal)){
-                equal = equal && (Elmt(M1, i, j)==Elmt(M2, i, j));
-                j++;
+    boolean hasil = (NBElmt(M1) == NBElmt(M2));
+    if (hasil){
+        int i,j;
+        for (i = GetFirstIdxBrs(M1); i <= GetLastIdxBrs(M1); i++){
+            for (j = GetFirstIdxKol(M1); j <= GetLastIdxKol(M1); j++){
+                hasil = hasil && (Elmt(M1, i, j) == Elmt(M2, i, j));
             }
-            i++;
         }
     }
-    return equal;
+    return hasil;
 }
 /* Mengirimkan true jika M1 = M2, yaitu NBElmt(M1) = NBElmt(M2) dan */
 /* untuk setiap i,j yang merupakan indeks baris dan kolom M1(i,j) = M2(i,j) */
@@ -252,7 +251,6 @@ boolean IsSimetri (MATRIKS M){
             }
         }
     }
-
     return true;
 }
 /* Mengirimkan true jika M adalah matriks simetri : IsBujurSangkar(M) 
@@ -293,7 +291,6 @@ boolean IsSparse (MATRIKS M){
                 }
             }
         }
-
     return (count <= batas);
 }
 /* Mengirimkan true jika M adalah matriks sparse: mariks “jarang” dengan definisi: 
@@ -304,33 +301,51 @@ MATRIKS Inverse1 (MATRIKS M){
 /* Menghasilkan salinan M dengan setiap elemen "di-invers", yaitu dinegasikan (dikalikan -1) */
 
 float Determinan (MATRIKS M){
-    if (NBrsEff(M) == 1){
-        return Elmt(M,GetFirstIdxBrs(M), GetLastIdxBrs(M));
-    }else{
-		float det = 0;
-		int i;
-        for (i = GetFirstIdxKol(M); i <= GetLastIdxKol(M); i++) {
-		MATRIKS X;
-		MakeMATRIKS(NBrsEff(M)-1, NBrsEff(M)-1,&X);
-		int j, k;
-		for (j = GetFirstIdxBrs(M) + 1; j <= GetLastIdxBrs(M); j++){
-			for (k = GetFirstIdxKol(M); k <= GetLastIdxKol(M); k++){
-				if (k < i){
-					Elmt(X,j-1,k) = Elmt(M,j,k);
-                }else if (k > i){
-					Elmt(X,j-1,k-1) = Elmt(M,j,k);
+    int size = NBrsEff(M);
+    float m[size][size];
+    int i, j;
+
+    for (i = 0; i < size; i++){
+        for (j = 0; j < size; j++){
+            m[i][j] = Elmt(M, i, j);
+        }
+    }
+
+    float result = 1;
+    int swapped = 0;
+
+    while (size > 0){
+        boolean swap = false;
+        i = 0;
+        if (m[size-1][size-1] == 0){
+            while (i < (size-1) && (!swap)){
+                if (m[i][size-1] == 0){
+                    i++;
+                } else {
+                    swap = true;
                 }
             }
         }
-		if (i % 2 == 0){
-            det -= Elmt(M,GetFirstIdxBrs(M),i) * Determinan(X);
+        if (i == (size-1) && (size > 1)){
+            return 0;
+        } else if (swap){
+            for(j = 0; j < size; j++){
+                float temp = m[size-1][j];
+                m[size-1][j] = m[i][j];
+                m[i][j] = temp;
+            }
         }
-		else{
-			det += Elmt(M,GetFirstIdxBrs(M),i) * Determinan(X);
-		}
+        for (i = 0; i < (size-1); i++){
+            for(j=0; j<size; j++){
+                m[i][j] -= m[size-1][j]*(m[i][size-1]/m[size-1][size-1]);
+            }
         }
-		return det;
-	}
+        result *= m[size-1][size-1];
+        swapped = (swapped+(swap ? 1 : 0))%2;
+        size--;
+    }
+    float finalresult = (result*(swapped==0 ? 1.0f : -1.0f));
+    return ((finalresult < 1 && finalresult > -1) ? 0.0f : finalresult);
 }
 /* Prekondisi: IsBujurSangkar(M) */
 /* Menghitung nilai determinan M */
