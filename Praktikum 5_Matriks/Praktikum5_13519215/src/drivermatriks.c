@@ -5,6 +5,8 @@
 int main(){
     MATRIKS M1, M2;
     int NB, NK;
+    int min = -1;
+    int max = -1;
 
     printf("---KELOMPOK BACA/TULIS---\n");
     printf("---Masukkan Baris dan Kolom---\n");
@@ -87,5 +89,24 @@ int main(){
     Transpose(&M1);
     TulisMATRIKS(M1);printf("\n");
 
+    MaxMinKol(M1, 0, &max, &min);
+    printf("\n");printf("---Max Min Kolom M1 di indeks kolom 0---\n");
+    printf("Max: %d\n",max);
+    printf("Min: %d\n",min);
+
+    MaxMinBrs(M1, 0, &max, &min);
+    printf("\n");printf("---Max Min Kolom M1 di indeks baris 0---\n");
+    printf("Max: %d\n",max);
+    printf("Min: %d\n",min);
+
+    printf("\n");printf("---CountXKol angka 0 di kolom M1---\n");
+    printf("%d\n",CountXKol(M1, 0, 0));
+    printf("\n");printf("---CountXBrs angka 0 di kolom M1---\n");
+    printf("%d\n",CountXBrs(M1, 0, 0));
+
+    printf("\n");printf("---Rata2 Kol M1---\n");
+    printf("%.2f\n", RataKol(M1, 0));
+    printf("\n");printf("---Rata2 Brs M1---\n");
+    printf("%.2f\n", RataBrs(M1, 0));
     return 0;
 }
