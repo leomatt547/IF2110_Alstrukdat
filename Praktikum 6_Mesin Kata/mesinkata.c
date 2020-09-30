@@ -7,6 +7,10 @@ Deskripsi: mesin kata
 
 #include <stdio.h>
 #include "mesinkata.h"
+#include "boolean.h"
+
+boolean EndKata;
+Kata CKata;
 
 void IgnoreBlank(){
     while (CC==BLANK){
@@ -18,6 +22,7 @@ void IgnoreBlank(){
    F.S. : CC ≠ BLANK atau CC = MARK */
 
 void STARTKATA(){
+    START();
     IgnoreBlank();
     if (CC==MARK){
         EndKata = true;
@@ -35,9 +40,9 @@ void ADVKATA(){
     IgnoreBlank();
     if(CC==MARK){
         EndKata = true;
-    }
-    else{
+    }else{
         SalinKata();
+        IgnoreBlank();
     }
 }
 /* I.S. : CC adalah karakter pertama kata yang akan diakuisisi 
@@ -48,10 +53,18 @@ void ADVKATA(){
 
 void SalinKata(){
     int i = 0;
-    while ((CC!=MARK)||(CC!=BLANK)){
-        CC = CKata.TabKata[i];
-        ADV();
+    IgnoreBlank();
+    while ((CC!=MARK)&&(CC!=BLANK)){
+        if (i<NMax){
+            CKata.TabKata[i] = CC;
+        }
         i++;
+        ADV();
+    }
+    if (i<=NMax){
+        CKata.Length = i;
+    }else{
+        CKata.Length=NMax;
     }
 }
 /* Mengakuisisi kata, menyimpan dalam CKata
