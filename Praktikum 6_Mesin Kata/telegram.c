@@ -4,89 +4,123 @@ NIM: 13519215
 Tanggal: 1 Oktober 2020
 Deskripsi: Mesin Kata
 */
-#include "mesinkata.h"
-#include <stdio.h>
 
+#include <stdio.h>
+#include "mesinkata.h"
+#include "mesinkar.h"
 
 boolean IsKataSama(Kata K1, Kata K2){
-
-    int len;
-    int i;
-
+    int pjg, i;
     if (K1.Length != K2.Length){
         return false;
+    }else if (K1.Length > K2.Length){
+        pjg = K1.Length;
+    }else{
+        pjg = K2.Length;
     }
-
-    if (K1.Length > K2.Length){
-        len = K1.Length;
-    }
-    else {
-        len = K2.Length;
-    }
-
-
-    for ( i = 1; i <= len; i++ ){
+    for (i = 0; i < pjg; i++){
         if (K1.TabKata[i] != K2.TabKata[i]){
             return false;
         }
     }
-
     return true;
-
 }
 
-
-int main(void){
-int kReg = 0, kPanj = 0;
-	int i, idx, banyakkata = 0;
-	Kata CKoma, CTitik;
-
-	CKoma.Length = 4;
-	CTitik.Length = 5;
-	CKoma.TabKata[1] = 'K';
-	CKoma.TabKata[2] = 'O';
-	CKoma.TabKata[3] = 'M';
-	CKoma.TabKata[4] = 'A';
-	CTitik.TabKata[1] = 'T';
-	CTitik.TabKata[2] = 'I';
-	CTitik.TabKata[3] = 'T';
-	CTitik.TabKata[4] = 'I';
-	CTitik.TabKata[5] = 'K';
-
+int main(){
+Kata KTitik, KKoma;
+	int KReg, KPjg, biaya, i, jumlah;
+	boolean spasi, ENDTELE;
+	
+	KTitik.Length= 5;
+	KTitik.TabKata[0]= 'T';
+	KTitik.TabKata[1]= 'I';
+	KTitik.TabKata[2]= 'T';
+	KTitik.TabKata[3]= 'I';
+	KTitik.TabKata[4]= 'K';
+	
+	KKoma.Length= 4;
+	KKoma.TabKata[0]= 'K';
+	KKoma.TabKata[1]= 'O';
+	KKoma.TabKata[2]= 'M';
+	KKoma.TabKata[3]= 'A';
+	
+	KReg= 0;
+	KPjg= 0;
+	jumlah = 0;
+	
+	spasi= false;
+	ENDTELE= false;
+	
 	STARTKATA();
-
-	while (!EndKata) {
-		if ((!IsKataSama(CKata, CKoma)) && (!IsKataSama(CKata,CTitik))) {
-			if (banyakkata > 0) {
+	if (CC == BLANK) {
+		IgnoreBlank();
+	}
+	if ((CKata.Length == 0) && (CC == BLANK)) {
+		ENDTELE= true;
+	}
+	while (!ENDTELE) {
+		jumlah+= 1;
+		if (IsKataSama(CKata, KTitik)) {
+			printf(".");
+			spasi= false;
+		} else if (IsKataSama(CKata, KKoma)) {
+			printf(", ");
+			spasi= false;
+		} else {
+			if (spasi== true) {
 				printf(" ");
+			} else {
+				spasi= true;
 			}
-			for (i = 1; i <= CKata.Length; i++) {
+			for (i= 0; i < CKata.Length; i++) {
 				printf("%c", CKata.TabKata[i]);
 			}
 			if (CKata.Length < 10) {
-				kReg++;
-			} else {
-				kPanj++;
-			}
-		} else {
-			if (IsKataSama(CKata, CKoma)) {
-				printf(",");
-			} else if (IsKataSama(CKata, CTitik)) {
-				printf(".");
+				KReg+= 1;
+			} else if (CKata.Length >= 10) {
+				KPjg+= 1;
 			}
 		}
-		banyakkata++;
+		CKata.Length = 0;
 		ADVKATA();
+		IgnoreBlank();
+		if (CC == MARK) {
+			EndKata= true;
+		}
+		if (EndKata) {
+			ENDTELE= true;
+		}	
 	}
-	printf("\n");
-	printf("%d\n", kReg);
-	printf("%d\n", kPanj);
-	int total = kReg*1000 + kPanj*1500;
-
-	if (banyakkata > 10) {
-		total = total - 10*total/100;
+	if (CKata.Length > 0){
+		jumlah+= 1;
+		if (IsKataSama(CKata, KTitik)) {
+			printf(".");
+			spasi= false;
+		} else if (IsKataSama(CKata, KKoma)) {
+			printf(", ");
+			spasi= false;
+		} else {
+			if (spasi== true) {
+				printf(" ");
+			}
+			for (i= 0; i < CKata.Length; i++) {
+				printf("%c", CKata.TabKata[i]);
+			}
+			spasi= true;
+			if (CKata.Length < 10) {
+				KReg+= 1;
+			} else if (CKata.Length >= 10) {
+				KPjg+= 1;
+			}
+		}
+	}		
+	if (jumlah <= 10) {
+		biaya= (KReg * 1000) + (KPjg * 1500);
+	} else if (jumlah > 10){
+		biaya= (((KReg * 1000) + (KPjg * 1500)) * 0.9);
 	}
-
-	printf("%d\n", total);
+	printf("\n%d\n", KReg);
+	printf("%d\n", KPjg);
+	printf("%d\n", biaya);
 	return 0;
 }

@@ -11,8 +11,8 @@
 #define BLANK ' '
 
 typedef struct {
-  char tkn; /* token yang dibaca */
-  int val;  /* nilai bilangan jika tkn = 'b' */
+	char tkn; /* token yang dibaca */
+    int val;  /* nilai bilangan jika tkn = 'b' */
 } Token;
 
 /* State Mesin Kata */
@@ -34,7 +34,7 @@ void ADVTOKEN();
 /* I.S. : CC adalah karakter pertama kata yang akan diakuisisi 
    F.S. : CToken adalah Token terakhir yang sudah diakuisisi, 
           CC adalah karakter pertama dari kata berikutnya, mungkin MARK
-          Jika CC = MARK, maka EndToken = true      
+          Jika CC = MARK, maka EndToken = true		  
    Proses : Akuisisi kata menggunakan procedure SalinKata */
 
 void SalinToken();
