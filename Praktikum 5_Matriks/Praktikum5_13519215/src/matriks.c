@@ -163,7 +163,6 @@ MATRIKS KaliMATRIKS (MATRIKS M1, MATRIKS M2){
 
     for (i = BrsMin; i <= NBrsEff(M); i++){
         for (j = KolMin; j <= NKolEff(M); j++){
-
             sum = 0;
             for (k = KolMin; k <= NKolEff(M1) ; k++){
                 sum += Elmt(M1,i,k) * Elmt(M2,k, j);
