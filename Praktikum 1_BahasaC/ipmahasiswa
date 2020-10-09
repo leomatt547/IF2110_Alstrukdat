@@ -1,0 +1,163 @@
+	.file	"ipmahasiswa.c"
+	.text
+	.globl	isWithinRange
+	.type	isWithinRange, @function
+isWithinRange:
+.LFB23:
+	.cfi_startproc
+	endbr64
+	movl	$0, %eax
+	comiss	%xmm1, %xmm0
+	jb	.L2
+	comiss	%xmm0, %xmm2
+	setnb	%al
+	movzbl	%al, %eax
+.L2:
+	andl	$1, %eax
+	ret
+	.cfi_endproc
+.LFE23:
+	.size	isWithinRange, .-isWithinRange
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC1:
+	.string	"%f"
+.LC6:
+	.string	"Tidak ada data"
+.LC7:
+	.string	"%d\n%d\n%d\n%.2f\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB24:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	pushq	%rbx
+	.cfi_def_cfa_offset 24
+	.cfi_offset 3, -24
+	subq	$40, %rsp
+	.cfi_def_cfa_offset 64
+	movq	%fs:40, %rax
+	movq	%rax, 24(%rsp)
+	xorl	%eax, %eax
+	pxor	%xmm5, %xmm5
+	movss	%xmm5, 12(%rsp)
+	movl	$0, %ebp
+	movl	$0, %ebx
+	jmp	.L13
+.L24:
+	xorps	.LC4(%rip), %xmm0
+	jmp	.L11
+.L25:
+	testl	%ebx, %ebx
+	jne	.L14
+	leaq	.LC6(%rip), %rdi
+	call	puts@PLT
+.L15:
+	movq	24(%rsp), %rax
+	xorq	%fs:40, %rax
+	jne	.L23
+	movl	$0, %eax
+	addq	$40, %rsp
+	.cfi_remember_state
+	.cfi_def_cfa_offset 24
+	popq	%rbx
+	.cfi_def_cfa_offset 16
+	popq	%rbp
+	.cfi_def_cfa_offset 8
+	ret
+.L14:
+	.cfi_restore_state
+	pxor	%xmm0, %xmm0
+	cvtsi2ssl	%ebx, %xmm0
+	movss	12(%rsp), %xmm6
+	divss	%xmm0, %xmm6
+	pxor	%xmm0, %xmm0
+	cvtss2sd	%xmm6, %xmm0
+	movl	%ebx, %r8d
+	subl	%ebp, %r8d
+	movl	%ebp, %ecx
+	movl	%ebx, %edx
+	leaq	.LC7(%rip), %rsi
+	movl	$1, %edi
+	movl	$1, %eax
+	call	__printf_chk@PLT
+	jmp	.L15
+.L10:
+	addl	$1, %ebx
+	movss	12(%rsp), %xmm3
+	addss	%xmm0, %xmm3
+	movss	%xmm3, 12(%rsp)
+	comiss	.LC8(%rip), %xmm0
+	sbbl	$-1, %ebp
+.L8:
+	addss	.LC3(%rip), %xmm0
+	pxor	%xmm1, %xmm1
+	comiss	%xmm0, %xmm1
+	ja	.L24
+.L11:
+	cvtss2sd	%xmm0, %xmm0
+	comisd	.LC5(%rip), %xmm0
+	jbe	.L25
+.L13:
+	leaq	20(%rsp), %rsi
+	leaq	.LC1(%rip), %rdi
+	movl	$0, %eax
+	call	__isoc99_scanf@PLT
+	movss	20(%rsp), %xmm0
+	pxor	%xmm2, %xmm2
+	comiss	%xmm2, %xmm0
+	jb	.L8
+	movss	.LC2(%rip), %xmm4
+	comiss	%xmm0, %xmm4
+	jnb	.L10
+	jmp	.L8
+.L23:
+	call	__stack_chk_fail@PLT
+	.cfi_endproc
+.LFE24:
+	.size	main, .-main
+	.section	.rodata.cst4,"aM",@progbits,4
+	.align 4
+.LC2:
+	.long	1082130432
+	.align 4
+.LC3:
+	.long	1148829696
+	.section	.rodata.cst16,"aM",@progbits,16
+	.align 16
+.LC4:
+	.long	2147483648
+	.long	0
+	.long	0
+	.long	0
+	.section	.rodata.cst8,"aM",@progbits,8
+	.align 8
+.LC5:
+	.long	2696277389
+	.long	1051772663
+	.section	.rodata.cst4
+	.align 4
+.LC8:
+	.long	1076887552
+	.ident	"GCC: (Ubuntu 9.3.0-17ubuntu1~20.04) 9.3.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	 1f - 0f
+	.long	 4f - 1f
+	.long	 5
+0:
+	.string	 "GNU"
+1:
+	.align 8
+	.long	 0xc0000002
+	.long	 3f - 2f
+2:
+	.long	 0x3
+3:
+	.align 8
+4:
