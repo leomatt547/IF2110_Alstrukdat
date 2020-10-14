@@ -90,7 +90,7 @@ Kamus Lokal
 Algoritma
     P <-- Alokasi(X)
     if P ≠ Nil then
-    Next(P) <-- First(L)
+        Next(P) <-- First(L)
     First(L) <-- P
 
 procedure InsertLast (input/output L : List, input X : infotype)
@@ -101,8 +101,8 @@ Kamus Lokal
 Algoritma
     P <-- Alokasi(X) {bisa juga nilai lain, karena akan jadi dummy}
     if P ≠ Nil then
-    Info(Last(L)) <-- X
-    Next(Last(L)) <-- P
+        Info(Last(L)) <-- X
+        Next(Last(L)) <-- P
     Last(L) <-- P
 
 function SearchAdr (L : List, X : infotype) --> address
