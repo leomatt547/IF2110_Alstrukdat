@@ -1,0 +1,64 @@
+procedure Duplicate (input/output S : Stack)
+{ Menduplikasi elemen TOP pada stack S.
+    I.S. S tidak kosong
+    F.S. X elemen TOP stack S diduplikasi, sehingga elemen S bertambah 1.
+        Jika S penuh, maka S tetap. }
+Kamus Lokal
+    X : infotype
+Algoritma
+    if not IsFull(S) then
+        X <-- InfoTOP(S)
+        Push(S,X)
+
+function Peek (S : Stack) --> infotype
+{ Mengembalikan nilai elemen TOP. Prekondisi: Stack tidak kosong }
+Kamus Lokal
+    -
+Algoritma 
+    --> InfoTOP(S)
+
+procedure Swap (input/output S : Stack)
+{ Mempertukarkan dua elemen teratas stack S.
+    I.S. S tidak kosong
+    F.S. 2 elemen teratas stack bertukar posisi
+    Jika S hanya 1 elemen, maka S tetap. }
+Kamus Lokal
+    X1, X2 : infotype
+Algoritma
+    Pop(S,X1)
+    if not isEmpty(S) then
+        Pop(S,X2)
+        Push(S,X1)
+        Push(S,X2)
+    else
+        Push(S,X1)
+
+procedure Rotate (input/output S:Stack, input n:integer, input isLeft:boolean)
+{ I.S.: S terdefinisi, tidak kosong
+F.S.: n elemen teratas S dirotasi,
+    ke kiri jika isLeft true atau ke kanan jika is Left false.
+    Jika n besar dari jumlah elemen S, seluruh elemen S dirotasi. }
+Kamus Lokal
+    Stemp : Stack
+    i : integer
+    X, X1 : infotype
+Algoritma
+    if n > 1 then {memastikan proses untuk sejumlah n positif elemen}
+        i <-- 1
+    if not isLeft then
+        Pop(S,X1) {jika rotasi kanan, maka Top saat ini akan dipindah}
+        i <-- i + 1
+    CreateEmpty(Stemp)
+    while i ≤ n and not isEmpty(S) do {pindahkan elemen yang dirotate}
+        Pop(S,X)
+        Push(Stemp,X)
+        i <-- i + 1
+    if isLeft then {perlakuan khusus untuk elemen ujung}
+        Pop(Stemp,X1) {jika rotasi kiri, ambil elemen TOP baru}
+    else
+        Push(S,X1) {jika rotasi kanan, masukkan Top lama lebih dulu}
+    while not isEmpty(Stemp) do {kembalikan isi Stemp ke S}
+        Pop(Stemp,X)
+        Push(S,X)
+    if isLeft then
+        Push(S,X1) {jika rotasi kiri, masukkan elemen TOP baru}

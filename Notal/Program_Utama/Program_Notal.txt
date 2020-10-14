@@ -1,0 +1,67 @@
+program SimulasiAntrian
+{ spesifikasi sesuai soal
+    Input: daftar event dari mesin event
+    Output: hasil simulasi antrian, berupa:
+        1. banyaknya elemen yang sudah selesai dilayani
+        2. waktu tunggu rata-rata dari elemen yang sudah selesai dilayani
+        3. jumlah elemen yang masih tersisa di antrian
+        4. jumlah event yang tidak berhasil diproses }
+Kamus
+    USE MESINEVENT, ADTQUEUE
+    Nelmt, Wtunggu, Neventgagal : integer
+    Q : Queue
+    X : infotype
+Algoritma
+    STARTEVENT
+    if EndToken then
+        output(”Pita kosong, tidak ada event yang harus diproses”)
+    else
+        Nelmt <-- 0
+        Wtunggu <-- 0
+        Neventgagal <-- 0
+        CreateEmpty(Q)
+        repeat
+            if CEvent.EType = ’A’ then
+                if not isFull(Q) then {add dapat diproses}
+                    Add(Q,CEvent.ETime)
+                else
+                    output(”Queue penuh, event Add tidak dapat dieksekusi”)
+                    Neventgagal <-- Neventgagal + 1
+            else { CEvent.EType = ’D’}
+                if not isEmpty(Q) then {delete dapat diproses}
+                    Del(Q,X)
+                    Nelmt <-- Nelmt + 1
+                    Wtunggu <-- Wtunggu + (CEvent.ETime – X)
+                else
+                    output(”Queue kosong, event Delete tidak dapat dieksekusi”)
+                    Neventgagal <-- Neventgagal + 1
+            ADVEVENT
+        until EndToken
+        output(”Jumlah elemen sudah dilayani: ”, Nelmt)
+        if Nelmt > 0 then
+            output(”Waktu tunggu rata-rata: ”, Wtunggu/Nelmt)
+        else { Nelmt = 0 }
+            output(”Waktu tunggu rata-rata tidak dapat dihitung”)
+        output(”Jumlah elemen yang masih tersisa: ”, NBElmt(Q))
+        output(”Jumlah event yang tidak berhasil diproses: ”, Neventgagal
+
+program Tanggal
+    { Input: dua buah tanggal
+    Output: tampilan selisih antara kedua tanggal }
+Kamus
+    USE ADT_TANGGAL
+    T1, T2 : TANGGAL
+    N : integer
+Algoritma:
+    BacaTanggal(T1)
+    BacaTanggal(T2)
+    if ((GetTahun(T1) < GetTahun(T2)) or
+        (GetTahun(T1) = GetTahun(T2) and GetBulan(T1) < GetBulan(T2)) or
+        (GetTahun(T1) = GetTahun(T2) and GetBulan(T1) = GetBulan(T2) and
+        GetHari(T1) ≤ GetHari(T2)) then {T1 lebih awal atau sama dengan T2}
+            N <-- JumlahHari(T1,T2)
+    else
+            N <-- JumlahHari(T2,T1)
+    TulisTanggal(T1)
+    TulisTanggal(T2)
+    output(N)

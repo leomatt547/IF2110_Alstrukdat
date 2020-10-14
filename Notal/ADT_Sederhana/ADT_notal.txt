@@ -1,0 +1,58 @@
+{ Modul ADT TANGGAL }
+type TANGGAL : < DD : integer[1..31], { hari }
+                 MM : integer[1..12], { bulan }
+                 YY : integer > 0 { tahun } >
+{ *** Konstruktor : Membentuk TANGGAL dari komponen-komponennya *** }
+function MakeTANGGAL (d : integer[1..31], m : integer[1..12], y : integer>0) --> TANGGAL
+{ Membentuk TANGGAL dengan d sebagai DD, m sebagai MM, dan y sebagai YY. }
+{ *** Selektor : Mengakses komponen-komponen TANGGAL *** }
+function GetHari (T : TANGGAL) --> integer[1..31]
+{ Mendapatkan bagian DD dari TANGGAL T }
+function GetBulan (T : TANGGAL) --> integer[1..12]
+{ Mendapatkan bagian MM dari TANGGAL T }
+function GetTahun (T : TANGGAL) --> integer>0
+{ Mendapatkan bagian YY dari TANGGAL T }
+{ *** Primitif-Primitif Lain *** }
+function Kemarin (T : TANGGAL) --> TANGGAL
+{ Menghasilkan TANGGAL satu hari sebelum T }
+procedure BacaTanggal (output T : TANGGAL)
+{ Membaca masukan TANGGAL dari keyboard dan membentuk TANGGAL dari masukan tersebut }
+{ I.S.: T sembarang; F.S.: T terdefinisi dengan komponen-komponen masukan dari keyboard }
+procedure TulisTanggal (input T : TANGGAL)
+{ Menuliskan T ke layar }
+{ I.S.: T terdefinisi; F.S.: T tertulis di layar, dengan format DD/MM/YY }
+
+function JumlahHari (T1,T2 : TANGGAL) --> integer
+{ menghasilkan jumlah hari antara tanggal T1 dan T2.
+    Asumsi: T1 lebih awal atau sama dengan T2 }
+Kamus lokal
+    T : TANGGAL
+    JmlHari : integer
+Algoritma
+    JmlHari <-- 0
+    T <-- T2
+    while (GetTahun(T1) ≠ GetTahun(T) or GetBulan(T1) ≠ GetBulan(T) or GetHari(T1) ≠ GetHari(T)) do
+        JmlHari <-- JmlHari + 1
+        T <-- Kemarin(T)
+    --> JmlHari
+
+{ Modul ADT JAM }
+type JAM : < JJ : integer[0..23], { jam }
+             MM : integer[0..59], { menit }
+             DD : integer[0..59] { detik } >
+{ *** Konstruktor : Membentuk JAM dari komponen-komponennya *** }
+function MakeJAM (j : integer[0..23], m : integer[0..59], d : integer[0..59]) --> JAM
+{ Membentuk sebuah JAM dengan j sebagai JJ, m sebagai MM, dan d sebagai DD. }
+{ *** Selektor : Mengakses komponen-komponen JAM *** }
+function GetJam (J : JAM) --> integer[0..23]
+{ Mendapatkan bagian JJ dari JAM J }
+function GetMenit (J : JAM) --> integer[0..59]
+{ Mendapatkan bagian MM dari JAM J }
+function GetDetik (J : JAM) --> integer[0..59]
+{ Mendapatkan bagian DD dari JAM J }
+{ *** Primitif-Primitif Lain *** }
+function JamToDetik (J : JAM) --> integer>=0
+{ Menghasilkan jumlah detik dari JAM J }
+function DetikToJam (N : integer>=0) --> JAM
+{ Menghasilkan JAM dari jumlah detik N }
+

@@ -1,0 +1,14 @@
+procedure AkuisisiEvent
+Kamus Lokal
+    N : integer {variabel untuk akuisisi bagian numerik dari event}
+Algoritma
+    N <-- KarakterToInteger(CC)
+    ADV
+    while CC <> SEPARATOR do
+        N <-- N * 10 + KarakterToInteger(CC)
+        ADV
+    {CC = SEPARATOR}
+    ADV {CC akan berisi event type}
+    CEvent.ETime <-- N
+    CEvent.EType <-- CC
+    ADV {CC akan berisi karakter pertama setelah event yang selesai diakuisisi

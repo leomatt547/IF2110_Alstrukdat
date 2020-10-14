@@ -1,0 +1,26 @@
+procedure Add/Enqueue (input/output Q : Queue, input X : infotype)
+Kamus Lokal
+    i, j : address
+Algoritma
+    if (Q.TAIL = MaxEl) then { penuh semu, geser }
+        i <-- 0
+        j traversal [Q.HEAD..Q.TAIL]
+            i <-- i + 1
+            Q.T[i] <-- Q.T[j]
+        Q.HEAD ¬ 1; Q.TAIL ¬ i
+    else
+        if isEmpty(Q) then
+            Q.HEAD <-- 1
+    Q.TAIL <-- Q.TAIL + 1
+    Q.T[Q.TAIL] <-- X
+
+procedure Del/Dequeue (input/output Q : Queue, output X : infotype)
+Kamus Lokal
+    -
+Algoritma
+    X <-- Q.T[Q.HEAD]
+    if (NBELMT(Q) = 1) then
+        Q.HEAD <-- NIL
+        Q.TAIL <-- NIL
+    else
+        Q.HEAD <-- Q.HEAD + 1
