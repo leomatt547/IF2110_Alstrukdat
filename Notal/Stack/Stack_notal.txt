@@ -1,3 +1,37 @@
+{ Kamus Umum }
+constant Nil : integer = 0 { Nil = stack dengan elemen kosong }
+constant MaxEl : integer = 10 { Banyaknya elemen maksimum }
+type infotype : integer { elemen stack }
+type address : integer { indeks tabel }
+/* Versi I : dengan menyimpan tabel dan alamat top secara eksplisit */
+type Stack : < T : array [1..MaxEl] of infotype, { tabel penyimpan elemen stack }
+                TOP : address { alamat TOP: elemen puncak }
+                >
+{ Deklarasi: S : Stack
+Definisi akses (diimplementasikan sebagai selektor):
+TOP(S) adalah S.TOP
+InfoTOP(S) adalah S.T[S.TOP] }
+{ *** Konstruktor/Kreator *** }
+procedure CreateEmpty(output S : Stack)
+{ I.S. Sembarang
+F.S. Membuat sebuah stack S yang kosong berkapasitas MaxEl
+        jadi indeksnya antara 1..MaxEl karena 0 tidak dipakai
+        Ciri stack kosong : TOP bernilai Nil }
+{ *** Predikat Untuk test keadaan Stack *** }
+function IsEmpty (S : Stack) ® boolean
+{ Mengirim true jika Stack kosong: lihat definisi di atas }
+function IsFull(S : Stack S) ® boolean
+{ Mengirim true jika tabel penampung nilai elemen stack penuh }
+{ *** Operasi terhadap Stack *** }
+procedure Push (input/output S : Stack, input X : infotype)
+{ Menambahkan X sebagai elemen Stack S.
+I.S. S mungkin kosong, tabel penampung elemen stack TIDAK penuh
+F.S. X menjadi TOP yang baru,TOP bertambah 1 }
+procedure Pop (input/output S : Stack, output X : infotype)
+{ Menghapus X dari Stack S.
+I.S. S tidak mungkin kosong
+F.S. X adalah nilai elemen TOP yang lama, TOP berkurang 1 }
+
 procedure Duplicate (input/output S : Stack)
 { Menduplikasi elemen TOP pada stack S.
     I.S. S tidak kosong

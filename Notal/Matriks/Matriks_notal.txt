@@ -1,0 +1,60 @@
+type indeks : integer { indeks baris dan kolom }
+constant BrsMin : indeks = 1
+constant BrsMax : indeks = 100
+constant KolMin : indeks = 1
+constant KolMax : indeks = 100
+type el_type : integer
+type MATRIKS :
+    < Mem : matrix[BrsMin..BrsMax,KolMin..KolMax] of el_type,
+    NBrsEff : integer > 0, { banyaknya/ukuran baris yg terdefinisi }
+    NKolEff : integer > 0 { banyaknya/ukuran kolom yg terdefinisi }
+    > { Memori matriks yang dipakai selalu di “ujung kiri atas” }
+
+{************ DEFINISI PROTOTIPE PRIMITIF ************}
+{*** Konstruktor membentuk MATRIKS ***}
+procedure CreateMATRIKS (input NB,NK:integer, output M:MATRIKS)
+{ Membentuk sebuah MATRIKS “kosong” berukuran NBxNK di “ujung kiri” memori }
+{ I.S. NB dan NK adalah valid untuk memori matriks yang dibuat }
+{ F.S. MATRIKS M terdefinisi dengan ukuran NBxNK }
+{*** Selektor MATRIKS ***}
+{*** Selektor Get ***}
+function GetNBrsEff (M:MATRIKS) --> integer { Mengirimkan banyaknya baris efektif M }
+function GetNKolEff (M:MATRIKS) --> integer { Mengirimkan banyaknya kolom efektif M }
+function GetElmt (M:Matriks; i,j:indeks) --> el_type
+{ Mengirimkan elemen M dengan nomor baris i dan nomor kolom j }
+function GetFirstIdxBrs (M:MATRIKS) --> indeks { Mengirimkan indeks baris terkecil M }
+function GetFirstIdxKol (M:MATRIKS) --> indeks { Mengirimkan indeks kolom terkecil M }
+function GetLastIdxBrs (M:MATRIKS) --> indeks { Mengirimkan indeks baris terbesar M }
+function GetLastIdxKol (M:MATRIKS) --> indeks { Mengirimkan indeks kolom terbesar M }
+{*** Selektor Set: Operasi mengubah nilai elemen matriks ***}
+procedure SetElmt (input/output M:MATRIKS, input i,j:integer, input X:el_type)
+{ I.S. M sudah terdefinisi; F.S. M[i,j] bernilai X }
+
+procedure FlipMatriks (input/output M : MATRIKS)
+Kamus lokal
+    i,j : indeks
+    temp : el_type
+Algoritma
+    i traversal [GetFirstIdxBrs(M)..GetLastIdxBrs(M)]
+        j <-- GetFirstIdxKol(M)
+        while (j<i) do
+            temp <-- GetElmt(M,i,j)
+            SetElmt(M,i,j,GetElmt(M,j,i))
+            SetElmt(M,j,i,temp)
+            j <-- j+1
+
+function IsMatriksPositif (M : MATRIKS) --> boolean
+Kamus lokal
+    i,j : indeks
+    isPos : boolean
+Algoritma
+    isPos <-- true
+    i <-- GetFirstIdxBrs(M)
+    while (i≤GetLastIdxBrs(M) and isPos) do
+        j <-- GetFirstIdxKol(M)
+        while (j ≤ GetLastIdxKol(M) and isPos) do
+            if (GetElmt(M,i,j)≤0) then
+                isPos <-- false
+            j <-- j+1
+        i <-- i+1
+    --> isPos

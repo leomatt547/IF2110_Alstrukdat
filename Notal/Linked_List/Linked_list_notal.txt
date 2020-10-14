@@ -1,0 +1,123 @@
+{ List direpresentasi dengan pointer }
+constant Nil : ...
+type infotype : integer
+type ElmtList : < Info : infotype, Next : address >
+type address : pointer to ElmtList
+type List : < First, Last : address >
+{ *** Selektor *** }
+{ Jika L : List dan P : address, maka penulisan :
+    First(L) menjadi L.First; Last(L) menjadi L.Last;
+    Next(P) menjadi P­.Next; Info(P) menjadi P­.Info }
+{*** Predikat pemeriksaan *** }
+function IsEmpty (L : List) --> boolean
+{ Mengirimkan true jika list kosong, false jika tidak kosong }
+{ *** Konstruktor *** }
+procedure CreateEmpty (output L : List)
+{ I.S. Sembarang; F.S. Terbentuk list L kosong sesuai definisi. Apabila gagal alokasi,
+First(L) dan Last(L) menjadi Nil }
+{ *** Manajemen Memory *** }
+function Alokasi (X : infotype) --> address
+{ Mengembalikan address hasil alokasi X. }
+{ Jika alokasi berhasil, maka address tidak Nil, misalnya menghasilkan P, maka Info(P)=X
+dan Next(P)=Nil. Jika alokasi gagal, mengembalikan Nil. }
+procedure Dealokasi (input P : address)
+{ I.S. P terdefinisi; F.S. P dikembalikan ke sistem }
+{ *** Fungsi/Prosedur Lain *** }
+procedure InsertFirst (input/output L : List, input X : infotype)
+{ I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
+{ F.S. X menjadi elemen pertama L jika alokasi X berhasil. Jika alokasi gagal, L tetap. }
+procedure InsertLast (input/output L : List, input X : infotype)
+{ I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
+{ F.S. X menjadi elemen terakhir L jika alokasi X berhasil. Jika alokasi gagal, L tetap.}
+procedure DeleteFirst (input/output L : List, output X : infotype)
+{ I.S. L terdefinisi, tidak kosong. X sembarang. }
+{ F.S. X berisi nilai elemen pertama L. Elemen pertama L dihapus dan didealokasi.
+    L mungkin menjadi kosong. }
+procedure DeleteLast (input/output L : List, output X : infotype)
+{ I.S. L terdefinisi, tidak kosong. X sembarang. }
+{ F.S. X berisi nilai elemen terakhir L. Elemen terakhir L dihapus dan didealokasi.
+    L mungkin menjadi kosong. }
+function SearchAdr (L : List, X : infotype) --> address
+{ Mengembalikan address elemen L (misalnya P), dengan Info(P)=X. Mengembalikan Nil jika
+tidak ada elemen L yang memenuhi. L mungkin kosong.
+Gunakan skema searching yang paling cocok dengan struktur ini. }
+
+procedure CreateEmpty (output L : List)
+{ I.S. Sembarang; F.S. Terbentuk list L kosong sesuai definisi. Apabila gagal alokasi,
+First(L) dan Last(L) menjadi Nil }
+Kamus Lokal
+    -
+Algoritma
+    First(L) <-- Alokasi(-999)
+    Last(L) <-- First(L)
+
+procedure DeleteFirst (input/output L : List, output X : infotype)
+{ I.S. L terdefinisi, tidak kosong. X sembarang. }
+{ F.S. X berisi nilai elemen pertama L. Elemen pertama L dihapus dan didealokasi.
+L mungkin menjadi kosong. }
+Kamus Lokal
+    P : address
+Algoritma
+    P <-- First(L)
+    First(L) <-- Next(P)
+    X <-- Info(P)
+    Dealokasi(P)
+
+procedure DeleteLast (input/output L : List, output X : infotype)
+{ I.S. L terdefinisi, tidak kosong. X sembarang. }
+{ F.S. X berisi nilai elemen terakhir L. Elemen terakhir L dihapus dan didealokasi.
+L mungkin menjadi kosong. }
+Kamus Lokal
+    P, Prec : address
+Algoritma
+    if Next(First(L)) = Last(L) then {satu elemen, delete first}
+        DeleteFirst(L,X)
+    else
+        P <-- First(L)
+        while Next(P) ≠ Last(L) do {cari elemen terakhir, i.e. elemen sebelum Last(L)}
+            Prec <-- P
+            P <-- Next(P)
+        {Next(P) = Last(L), P adalah elemen terakhir}
+        Next(Prec) <-- Last(L) {atau Next(P)}
+        X <-- Info(P)
+        Dealokasi(P)
+
+procedure InsertFirst (input/output L : List, input X : infotype)
+{ I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
+{ F.S. X menjadi elemen pertama L jika alokasi X berhasil. Jika alokasi gagal, L tetap. }
+Kamus Lokal
+    P : address
+Algoritma
+    P <-- Alokasi(X)
+    if P ≠ Nil then
+    Next(P) <-- First(L)
+    First(L) <-- P
+
+procedure InsertLast (input/output L : List, input X : infotype)
+{ I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
+{ F.S. X menjadi elemen terakhir L jika alokasi X berhasil. Jika alokasi gagal, L tetap.}
+Kamus Lokal
+    P : address
+Algoritma
+    P <-- Alokasi(X) {bisa juga nilai lain, karena akan jadi dummy}
+    if P ≠ Nil then
+    Info(Last(L)) <-- X
+    Next(Last(L)) <-- P
+    Last(L) <-- P
+
+function SearchAdr (L : List, X : infotype) --> address
+{ Mengembalikan address elemen L (misalnya P), dengan Info(P)=X. Mengembalikan Nil jika
+tidak ada elemen L yang memenuhi. L mungkin kosong.
+Gunakan skema searching yang paling cocok dengan struktur ini. }
+Kamus Lokal
+    P : address
+Algoritma
+    P <-- First(L)
+    Info(Last(L)) <-- X {pasang sentinel}
+    while Info(P) ≠ X do {searching dengan sentinel, pasti ketemu}
+        P <-- Next(P)
+    {Info(P) = X}
+    if P ≠ Last(L) then {ditemukan bukan pada sentinel}
+        --> P
+    else {P = Last(L), ditemukan pada sentinel}
+        --> Nil

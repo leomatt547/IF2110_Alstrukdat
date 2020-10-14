@@ -56,3 +56,68 @@ function JamToDetik (J : JAM) --> integer>=0
 function DetikToJam (N : integer>=0) --> JAM
 { Menghasilkan JAM dari jumlah detik N }
 
+function IsJLT(J1,J2) --> boolean
+Kamus lokal
+    -
+Algoritma
+    if TT(J1)=TT(J2) then
+        if JJ(J1)=JJ(J2) then
+            if MM(J1)=MM(J2) then
+                DD(J1)< DD(J2)
+            else 
+                MM(J1)<MM(J2)
+        else 
+            JJ(J1)<JJ(J2)
+    else 
+        TT(J1)<TT(J2)
+
+function NextMenit (input:Jam) → Jam
+{ NextMenit(J) memberikan jam 1 menit setelah J.
+Proses tanpa konversi Jam, sehingga menggunakan
+analisis kasus }
+Kamus lokal
+    -
+Algoritma
+    if MM(J)<59 then 
+        MakeJam(JJ(J), MM(J)+1, DD(J), TT(J))
+    else {MM = 59, ganti jam}
+        if JJ(J) < 11 then 
+            MakeJam(JJ(J)+1, 0, DD(J), TT(J))
+        else {JJ = 11, ganti tanda am/pm}
+            if TT(J) = 1 then 
+                MakeJam(0, 0, DD(J), 2)
+            else 
+                MakeJam(0, 0, DD(J), 1)
+
+{ Modul ADT WAKTU }
+USE ADT_TANGGAL, ADT_JAM
+type WAKTU : < T : TANGGAL, { tanggal }
+               J : JAM { jam } >
+{ *** Konstruktor : Membentuk WAKTU dari komponen-komponennya *** }
+function MakeWAKTU (tt : TANGGAL, jj : JAM) --> WAKTU
+{ Membentuk sebuah WAKTU dengan tt komponen tanggal (T) dan jj komponen jam (J) }
+{ *** Selektor : Mengakses komponen-komponen JAM *** }
+function GetT (W : WAKTU) --> TANGGAL
+{ Mendapatkan bagian tanggal dari WAKTU W (komponen T) }
+function GetJ (W : WAKTU) --> JAM
+{ Mendapatkan bagian jam dari WAKTU W (komponen J) }
+
+function JumlahJam (W1,W2 : WAKTU) --> real
+{ menghasilkan jumlah selisih jam antara waktu W1 dengan W2.
+Asumsi: W1 lebih awal atau sama dengan W2 }
+Kamus lokal
+    DeltaHari : integer
+    DeltaDetik : integer
+Algoritma 1
+    DeltaHari <-- JumlahHari(GetT(W1),GetT(W2))
+    DeltaDetik <-- JamToDetik(GetJ(W2)) – JamToDetik(GetJ(W1))
+    if (DeltaDetik < 0) then
+        DeltaDetik <-- 86400 + DeltaDetik; DeltaHari <-- DeltaHari – 1
+    --> DeltaHari*24 + DeltaDetik/3600
+Algoritma 2
+    DeltaDetik <-- JamToDetik(GetJ(W2)) – JamToDetik(GetJ(W1))
+    if (DeltaDetik < 0) then
+        DeltaDetik <-- 86400 + DeltaDetik
+    --> DetikToJam(DeltaDetik)
+
+    

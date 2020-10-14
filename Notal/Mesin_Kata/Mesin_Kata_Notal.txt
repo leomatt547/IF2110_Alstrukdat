@@ -1,3 +1,37 @@
+{ ***** MesinEvent ***** }
+use MESINKAR
+{ ***** Konstanta ***** }
+constant MARK : character = '.'
+constant BLANK : character = ' '
+constant SEPARATOR : character = '-'
+{ ***** Definisi State Mesin ***** }
+type TEvent : < ETime : integer>0, {waktu event}
+                EType : character['A','D'] {jenis event} >
+EndEvent : boolean { penanda akhir akuisisi event }
+CEvent : TEvent
+{ ***** Primitif-Primitif Mesin Kata ***** }
+procedure STARTEVENT
+{ I.S. : CC sembarang }
+{ F.S. : EndEvent = true, dan CC = MARK; }
+{           atau EndEvent = false, CEvent adalah Event yang sudah diakuisisi,
+CC karakter pertama sesudah karakter terakhir yang diakuisisi
+Proses akuisisi Event menggunakan prosedur AkuisisiEvent }
+procedure ADVEVENT
+{ I.S. : EndEvent = false; CC karakter setelah karakter terakhir yang sudah diakuisisi }
+{ F.S. : Jika CC = MARK, maka EndEvent = true; }
+{          atau EndEvent = false, CEvent adalah Event terakhir yang sudah diakuisisi,
+CC karakter pertama sesudah karakter terakhir yang diakuisisi
+Proses akuisisi Event menggunakan prosedur AkuisisiEvent }
+procedure AkuisisiEvent
+{ Mengakuisisi event, mengkonversinya dan menyimpannya dalam CEvent }
+{ I.S. : CC adalah karakter pertama dari event yang akan diakuisisi }
+{ F.S. : CEvent berisi event yang sudah diakuisisi; CC = BLANK atau CC = MARK;
+{       CC adalah karakter sesudah karakter terakhir yang diakuisisi. }
+{       Proses akuisisi harus menggunakan fungsi KarakterToInteger. }
+function KarakterToInteger (C : character) --> integer
+{ Mengirimkan integer [0..9] yang merupakan konversi dari character C yang merupakan
+salah satu dari karakter ['0 '..'9']. }
+
 procedure AkuisisiEvent
 Kamus Lokal
     N : integer {variabel untuk akuisisi bagian numerik dari event}

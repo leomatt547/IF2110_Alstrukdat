@@ -1,0 +1,86 @@
+{ List dengan first implicit direpresentasi menggunakan pointer }
+constant Nil : ...
+constant ValUndef : ...
+type infotype : integer
+type ElmtList : < Info : infotype, Next : address >
+type address : pointer to ElmtList
+type List : address
+{ *** Selektor *** }
+{ Jika L : List dan P : address, maka penulisan :
+First(L) menjadi L; Next(P) menjadi P­.Next; Info(P) menjadi P­.Info }
+{*** Predikat pemeriksaan *** }
+function IsEmpty (L : List) --> boolean
+{ Mengirimkan true jika list kosong, false jika tidak kosong }
+function IsOneElmt (L : List) --> boolean
+{ Mengirimkan true jika list hanya terdiri dari satu elemen }
+{ *** Konstruktor *** }
+procedure CreateEmpty (output L : List)
+{ I.S. Sembarang; F.S. Terbentuk list L kosong sesuai definisi. Apabila gagal alokasi,
+First(L) dan Last(L) menjadi Nil }
+{ *** Manajemen Memory *** }
+function Alokasi (X : infotype) --> address
+{ Mengembalikan address hasil alokasi X. }
+{ Jika alokasi berhasil, maka address tidak Nil, misalnya menghasilkan P, maka Info(P)=X
+dan Next(P)=Nil. Jika alokasi gagal, mengembalikan Nil. }
+procedure Dealokasi (input P : address)
+{ I.S. P terdefinisi; F.S. P dikembalikan ke sistem }
+
+procedure InsertLast (input/output L : List, input X : infotype)
+{ I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
+{ F.S. X menjadi elemen terakhir L jika alokasi X berhasil. Jika alokasi gagal, L tetap.}
+Kamus Lokal
+    P : address
+Algoritma
+    if IsEmpty(L) then {basis}
+        L <-- Alokasi(X)
+    else
+        InsertLast(Next(L),X)
+
+function MinList (L : List) --> address
+{ Mengembalikan alamat dari elemen yang memiliki nilai terkecil. Apabila ada lebih dari
+satu elemen, maka yang dikembalikan adalah address elemen yang muncul terakhir.
+Prekondisi: L tidak kosong }
+Kamus Lokal
+    M : integer
+Algoritma
+    if IsOneElmt(L) then {basis}
+        --> Info(L)
+    else
+        M <-- MinList(Next(L))
+        if Info(L) < M then
+            M <-- Info(L)
+        --> M
+
+function NthElement (L : List, N : integer > 0) --> infotype
+{ Mengembalikan nilai elemen ke-N list.
+Mengembalikan ValUndef jika elemen list kurang dari N }
+Kamus Lokal
+    -
+Algoritma
+    if IsEmpty(L) or N = 1 then {basis}
+        if IsEmpty(L) then {elemen list kurang dari N}
+            --> ValUndef
+        else {N = 1}
+            --> Info(L)
+    else
+        --> NthElement(Next(L),N-1)
+
+procedure SortList (input/output L : List)
+{ I.S. L terdefinisi, tidak kosong }
+{ F.S. elemen-elemen L terurut membesar }
+{ Proses: selection sort dengan memanfaatkan fungsi MinList }
+Kamus Lokal
+    PMin : address
+    Temp : infotype
+Algoritma
+    if IsOneElmt(L) then {basis, list 1 elemen adalah list terurut}
+        {do nothing}
+    else
+        PMin <-- MinList(Next(L))
+        if PMin < Info(L) then {nilai terkecil di sisa list < current element}
+            {tukar isi Info(PMin) dengan isi Info(L)}
+            Temp <-- Info(PMin)
+            Info(PMin) <-- Info(L)
+            Info(L) <-- Temp
+        {urutkan sisa list}
+        SortList(Next(L))

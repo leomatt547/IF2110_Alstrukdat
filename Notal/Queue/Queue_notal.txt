@@ -1,3 +1,39 @@
+{ *** ADT Queue, model alternatif II dengan head bergerak dan bisa penuh “semu” *** }
+{ *** Konstanta *** }
+constant Nil : integer = 0
+constant MaxEl : integer = 10
+{ *** Definisi elemen dan address *** }
+type infotype : integer
+type address : integer { indeks tabel }
+{ *** Definisi Type Queue *** }
+type Queue : < T : array [1..MaxEl] of infotype, { tabel penyimpan elemen }
+               HEAD : address, { alamat penghapusan }
+               TAIL : address { alamat penambahan } >
+{ Definisi Queue kosong: Head = Nil; TAIL = Nil. }
+{ *** Predikat Pemeriksaan Kondisi Queue *** }
+function IsEmpty (Q : Queue) --> boolean
+{ Mengirim true jika Q kosong }
+function IsFull (Q : Queue) --> boolean
+{ Mengirim true jika tabel penampung elemen Q sudah penuh yaitu mengandung MaxEl elemen }
+function NBElmt (Q : Queue) --> integer
+{ Mengirimkan banyaknya elemen queue. Mengirimkan 0 jika Q kosong. }
+{ *** Konstruktor *** }
+procedure CreateEmpty (output Q : Queue)
+{ I.S. Sembarang }
+{ F.S. Sebuah Q kosong terbentuk dengan HEAD = Nil dan TAIL = Nil }
+{ *** Operator-Operator Dasar Queue *** }
+procedure Add (input/output Q : Queue, input X : infotype)
+{ Proses : Menambahkan X pada Q dengan aturan FIFO }
+{ I.S. Q mungkin kosong, tabel penampung elemen Q TIDAK penuh. }
+{ F.S. X menjadi TAIL yang baru, TAIL "maju". }
+{ Jika TAIL = MaxEl, maka elemen-elemen Queue terlebih dahulu harus digeser. }
+procedure Del (input/output Q : Queue, output X : infotype)
+{ Proses : Menghapus elemen pertama pada Q dengan aturan FIFO }
+{ I.S. Q tidak kosong }
+{ F.S. X = nilai elemen HEAD pada I.S., }
+{ Jika Queue masih ada isinya : HEAD "maju". }
+{ Jika Queue menjadi kosong, HEAD = TAIL = Nil. }
+
 procedure Add/Enqueue (input/output Q : Queue, input X : infotype)
 Kamus Lokal
     i, j : address

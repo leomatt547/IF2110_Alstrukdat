@@ -1,3 +1,41 @@
+
+
+procedure Insert (input e : elmttype, input/output S : SET)
+{ I.S. S terdefinisi, mungkin kosong }
+{ F.S. elemen S bertambah satu elemen, yaitu e, jika sebelumnya e bukan elemen S.
+jika sebelumnya e sudah merupakan elemen S, S tetap.}
+Kamus Lokal
+    P, Ptrav, Prev : address
+    bStop : boolean
+Algoritma
+    Ptrav <-- First(S)
+    Prev <-- NIL
+    bStop <-- false
+    while Ptrav ≠ NIL and not bStop do
+        if Elmt(Ptrav) >= e then
+            bStop <-- true
+        else
+            Prev <-- Ptrav
+            Ptrav <-- Next(Ptrav)
+    if bStop then {belum sampai di akhir list}
+        if Elmt(Ptrav) ≠ e then {e bukan elemen S}
+            Alokasi(P,e)
+            if P ≠ NIL then {insert after Prev, jika Prev ada}
+                if Prev = NIL then {insert First}
+                    Next(P) <-- First(S)
+                    First(S) <-- P
+                else
+                    Next(P) <-- Ptrav
+                    Next(Prev) <-- P
+    else {tambahkan sebagai elemen terakhir, atau pertama jika S kosong}
+        Alokasi(P,e)
+        if P ≠ NIL then {insert after Prev, jika Prev ada}
+            if Prev = NIL then {insert First}
+                Next(P) <-- First(S)
+                First(S) <-- P
+            else {insert Last}
+                Next(Prev) <-- P
+
 function IsMember (e : elmttype, S : SET) --> boolean
 { Mengirimkan true jika e adalah elemen/anggota dari set S. }
 { Search pada List terurut }
@@ -100,38 +138,3 @@ Algoritma
     {P2 = NIL}
     --> S
 
-procedure Insert (input e : elmttype, input/output S : SET)
-{ I.S. S terdefinisi, mungkin kosong }
-{ F.S. elemen S bertambah satu elemen, yaitu e, jika sebelumnya e bukan elemen S.
-jika sebelumnya e sudah merupakan elemen S, S tetap.}
-Kamus Lokal
-    P, Ptrav, Prev : address
-    bStop : boolean
-Algoritma
-    Ptrav <-- First(S)
-    Prev <-- NIL
-    bStop <-- false
-    while Ptrav ≠ NIL and not bStop do
-        if Elmt(Ptrav) >= e then
-            bStop <-- true
-        else
-            Prev <-- Ptrav
-            Ptrav <-- Next(Ptrav)
-    if bStop then {belum sampai di akhir list}
-        if Elmt(Ptrav) ≠ e then {e bukan elemen S}
-            Alokasi(P,e)
-            if P ≠ NIL then {insert after Prev, jika Prev ada}
-                if Prev = NIL then {insert First}
-                    Next(P) <-- First(S)
-                    First(S) <-- P
-                else
-                    Next(P) <-- Ptrav
-                    Next(Prev) <-- P
-    else {tambahkan sebagai elemen terakhir, atau pertama jika S kosong}
-        Alokasi(P,e)
-        if P ≠ NIL then {insert after Prev, jika Prev ada}
-            if Prev = NIL then {insert First}
-                Next(P) <-- First(S)
-                First(S) <-- P
-            else {insert Last}
-                Next(Prev) <-- P
