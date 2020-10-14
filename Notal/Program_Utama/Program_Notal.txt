@@ -65,3 +65,32 @@ Algoritma:
     TulisTanggal(T1)
     TulisTanggal(T2)
     output(N)
+
+Program TesJadwalKA
+{ Membaca satu jadwal KA dari keyboard dan memvalidasi data masukan
+tarif dari keyboard berdasarkan masukan keaktifan jadwal KA }
+{ Asumsi: Jika jadwal KA aktif, maka tarif harus ≥ 0 }
+KAMUS
+    USE ADT JADWALKA
+    J : JadwalKA
+    noJdwl, kAsal, kTujuan : string
+    jBrgkt, jDtg : JAM
+    t : integer
+    isAkt : boolean
+ALGORITMA
+    input (noJdwl, kAsal, kTujuan)
+    BacaJAM (jBrgkt)
+    BacaJAM (jDtg)
+    input (isAkt)
+    if isAkt then { kalau jadwal aktif }
+        iterate
+            input (t)
+        stop: t ≥ 0
+            output (“Tarif harus ≥ 0”)
+    else { not isAkt }
+        iterate
+            input (t)
+        stop: t = 0
+            output (“Tarif harus = 0”)
+    J <- MakeJadwalKA (no,Jdwl, kAsal, kTujuan, jBrgkt, jDtg, t, isAkt)
+   

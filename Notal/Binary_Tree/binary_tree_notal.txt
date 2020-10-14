@@ -1,0 +1,35 @@
+function CountNonDaun --> integer ≥ 0
+    {CountNonDaun(P) mengembalikan jumlah simpul yang
+    bukan merupakan simpul daun pada P}
+REALISASI
+    CountNonDaun(P):
+        if IsTreeOneElmt(P) then 
+            -->0 {basis, simpul daun}
+        else 
+            depend on Left(P), Right(P)
+                IsTreeEmpty(Left(P)) and not IsTreeEmpty(Right(P)):
+                    --> 1+CountNonDaun(Right(P))
+                not IsTreeEmpty(Left(P)) and IsTreeEmpty(Right(P)):
+                    --> 1+CountNonDaun(Left(P))
+                else
+                    --> 1+CountNonDaun(Left(P))+CountNonDaun(Right(P))
+
+List2BBST(L):
+if IsEmpty(L) then
+ {basis, pohon kosong}
+// \\
+else
+    let <ki,a,ka>=Partisi(L,NbElmt(L) div 2) in
+        // List2BBST(ki) a List2BBST(ka) \\
+
+function Partisi (input: List of integer, integer) --> List of integer, integer, List of integer
+{Partisi(L,n) menghasilkan list L1, integer x,
+dan list L2. L1 berisi n elemen pertama dari
+L, x adalah elemen ke n+1, dan L2 berisi
+elemen sisanya. Prekondisi: n<NbElmt(L)}
+Algoritma
+    Partisi(L,n):
+    if n=0 then 
+        <[], FirstElmt(L), Tail(L)>
+    else let <l,m,r> = Partisi(Tail(L),n-1) in
+        <konso(FirstElmt(L),l),m,r>

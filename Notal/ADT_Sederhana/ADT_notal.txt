@@ -120,4 +120,57 @@ Algoritma 2
         DeltaDetik <-- 86400 + DeltaDetik
     --> DetikToJam(DeltaDetik)
 
-    
+{ MODUL ADT JADWAL KA }
+USE ADT JAM
+type JadwalKA :
+< noJadwal : string, { nomor jadwal KA }
+    kotaAsal : string, { kota asal keberangkatan KA }
+    kotaTujuan : string, { kota tujuan KA }
+    jamBerangkat : JAM, { waktu keberangkatan KA }
+    jamDatang : JAM, { waktu kedatangan KA di tujuan }
+    tarif : integer ≥ 0, { tarif penumpang KA }
+    isAktif : boolean { status keaktifan jadwal,
+    asumsi: true = aktif,
+    false = tidak aktif }
+>
+
+function MakeJadwalKA (noJdwl, kAsal, kTujuan : string,
+jBrgkt, jDtg : JAM,
+t : integer ≥ 0,
+isAkt : boolean) --> JadwalKA
+{ Terbentuk JadwalKA misalnya J dengan J.noJadwal = noJdwl, J.kotaAsal =
+kAsal, J.kotaTujuan = kTujuan, J.jamBerangkat = jBrgkt, J.jamDatang = jDtg,
+J.tarif = t, J.isAktif = isAkt }
+KAMUS LOKAL
+    J : JadwalKA
+ALGORITMA (KONSTRUKTOR VERSI FUNGSI)
+    J.noJadwal <-- noJdwl
+    J.kotaAsal <-- kAsal
+    J.kotaTujuan <-- kTujuan
+    CopyJAM(jBrgkt,J.jamBerangkat)
+    CopyJAM(jDtg,J.jamDatang)
+    J.tarif <-- t
+    J.isAktif <-- isAkt
+    --> J
+
+procedure MakeJadwalKA (input noJdwl, kAsal, kTujuan : string,
+                        input jBrgkt, jDtg : JAM,
+                        input t : integer ≥ 0,
+                        input isAkt : boolean
+                        output J : JadwalKA)
+{ I.S.: noJdwl, kAsal, kTujuan, jBrgkt, jDtg, t : integer ≥ 0, isAkt
+terdefinisi }
+{ F.S.: J terdefinisi dengan J.noJadwal = noJdwl, J.kotaAsal = kAsal,
+        J.kotaTujuan = kTujuan, J.jamBerangkat = jBrgkt, J.jamDatang = jDtg, J.tarif =
+        t, J.isAktif = isAkt }
+KAMUS LOKAL
+    -
+ALGORITMA (Konstruktor Versi Prosedur)
+    J.noJadwal <-- noJdwl
+    J.kotaAsal <-- kAsal
+    J.kotaTujuan <-- kTujuan
+    KONSTRUKTOR VERSI PROSEDUR
+    CopyJAM(jBrgkt,J.jamBerangkat)
+    CopyJAM(jDtg,J.jamDatang)
+    J.tarif <-- t
+    J.isAktif <-- isAkt

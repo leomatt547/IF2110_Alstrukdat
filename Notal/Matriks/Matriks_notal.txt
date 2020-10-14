@@ -31,10 +31,10 @@ procedure SetElmt (input/output M:MATRIKS, input i,j:integer, input X:el_type)
 { I.S. M sudah terdefinisi; F.S. M[i,j] bernilai X }
 
 procedure FlipMatriks (input/output M : MATRIKS)
-Kamus lokal
+Kamus lokal 1
     i,j : indeks
     temp : el_type
-Algoritma
+Algoritma 1
     i traversal [GetFirstIdxBrs(M)..GetLastIdxBrs(M)]
         j <-- GetFirstIdxKol(M)
         while (j<i) do
@@ -42,6 +42,41 @@ Algoritma
             SetElmt(M,i,j,GetElmt(M,j,i))
             SetElmt(M,j,i,temp)
             j <-- j+1
+
+Kamus lokal 2
+    i, j : indeks
+    el : el_type
+Algoritma 2
+    if (GetNBrsEff(M) > 1) then
+        i traversal [GetFirstIdxBrs(M)..GetLastIdxBrs(M)-1]
+            j traversal [i+1 .. GetLastIdxKol(M)]
+                el <-- GetElmt (M, i, j)
+                SetElmt (M, i, j, GetElmt(M, j, i))
+                SetElmt (M, j, i, el)
+
+function IsMatriksDiagonal (M : MATRIKS) → boolean
+Kamus lokal
+    isDiagOk: boolean
+    isTriangularOK: boolean
+    i, j: integer
+Algoritma
+    {Mengecek Matriks Persegi}
+    if GetNBrsEff(M) ≠ GetNKolEff(M) then
+        --> false
+    else
+        isDiagOk <-- false
+        isTriangularOK <-- true
+        i <-- GetFirstIdxBrs(M)
+        while (i<=GetLastIdxBrs(M) and isTriangularOK do
+            j <-- GetFirstIdxKol(M)
+            while (i<=GetLastIdxKol(M) and isTriangularOK do
+                if ((i=j) and GetElmt(M, i, j) ≠ 0) then
+                    isDiagOK <-- true
+                else
+                    isTriangularOK <-- (GetElmt(M, i,j) = 0)
+                j <-- j + 1
+            i <-- i + 1
+        --> isTriangularOK and isDiagOK
 
 function IsMatriksPositif (M : MATRIKS) --> boolean
 Kamus lokal

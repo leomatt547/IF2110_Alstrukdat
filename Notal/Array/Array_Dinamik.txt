@@ -1,0 +1,57 @@
+procedure ClosestPair (input T : TabInt; output P1,P2 :ElType)
+{ Menghasilkan 2 buah nilai elemen T yang memiliki
+selisih terkecil. }
+{ I.S.: T terdefinisi, mungkin kosong, P1 dan P2
+sembarang. }
+{ F.S.: Jika T memiliki lebih dari 1 elemen, P1 dan P2
+berisi elemen-elemen T.TI yang memiliki selisih
+terkecil. Urutan bebas.
+Jika ada beberapa pasang elemen yang memiliki selisih
+terkecil yang sama, maka diambil yang pertama
+ditemukan.
+Jika T kosong atau hanya terdiri atas 1 elemen, P1
+dan P2 berisi elemen tidak terdefinisi. }
+{ Hint: Gunakan procedure Sorting.
+procedure ClosestPair (input T : TabInt; output P1,P2 : ElType)
+KAMUS LOKAL
+    i : IdxType
+ALGORITMA
+    if T.Neff ≤ 1 then
+        P1 <-- ValUndef
+        P2 <-- ValUndef
+    else { T.Neff > 1 }
+        Sorting(T)
+        P1 <-- T.TI[1]
+        P2 <-- T.TI[2]
+        i <-- 3
+        while (i ≤ T.Neff) do
+            if T.TI[i]-T.TI[i-1]<P2-P1 then
+                P1 <-- T.TI[i-1]
+                P2 <-- T.TI[i]
+            i <-- i + 1
+        { i > T.Neff }
+
+procedure Sorting (input/output T : TabInt)
+{ Menggunakan Teknik Insertion Sort }
+KAMUS LOKAL
+    i, pass : IdxType
+    temp : ElType
+ALGORITMA
+    { T.TI[1] dianggap sudah urut }
+    pass <-- 2
+    while pass ≤ T.Neff do
+        temp <-- T.TI[pass]
+        i <-- pass-1
+        while T.TI[i] > temp and i > 1 do
+            T.TI[i+1] <-- T.TI[i]
+            i <-- i + 1
+        { T.TI[i] ≤ temp or i = 1 }
+        { Jika tempatnya telah ditemukan atau mencapai i = 1 }
+        if T.TI[i] > temp then
+            T.TI[i+1] <-- T.TI[i]
+            T.TI[i] <-- temp
+        else { T.TI[i] ≤ temp }
+            T.TI[i+1] <-- temp
+        pass <-- pass + 1
+    { pass > T.Neff }
+    { Jika hanya ada 1 elemen, tidak akan disort }
