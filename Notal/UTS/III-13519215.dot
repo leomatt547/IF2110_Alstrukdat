@@ -1,0 +1,47 @@
+{Nama: Leonard Matheus
+NIM: 13519215}
+
+procedure Dequeue (input/output Q: Queue, output X: infotype)
+{ Proses: Menghapus elemen pertama pada Q dengan aturan FIFO }
+{ I.S. Q tidak kosong }
+{ F.S. X = nilai elemen HEAD pada I.S., 
+       Jika Queue masih isi: HEAD diset tetap = 0, elemen-elemen setelah 
+       HEAD yang lama digeser ke "kiri", TAIL = TAIL – 1; 
+       Jika Queue menjadi kosong, HEAD=TAIL=Nil }
+KAMUS LOKAL
+    -
+ALGORITMA
+    X ← Q.T[Q.HEAD]
+    if (NBElmt(Q) = 1) then
+        Q.HEAD ← NIL
+        Q.TAIL ← NIL
+    else
+        Q.HEAD ← Q.HEAD + 1
+
+procedure Split (input Q: Queue, input ratio: real, output Q1, Q2: Queue)
+{ I.S. Q tidak kosong, dan 0 ≤ ratio ≤ 1 }
+{ F.S. Q1 dan Q2 akan berisi elemen-elemen dari Q secara bersilangan 
+       (elemen pertama Q ke Q1, elemen kedua Q ke Q2, elemen ketiga Q ke 
+       Q1, dan seterusnya), dengan NBElmt(Q1) = ratio × NBElmt(Q).
+       Jika hasilnya bukan bilangan bulat, maka dilakukan pembualatan ke 
+       atas. 
+       Contoh: NBElmt(Q)=5 dan ratio = 0,25, maka NBElmt(Q1)=0,25×5=1,25≈2. 
+       Sehingga Q1 akan memiliki 2 elemen (dibulatkan ke atas), dan Q2 akan 
+       memiliki 3 elemen. }
+KAMUS LOKAL
+    i : address
+ALGORITMA
+    CreateEmpty(Q1,ceil(ratio*NbElmt(Q)))
+    CreateEmpty(Q2,ceil(NbElmt(Q) - ratio*NbElmt(Q)))
+    i ← 0
+    i traversal [Q.HEAD..Q.TAIL]
+        if not IsFull(Q1) then
+            if (i%2 ≠ 0) then
+                Enqueue(Q1,Q[i])
+            else {Genap}
+                Enqueue(Q2,Q[i])
+        else { Q1 penuh }
+            Enqueue(Q2,Q[i])
+
+
+

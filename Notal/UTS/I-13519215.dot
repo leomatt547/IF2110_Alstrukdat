@@ -1,0 +1,53 @@
+{Nama: Leonard Matheus
+NIM: 13519215}
+
+function IsSegitigaBawah (M: MATRIKS) → boolean
+{ Mengirimkan true jika M adalah matriks segitiga bawah,dengan Mᵢⱼ = 0 
+  untuk semua i < j.
+  Prekondisi: M adalah matriks bujur sangkar (berukuran n × n) }
+KAMUS LOKAL
+    i,j : indeks
+    isTri : boolean
+ALGORITMA
+    isTri ← true
+    i ← GetFirstIdxBrs(M)
+    while (i ≤ GetLastIdxBrs(M) and isTri) do
+        j ← i+1
+        while (j ≤ GetLastIdxKol(M) and isTri) do
+            if (GetElmt(M,i,j) ≠ 0) then
+                isTri ← false
+            j ← j+1
+        {j > GetLastIdxKol(M) atau not isTri}
+        i ← i+1
+    {i > GetLastIdxBrs(M) atau not isTri}
+    → isTri
+
+procedure DetriMatriks (input M: MATRIKS, output Det: integer)
+{ Menghitung nilai determinan matriks segitiga M, dimana determinant 
+  dihitung berdasarkan perkalian semua elemen diagonalnya.
+  I.S. Matriks M terdefinisi;
+  F.S. Det berisi nilai determinan matriks segitiga bawah M atau 0 jika 
+       bukan matriks segitiga bawah. } 
+KAMUS LOKAL
+    i : indeks
+    nol : boolean
+ALGORITMA
+    {Mengecek Segitiga Bawah}
+    if (not IsSegitigaBawah(M)) then
+        Det ← 0
+        {Langsung menuju ke paling bawah}
+    else {M adalah Segitiga Bawah}
+        Det ← 1 {Inisialisasi}
+        nol ← false
+        i ← GetFirstIdxBrs(M)
+        {Skema pencarian kasus 0 supaya efektif}
+        while (i ≤ GetLastIdxBrs(M) and not (nol)) do
+            if (GetElmt(M,i,i) = 0) then
+                nol ← true
+                Det ← 0
+            else {Element tidak bernilai 0}
+                Det ← Det * GetElmt(M,i,i)
+                i ← i+1
+        {i > GetLastIdxBrs(M) atau (nol)}
+    → Det
+

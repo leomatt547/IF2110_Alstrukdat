@@ -1,0 +1,88 @@
+{Nama: Leonard Matheus
+NIM: 13519215}
+
+{ADT Bag}
+Kamus Umum
+constant MaxEl: integer = 1000000 { Banyaknya elemen maksimum }
+
+type infotype: integer { elemen Bag }
+type address: integer { indeks tabel }
+
+type Bag: ⟨ T: array of [[0..MaxEl-1]][0..MaxEl-1] of infotype, { tabel penyimpan elemen set }
+            NbElmt: integer { jumlah elemen Bag }
+⟩
+
+{ Deklarasi: B: Bag
+Definisi akses (diimplementasikan sebagai selektor):
+NbMember(B) adalah B.NbElmt }
+IsEmpty: B → boolean { Tes terhadap B: true jika B kosong, false jika S tidak kosong }
+IsFull: B → boolean { Tes terhadap B: true jika memori B sudah penuh, false jika tidak
+penuh }
+MakeEmpty: → B { Membuat sebuah bag kosong }
+NBElmt: B → integer { Mengirimkan banyaknya elemen B }
+IsMember: ElmtB x B → boolean { Mengembalikan true jika ElmtS adalah member dari B }
+
+procedure Add (input/output B : Bag, input e : elmttype )
+{ I.S. B terdefinisi, mungkin kosong }
+{ F.S. elemen B bertambah satu elemen, yaitu e, jika sebelumnya e bukan elemen B.
+jika sebelumnya e sudah merupakan elemen B, B tetap.}
+
+procedure Remove (input/output B : Bag, input e : elmttype )
+{ I.S. B terdefinisi, mungkin penuh }
+{ F.S. elemen B berkurang satu elemen, yaitu e, jika sebelumnya e adalah elemen B.
+jika sebelumnya e bukan merupakan elemen B, B tetap.}
+
+procedure Get (input/output B : Bag, input e : elmttype )
+{ I.S. B terdefinisi, mungkin kosong, mungkin penuh }
+{ F.S. Mengembalikan jumlah elmttype yang ada pada Bag, apabila kosong dikembalikan angka 0.}
+
+{Implementasi Add and Remove}
+Menggunakan Linked list
+
+procedure Add (input/output B : Bag, input e : elmttype )
+Kamus Lokal
+    USE ADTLIST
+    i,j : indeks
+    boolean: found
+Algoritma
+    Alokasi(B)
+    found <-- true
+    while i<Neff and found do
+        if (e = B[i][j])
+            found <-- true
+            B[i][j] <-- B[i][j] + 1
+        else
+            i <-- i+1
+    if not found then
+        B[i] = e
+
+procedure Remove (input/output B : Bag, input e : elmttype )
+Kamus Lokal
+    USE ADTLIST
+    i,j : indeks
+    boolean: found
+Algoritma
+    Alokasi(B)
+    found <-- true
+    while i<Neff and found do
+        if (e = B[i][j])
+            found <-- true
+            B[i][j] <-- B[i][j] - 1
+        else
+            i <-- i+1
+    if not found then
+        B[i] = e
+
+prosedur CetakInvoice(input B:Bag, input M:Map)
+KAMUS Lokal
+    i: keytype
+    Total : integer
+Algoritma
+    if isEmpty(M) then
+        output("Bag Kosong")
+    else
+        i <-- 0
+        i traversal [0..NMax]
+            output (Get(M, i))
+            Total <-- Total + Get(M,i).val
+    output("TOTAL" + Total)

@@ -1,0 +1,93 @@
+{Nama: Leonard Matheus
+NIM: 13519215}
+
+procedure STARTTOKEN
+{ I.S.: CToken sembarang }
+{ F.S.: Jika CC = MARK, maka EndToken = true; }
+{       atau EndToken = false, CToken adalah token yang sudah diakuisisi;
+        CC karakter pertama sesudah karakter terakhir yang diakuisisi. }
+KAMUS LOKAL
+    -
+ALGORITMA
+    START
+    IgnoreBlank
+    depend on (CC)
+        CC = MARK : EndToken ← true
+        CC ≠ MARK : EndToken ← false
+                    SalinToken
+
+procedure SalinToken
+{ Mengakuisisi token. Hasil akuisisi (token) disimpan ke dalam CToken. }
+{ I.S.: CC adalah karakter pertama dari token. }
+{ F.S.: CToken berisi token yang sudah diakuisisi; CC = BLANK 
+        atau CC = MARK; 
+        CC adalah karakter sesudah karakter terakhir yang diakuisisi;
+        CToken bisa berupa <"tarik",nilai integer> atau 
+        <"setor",nilai integer>.
+        Proses akuisisi untuk integer menggunakan fungsi KarakterToInteger. }
+Kamus Lokal
+    i: integer
+Algoritma
+    i ← 1
+    iterate
+        CToken.opr[i] ← CC
+        ADV
+    stop: (CC = '-')
+    CToken.val = 0
+    while (CC ≠ MARK) or (CC ≠ BLANK) do
+        CToken.val ← CToken.val*10 + KarakterToInteger(CC) 
+        ADV
+    stop: (CC = MARK) or (CC = BLANK)
+    { CC = MARK or CC = BLANK or CC = '-' }
+    IgnoreBlank
+
+program TransaksiATM
+{  Input: Pita karakter (yang dibaca menggunakan mesin token).
+  Proses: Baca token dari pita karakter.
+          Selama Stack tidak penuh:
+            Jika yang dibaca <"setor", nilai-integer>, push nilai 
+            integer tersebut ke dalam Stack 
+            Jika yang dibaca <"tarik", nilai-integer>, push nilai 
+            integer dikali (-1) 
+            ke dalam Stack.
+          Jika Stack penuh, tampilkan pesan "Stack penuh"
+          Jika Stack tidak penuh dan pita karakter selesai dibaca:
+            pop dan jumlahkan seluruh nilai yang ada pada Stack, lalu 
+            tampilkan hasilnya
+  Output: - pesan "tidak ada transaksi" jika pita karakter kosong atau 
+            hanya berisi blank, ATAU 
+          - pesan "Stack penuh" jika Stack penuh, ATAU
+          - hasil penjumlahan seluruh elemen Stack, yang menggambarkan 
+            total setoran dikurangi total penarikan }
+
+Use MESINTOKEN, ADTSTACK
+
+KAMUS
+    S : Stack
+    X : infotype
+    T : integer {hasil setoran hari itu}
+ALGORITMA
+    STARTTOKEN
+    if EndToken then
+        output(”tidak ada transaksi”)
+    else
+        CreateEmpty(S)
+        repeat
+            if CToken.opr = 'setor' then
+                if not IsFull(S) then
+                    Push(S, CToken.val)
+                else
+                    output("Stack penuh")
+            else {CToken tarik}
+                if not IsFull(S) then
+                    Push(S, -1*CToken.val)
+                else
+                    output("Stack penuh")
+            ADVTOKEN
+        until EndToken
+        while i ≤ MaxEl and not isEmpty(S) do
+            Pop(S, X)
+            T ← T + X
+            i ← i+1
+        {i ≥ MaxEl or isEmpty(S)}
+        output(T)
