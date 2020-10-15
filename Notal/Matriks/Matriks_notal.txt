@@ -30,12 +30,49 @@ function GetLastIdxKol (M:MATRIKS) --> indeks { Mengirimkan indeks kolom terbesa
 procedure SetElmt (input/output M:MATRIKS, input i,j:integer, input X:el_type)
 { I.S. M sudah terdefinisi; F.S. M[i,j] bernilai X }
 
+procedure FindElement (input M : MATRIKS, input X : el_type, 
+output brs,kol : indeks)
+{Procedure FindElement melakukan proses untuk menemukan indeks di mana elemen X
+    pertama kali ditemukan pada matriks M. Jika X ditemukan pada M, maka brs dan kol
+    adalah indeks di mana X ditemukan pada M. Jika X tidak ditemukan, brs=-1, kol=-1}
+    Jika X terdapat di M lebih dari satu kali, maka indeks yang dihasilkan (brs dan
+    kol) adlaah indeks "terendah", yaitu baris terendah diperhitungkan lebih dulu
+    daripada kolom.}
+{I.S.: M terdefinisi, X terdefinisi}
+{F.S.: brs berisi indeks baris terendah dan kol berisi indeks kolom terendah di mana X
+        ditemukan di M, atau brs=-1 dan kol=-1 jika X tidak ditemukan di M}
+KAMUS lokal
+    i,j : indeks 
+    found : boolean
+Algoritma
+    {Penanganan Kasus Kosong}
+    if (GetNBrsEff(T)=0) and (GetNKolEff(T)=0) then
+        --> brs = -1; kol = -1
+    else {Tidak Kosong}
+        found <-- false
+        i <-- GetFirstIdxBrs(M)
+        while (not found) and (i <= GetLastIdxBrs(M)) then
+            j <-- GetFirstIdxKol(M)
+            while (not found) and (j <= GetLastIdxKol(M)) then
+                if (GetElmt(M,i,j)=X) then
+                    found <-- true
+                else
+                    j <-- J + 1
+            {found atau tidak ketemu dan keluar indeks kolom}
+            if not (found) then
+                i <-- i + 1
+        {found atau tidak ketemu dan keluar indeks}
+        if found then
+            --> brs = i; kol = j
+        else
+            --> brs = -1; kol = -1
+
 procedure FlipMatriks (input/output M : MATRIKS)
 Kamus lokal 1
     i,j : indeks
     temp : el_type
 Algoritma 1
-    i traversal [GetFirstIdxBrs(M)..GetLastIdxBrs(M)]
+    i <-- traversal [GetFirstIdxBrs(M)..GetLastIdxBrs(M)]
         j <-- GetFirstIdxKol(M)
         while (j<i) do
             temp <-- GetElmt(M,i,j)
@@ -93,3 +130,29 @@ Algoritma
             j <-- j+1
         i <-- i+1
     --> isPos
+
+procedure SubMatriks (M: Matriks, RDel: integer, CDel: integer) --> Matriks
+{Melakukan operasi menghasilkan/mengembalikan matriks merupakan SubMatriks
+    dari matriks M dengan cara menghapus baris RDel dan kolom CDel}
+{Prekondisi: M adalah sebuah matriks dengan ukuran baris kolom minimal 2x2.
+    RDel dan CDel adalah indeks baris dan kolom yang valid pada matriks M.}
+KAMUS lokal
+    i,j : indeks
+    M2: Matriks
+ALGORITMA
+    CreateMATRIKS(M.NBrsEff-1,M.NKolEff-1)
+    i traversal [GetFirstIdxBrs(M)..GetLastIdxBrs(M)]
+        if (i<RDel) then
+            j traversal [GetFirstIdxKol(M)..GetLastIdxKol(M)]
+                if (j<CDel) then
+                    SetElmt(M2,i,j, GetElmt(M,i,j))
+                if (j>CDel) then 
+                    SetElmt(M2,i,j, GetElmt(M,i,j+1))
+        if (i>RDel) then
+            j traversal [GetFirstIdxKol(M)..GetLastIdxKol(M)]
+                if (j<CDel) then
+                    SetElmt(M2,i,j, GetElmt(M,i+1,j))
+                if (j>CDel) then 
+                    SetElmt(M2,i,j, GetElmt(M,i+1,j+1))
+    --> M2
+

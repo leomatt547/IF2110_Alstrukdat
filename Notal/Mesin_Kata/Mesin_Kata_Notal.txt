@@ -244,4 +244,5 @@ Algoritma
         output(T.TabToken[i])
         i <-- i + 1
     {i > T.Length}
-    
+
+{Mesin Pencetakan}
