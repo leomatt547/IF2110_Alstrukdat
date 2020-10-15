@@ -1,3 +1,54 @@
+program Anagram
+{Membaca pita karakter dan menghitung banyaknya kata yang anagram dengan kata
+pertama dalam pita karakter}
+
+USE MesinKata1{ADT mesin kata, model akuisisi versi 1}
+KAMUS
+    K1 : Kata
+    NbAnagram : integer
+    procedure CopyKata (input Kin : Kata, output Kout : Kata)
+    function IsAnagram (K1, K2 : Kata)
+Algoritma
+    STARTKATA
+    if (not(EndKata)) then
+        CopyKata(CKata, K1)
+        NbAnagram <-- 0
+        ADVKATA
+        while (not(EndKata)) do
+            if (IsAnagram(K1, CKata)) then
+                NbAnagram <- NbAnagram + 1
+            ADVKATA
+        {EndKata = True}
+        output(NbAnagram)
+    else{Pita Kosong}
+        output("Pita tidak terdapat kata anagram")
+        
+program FrekuensiKataPertama
+{Membaca pita karakter dan menghitung frekuensi kemunculan kata pertama dalam pita karakter}
+Kamus
+    USE mesinkata1 {ADT mesin kata, model akuisisi versi 1}
+    K1: Kata
+    NbK1 : integer
+    NbTotal : integer
+    procedure CopyKata
+    function isKataSama
+Algoritma
+    STARTKATA
+    if(not(EndKata)) then
+        CopyKata(CKata, K1)
+        NbK1 <-- 1
+        NbTotal <-- 1
+        ADVKATA
+        while (not(EndKata)) do
+            if (isKataSama(K1,CKata)) then
+                NbK1 <-- NbK1 + 1
+            NbTotal <-- NbTotal + 1
+            ADVKATA
+        {EndKata = True}
+        output(NbK1/NbTotal)
+    else {pita kosong}
+        output("Pita karakter kosong")
+
 program SimulasiAntrian
 { spesifikasi sesuai soal
     Input: daftar event dari mesin event

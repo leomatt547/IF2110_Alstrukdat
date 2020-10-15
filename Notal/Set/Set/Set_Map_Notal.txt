@@ -1,4 +1,34 @@
+{ADT Set}
+Kamus Umum
+constant MaxEl: integer = ... { Banyaknya elemen maksimum }
 
+type infotype: integer { elemen set }
+type address: integer { indeks tabel }
+
+type Set: ⟨ T: array [0..MaxEl-1] of infotype, { tabel penyimpan elemen set }
+            NbElmt: integer { jumlah elemen set }
+⟩
+
+{ Deklarasi: S: Set
+Definisi akses (diimplementasikan sebagai selektor):
+NbMember(S) adalah S.NbElmt }
+IsEmpty: S → boolean { Tes terhadap S: true jika S kosong, false jika S tidak kosong }
+IsFull: S → boolean { Tes terhadap S: true jika memori S sudah penuh, false jika tidak
+penuh }
+NBElmt: S → integer { Mengirimkan banyaknya elemen S }
+MakeEmpty: → S { Membuat sebuah set kosong }
+Insert: ElmtS x S → S { Menambahkankan ElmtS ke S, jika ElmtS belum terdapat di dalam S }
+Delete: ElmtS x S → S { Menghapus ElmtS dari S }
+IsMember: ElmtS x S → boolean { Mengembalikan true jika ElmtS adalah member dari S }
+IsEqual: S1 x S2 → boolean { Mengembalikan true jika S1 dan S2 memiliki elemen yang sama }
+Union: S1 x S2 → S { Menghasilkan gabungan S1 dan S2 }
+Intersection: S1 x S2 → S { Menghasilkan irisan S1 dan S2 }
+Set_Difference: S1 x S2 → S { Menghasilkan S1 dikurangi S2 }
+Min: S → ElmtS { Menghasilkan elemen S terkecil }
+Max: S → ElmtS { Menghasilkan elemen S terbesar }
+Copy: S → S { Mengcopy set S ke set baru }
+IsSubSet: S1 x S2 → boolean { Mengembalikan true jika S1 adalah subset
+dari S2 }
 
 procedure Insert (input e : elmttype, input/output S : SET)
 { I.S. S terdefinisi, mungkin kosong }
@@ -138,3 +168,4 @@ Algoritma
     {P2 = NIL}
     --> S
 
+{ADT MAP}

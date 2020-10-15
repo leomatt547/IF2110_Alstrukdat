@@ -46,3 +46,202 @@ Algoritma
     CEvent.ETime <-- N
     CEvent.EType <-- CC
     ADV {CC akan berisi karakter pertama setelah event yang selesai diakuisisi
+
+procedure CopyKata/SalinKata (input Kin: Kata, output Kout: Kata)
+{Menyalin isi Kin ke Kout}
+{I.S. Kin terdefinisi; Kout sembarang}
+{F.S. Kout berisi salinan dari Kin (elemen dan ukuran identik)}
+KAMUS Lokal 
+    i: integer
+Algoritma
+    i <-- 1
+    while (i <= Kin.Length) do
+        Kout.TabKata[i] <-- Kin.TabKata[i]
+        i <-- i+1
+    {i > Kin.Length}
+    Kout.Length <-- Kin.Length
+
+function Count (C: character, K: Kata) --> integer
+{menghasilkan banyaknya C dalam K}
+Kamus Lokal
+    i:integer
+    NbC:integer
+Algoritma
+    i <-- 1
+    NbC <-- 0
+    while i<=K.Length do
+        if K.TabKata[i] = C then
+            NbC <-- NbC + 1
+        i <-- i + 1
+    {i > K1.Length}
+    --> NbC
+
+function IsAnagram (K1, K2 : Kata) --> boolean
+{Menghasilkan true Jika K1 Anagram dengan K2}
+Kamus Lokal
+    i : integer
+    found : boolean
+    function Count(C:character, K: Kata) --> integer
+    {Menghasilkan banyaknya C dalam K}
+Algoritma
+    if (K1.Length = K2.Length) then
+        i <-- 1
+        found <-- false
+        while i <= K1.Length and not found do
+            if (Count(K1.TabKata[i],K[i]) <> Count(K1.TabKata,K2)) then
+                found <-- true
+            else
+                i <-- i+1
+        {i > K1.Length <> K2.Length}
+        -->not found
+    else {K1.Length <> K2.Length}
+        --> false
+procedure Ignore_Blank
+{ Mengabaikan satu atau beberapa BLANK }
+{ I.S.: CC sembarang }
+{ F.S.: CC ≠ BLANK atau CC = MARK }
+Kamus Lokal
+    -
+Algoritma
+    while (CC = BLANK) do
+        ADV
+    { CC ≠ BLANK }
+
+procedure STARTKATA
+{ I.S.: CC sembarang }
+{ F.S.: EndKata = true, dan CC = Mark; }
+{       atau EndKata = false, CKata adalah kata yang sudah diakuisisi,}
+{        CC karakter pertama sesudah karakter terakhir kata }
+Kamus Lokal
+    -
+Algoritma
+    START
+    Ignore_Blank
+    if (CC = MARK) then
+        EndKata ← true
+    else
+        EndKata ← false
+        SalinKata
+
+procedure ADVKATA
+{ I.S.: CC adalah karakter pertama kata yang akan diakuisisi }
+{ F.S.: CKata adalah kata terakhir yang sudah diakuisisi,
+        CC adalah karakter pertama dari kata berikutnya,
+        mungkin MARK }
+{ Proses: Akuisisi kata menggunakan procedure SalinKata }
+Kamus Lokal
+    -
+Algoritma
+    Ignore_Blank
+    if (CC=MARK) then
+        EndKata ← true
+    else
+        SalinKata
+
+procedure SalinKata
+{ Mengakuisisi kata, menyimpan dalam CKata }
+{ I.S.: CC adalah karakter pertama dari kata }
+{ F.S.: CKata berisi kata yang sudah diakuisisi;
+        CC = BLANK atau CC = MARK;
+        CC adalah karakter sesudah karakter terakhir yang
+        diakuisisi }
+Kamus Lokal
+    i: integer
+Algoritma
+    i ← 0
+    repeat
+        CKata.TabKata[i] ← CC
+        ADV
+        i ← i + 1
+    until (CC = MARK) or (CC = BLANK)
+    { CC = MARK or CC = BLANK }
+    CKata.Length ← i 
+
+{Mesin Token}
+type Token: <TabToken : array [1..NMax] of character,
+                        Length : integer>
+EndToken : boolean
+CT : Token {Token yang sudah diakuisisi dan akan diproses}
+
+procedure Ignore_Blank
+{ Mengabaikan satu atau beberapa BLANK }
+{ I.S.: CC sembarang }
+{ F.S.: CC ≠ BLANK atau CC = MARK }
+Kamus Lokal
+    -
+Algoritma
+    while (CC = BLANK) do
+        ADV
+    { CC ≠ BLANK }
+
+procedure STARTTOKEN
+{ I.S.: CC sembarang }
+{ F.S.: EndToken = true, dan CC = Mark; }
+{       atau EndToken = false, CKata adalah kata yang sudah diakuisisi,}
+{        CC karakter pertama sesudah karakter terakhir token }
+Kamus Lokal
+    -
+Algoritma
+    START
+    Ignore_Blank
+    depend on (CC)
+        CC = MARK : EndToken <-- true
+        CC <> MARK : EndToken <-- false
+                     Salin Token
+
+procedure ADVTOKEN
+{ I.S.: CC adalah karakter pertama token yang akan diakuisisi }
+{ F.S.: CKata adalah token terakhir yang sudah diakuisisi,
+        CC adalah karakter pertama dari token berikutnya,
+        mungkin MARK }
+{ Proses: Akuisisi kata menggunakan procedure SalinKata }
+Kamus Lokal
+    -
+Algoritma
+    Ignore_Blank
+    depend on (CC)
+        CC = MARK : EndToken <-- true
+        CC <> MARK : Salin Token
+
+procedure SalinToken
+{ Mengakuisisi kata, menyimpan dalam CKata }
+{ I.S.: CC adalah karakter pertama dari token }
+{ F.S.: CT berisi tokenn yang sudah diakuisisi; CC = BLANK atau CC = MARK
+        ; CC adalah karakter sesudah karakter terakhir yang sudah diakuisisi}
+Kamus Lokal
+    i: integer
+Algoritma
+    i ← 1
+    iterate
+        CT.TabToken[i] ← CC
+        ADV
+    stop: (CC = MARK) or (CC = BLANK)
+    { CC = MARK or CC = BLANK }
+    CT.Length ← i 
+
+program EkspresiMatematika
+{menuliskan isi pita karakter ke layar}
+USE MesinToken
+KAMUS
+    procedure PrintToken(input T : Token)
+    {Mencetak isi T.TabToken ke layar}
+    {I.S. T terdefinisi; F.S. T tercetak ke layar}
+Algoritma
+    STARTTOKEN
+    while not EndToken do
+        PrintToken(CT)
+        output(" ")
+    {EndToken = true}
+
+procedure PrintToken (input T: Token)
+{Mencetak isi T.TabToken ke layar}
+{I.S. T terdefinisi, F.S. T tercetak ke layar}
+KAMUS Lokal
+    i:integer
+Algoritma
+    i <-- 1
+    while (i <= T.Length) do
+        output(T.TabToken[i])
+        i <-- i + 1
+    {i > T.Length}
+    

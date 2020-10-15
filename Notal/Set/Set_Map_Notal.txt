@@ -1,0 +1,198 @@
+{ADT Set}
+Kamus Umum
+constant MaxEl: integer = ... { Banyaknya elemen maksimum }
+
+type infotype: integer { elemen set }
+type address: integer { indeks tabel }
+
+type Set: ⟨ T: array [0..MaxEl-1] of infotype, { tabel penyimpan elemen set }
+            NbElmt: integer { jumlah elemen set }
+⟩
+
+{ Deklarasi: S: Set
+Definisi akses (diimplementasikan sebagai selektor):
+NbMember(S) adalah S.NbElmt }
+IsEmpty: S → boolean { Tes terhadap S: true jika S kosong, false jika S tidak kosong }
+IsFull: S → boolean { Tes terhadap S: true jika memori S sudah penuh, false jika tidak
+penuh }
+NBElmt: S → integer { Mengirimkan banyaknya elemen S }
+MakeEmpty: → S { Membuat sebuah set kosong }
+Insert: ElmtS x S → S { Menambahkankan ElmtS ke S, jika ElmtS belum terdapat di dalam S }
+Delete: ElmtS x S → S { Menghapus ElmtS dari S }
+IsMember: ElmtS x S → boolean { Mengembalikan true jika ElmtS adalah member dari S }
+IsEqual: S1 x S2 → boolean { Mengembalikan true jika S1 dan S2 memiliki elemen yang sama }
+Union: S1 x S2 → S { Menghasilkan gabungan S1 dan S2 }
+Intersection: S1 x S2 → S { Menghasilkan irisan S1 dan S2 }
+Set_Difference: S1 x S2 → S { Menghasilkan S1 dikurangi S2 }
+Min: S → ElmtS { Menghasilkan elemen S terkecil }
+Max: S → ElmtS { Menghasilkan elemen S terbesar }
+Copy: S → S { Mengcopy set S ke set baru }
+IsSubSet: S1 x S2 → boolean { Mengembalikan true jika S1 adalah subset
+dari S2 }
+
+procedure Insert (input e : elmttype, input/output S : SET)
+{ I.S. S terdefinisi, mungkin kosong }
+{ F.S. elemen S bertambah satu elemen, yaitu e, jika sebelumnya e bukan elemen S.
+jika sebelumnya e sudah merupakan elemen S, S tetap.}
+Kamus Lokal
+    P, Ptrav, Prev : address
+    bStop : boolean
+Algoritma
+    Ptrav <-- First(S)
+    Prev <-- NIL
+    bStop <-- false
+    while Ptrav ≠ NIL and not bStop do
+        if Elmt(Ptrav) >= e then
+            bStop <-- true
+        else
+            Prev <-- Ptrav
+            Ptrav <-- Next(Ptrav)
+    if bStop then {belum sampai di akhir list}
+        if Elmt(Ptrav) ≠ e then {e bukan elemen S}
+            Alokasi(P,e)
+            if P ≠ NIL then {insert after Prev, jika Prev ada}
+                if Prev = NIL then {insert First}
+                    Next(P) <-- First(S)
+                    First(S) <-- P
+                else
+                    Next(P) <-- Ptrav
+                    Next(Prev) <-- P
+    else {tambahkan sebagai elemen terakhir, atau pertama jika S kosong}
+        Alokasi(P,e)
+        if P ≠ NIL then {insert after Prev, jika Prev ada}
+            if Prev = NIL then {insert First}
+                Next(P) <-- First(S)
+                First(S) <-- P
+            else {insert Last}
+                Next(Prev) <-- P
+
+function IsMember (e : elmttype, S : SET) --> boolean
+{ Mengirimkan true jika e adalah elemen/anggota dari set S. }
+{ Search pada List terurut }
+Kamus Lokal
+    P : address
+    bStop : boolean
+Algoritma
+    P <-- First(S)
+    bStop <-- false
+    while P ≠ NIL and not bStop do
+        if Elmt(P) >= e then
+            bStop <-- true
+        else
+            P <-- Next(P)
+    if P≠NIL then
+        -->Elmt(P) = e
+    else
+        -->false
+
+function IsSubSet (S1, S2 : SET) --> boolean
+{ Mengirimkan true jika S1 merupakan himpunan bagian (subset) dari S2.
+    S1 merupakan himpunan bagian S2 apabila semua elemen S1 juga merupakan elemen S2 }
+{ Search elemen yang bukan member }
+Kamus Lokal
+    P : address
+    bSubSet : boolean
+Algoritma
+    P <-- First(S1)
+    bSubSet <-- true
+    while P ≠ NIL and bSubSet do
+        if not IsMember(Elmt(P),S2) then
+            bSubSet <-- false
+        P <-- Next(P)
+    --> bSubSet
+
+function Union (S1, S2 : SET) --> SET
+{ mengirimkan set hasil operasi union (penggabungan) antara S1 dan S2. S1 dan S2 tidak
+berubah. }
+{ Merge 2 list }
+Kamus Lokal
+    P1, P2, P, PLast : address
+    S : SET
+Algoritma
+    CreateEmpty(S)
+    P1 <-- First(S1)
+    P2 <-- First(S2)
+    PLast <-- NIL
+    {proses set S1 dan S2}
+    while P1 ≠ NIL and P2 ≠ NIL do
+        depend on Elmt(P1), Elmt(P2)
+            Elmt(P1) = Elmt(P2) : Alokasi(P,Elmt(P1))
+                                    if P ≠ NIL then
+                                        if IsEmpty(S) then
+                                            First(S) <-- P
+                                        else
+                                            Next(PLast) <-- P
+                                        PLast <-- P
+                                    P1 <-- Next(P1)
+                                    P2 <-- Next(P2)
+    Elmt(P1) < Elmt(P2) : Alokasi(P,Elmt(P1))
+                            if P ≠ NIL then
+                                if IsEmpty(S) then
+                                    First(S) <-- P
+                                else
+                                    Next(PLast) <-- P
+                                PLast <-- P
+                            P1 <-- Next(P1)
+    Elmt(P1) > Elmt(P2) : Alokasi(P,Elmt(P2))
+                            if P ≠ NIL then
+                                if IsEmpty(S) then
+                                    First(S) <-- P
+                                else
+                                    Next(PLast) <-- P
+                                    PLast <-- P
+                            P2 <-- Next(P2)
+    {P1 = NIL or P2 = NIL}
+    
+    {habiskan isi set S1}
+    while P1 ≠ NIL do
+        Alokasi(P,Elmt(P1))
+        if P ≠ NIL then
+            if IsEmpty(S) then
+                First(S) <-- P
+            else
+                Next(PLast) <-- P
+            PLast <-- P
+        P1 <-- Next(P1)
+    {P1 = NIL}
+
+    {habiskan isi set S2}
+    while P2 ≠ NIL do
+        Alokasi(P,Elmt(P2))
+        if P ≠ NIL then
+            if IsEmpty(S) then
+                First(S) <-- P
+            else
+                Next(PLast) <-- P
+            PLast <-- P
+        P2 <-- Next(P2)
+    {P2 = NIL}
+    --> S
+
+{ADT Map}
+Kamus Umum
+constant MaxEl: integer = ... { Banyaknya elemen maksimum }
+constant ValUndef: infotype = ...
+
+type keytype: ...
+type infotype: ...
+type mapEntry: ⟨ key: keytype, value: infotype ⟩ { elemen map }
+type address: integer { indeks tabel }
+
+type Map: ⟨ T: array [0..MaxEl-1] of mapEntry, { tabel penyimpan elemen map }
+            NbElmt: integer { jumlah elemen map }⟩
+
+{ Deklarasi: M: Map
+Definisi akses (diimplementasikan sebagai selektor):
+NbMember(M) adalah M.NbElmt }
+
+{DEFINISI FUNGSIONAL}
+IsEmpty: M → boolean { Tes terhadap M: true jika M kosong,
+false jika M tidak kosong }
+MakeEmpty: → M { Membuat sebuah map kosong }
+Insert: K x V x M → M { Menambahkankan pasangan (K,V) ke M, jika
+belum ada elemen dengan nilai key=K pada M }
+Delete: K x M → M { Menghapus pasangan dengan nilai key=K dari M }
+Reassign: K x V x M → M { Mengubah nilai value dari pasangan dengan
+nilai key=K menjadi V }
+Value_of: K x M → V { Mengembalikan value dari pasangan dengan
+nilai key=K }
