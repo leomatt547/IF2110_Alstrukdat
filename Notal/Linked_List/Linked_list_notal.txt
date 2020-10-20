@@ -51,6 +51,20 @@ Algoritma
     First(L) <-- Alokasi(-999)
     Last(L) <-- First(L)
 
+procedure CopyPos(input L1:List, Output L2:List)
+{Menyalin semua elemen bernilai Positif (>0) dari sebuah list of integer
+L1 menjadi L2}
+Kamus Lokal
+    P : Address
+Algoritma
+    CreateEmpty(L2)
+    P <-- L1
+    while (P != Nil) do
+        if (p^.info > 0) then
+            InsertLast(L2, P)
+        P <-- P^.Next
+    {P = Nil}
+
 procedure DeleteFirst (input/output L : List, output X : infotype)
 { I.S. L terdefinisi, tidak kosong. X sembarang. }
 { F.S. X berisi nilai elemen pertama L. Elemen pertama L dihapus dan didealokasi.
@@ -121,3 +135,14 @@ Algoritma
         --> P
     else {P = Last(L), ditemukan pada sentinel}
         --> Nil
+
+procedure SortedIns(input/output L:List, input: X:ElType)
+{List dengan Integer L terurut menaik}
+KAMUS Lokal
+
+Algoritma
+    P <-- L
+    while (info(P)<X and P<>Nil) do
+        P <-- next(P)
+    {X >= X or P = Nil}
+    
