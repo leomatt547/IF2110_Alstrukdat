@@ -139,10 +139,31 @@ Algoritma
 procedure SortedIns(input/output L:List, input: X:ElType)
 {List dengan Integer L terurut menaik}
 KAMUS Lokal
-
+    P1, P, prec: address 
 Algoritma
     P <-- L
     while (info(P)<X and P<>Nil) do
         P <-- next(P)
     {X >= X or P = Nil}
-    
+    P1 <-- alokasi (X)
+    if (prec(P)=Nil) then
+        InsertFirst(L, P1)
+    else
+        InsertAfter(L,prec,P1)
+
+procedure UpdateList(input x,y : infotype, input/output L:List)
+{Menerima infotype x dan y dan sebuah List L dan kemudian mengganti
+elemen pertama L yang bernilai x dengan y jika x ada di L
+Jika x tidak ada di L, L tetap}
+KAMUS LOKAL
+    ganti: boolean
+    P: address
+Algoritma
+    P <-- L
+    ganti <-- false
+    while (P <> Nil and not ganti) do
+        if (P^.Info = x) then
+            P^.Info <-- yang
+            ganti <-- true
+        else
+            P <-- P^.Next
