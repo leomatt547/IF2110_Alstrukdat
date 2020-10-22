@@ -1,3 +1,8 @@
+/* Nama: Leonard Matheus
+NIM: 13519215
+Topik: Praktikum 8
+Deskripsi: Stack
+*/
 #include "stackt.h"
 #include <stdio.h>
 
