@@ -1,0 +1,47 @@
+procedure InsertFirst (input/output L:List, input P:address)
+{List yang mencatat elemen pertama (First) dan elemen terakhir (Last)}
+KAMUS LOKAL
+    -
+ALGORITMA
+    if(IsEmpty(L))then
+        Last(L) <-- P
+    else
+        Next(P)<--First(L)
+    First(L) <-- P
+
+procedure InsertLast (input/output L:List, input P:address)
+{List yang mencatat elemen pertama (First) dan elemen terakhir (Last)}
+KAMUS LOKAL
+    -
+ALGORITMA
+    if(IsEmpty(L))then
+        First(L) <-- P
+    else
+        Next(Last(L)) <-- P
+    Last(L) <-- P
+
+function Search(L:List, X:infotype) → boolean
+{ L adalah List yang mencatat elemen pertama (First) dan elemen
+terakhir (Last) dan elemen terakhir adalah dummy}
+{I.S. List L mungkin Kosong}
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    Info(Last(L)) <-- X
+    P <-- First(L)
+    while (Info(P) <> X ) do
+        P <-- Next(P)
+    {end while}
+    --> P <> Last(L) 
+
+procedure InsVLast(input/output L:List, input X:infotype)
+{List yang mencatat elemen pertama (First) dan elemen terakhir (Last) dan
+elemen terakhir adalah dummy.}
+KAMUS LOKAL
+    P:address
+ALGORITMA
+    Info(Last(L)) <-- X
+    P <-- Alokasi(X)
+    if (P <> Nil) then
+        Next(Last(L)) <-- P
+        Last(L) <-- P
