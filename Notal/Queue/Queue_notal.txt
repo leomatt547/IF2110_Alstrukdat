@@ -60,3 +60,42 @@ Algoritma
         Q.TAIL <-- NIL
     else
         Q.HEAD <-- Q.HEAD + 1
+
+function NbElmt (Q: Queue) --> integer
+{Menghitung banyaknya elemen respresentasi list linier}
+Kamus Lokal
+    p: address
+    x : integer
+Algoritma
+    p <-- head(Q)
+    x <-- 0
+    while (p <> nil) do
+        x <-- x+1
+        p <-- next(p)
+    --> x
+
+procedure Enqueue (input/output Q: Queue, P:Address)
+{Menginsert Priority Queue sesuai urutan}
+{I.S. Sudah Teralokasi}
+KAMUS LOKAL
+pt: address
+ALGORITMA
+    if (IsEmpty(Q)) then
+        HEAD(Q) <-- P
+        TAIL(Q) <-- P
+    else
+        pt <-- HEAD(Q)
+        prev <-- Nil
+        while (pt <> Nil) and (Prio(P)<Prio(pt)) do
+            prev <-- pt
+            pt <-- Next(pt)
+        if (pt = Nil) then
+            Next(prev) <-- P
+            Tail(Q) <-- P
+        else (pt <> Nil)
+            if (prev = Nil)
+                Next(P) <-- Head(Q)
+                Head(Q) <-- P
+            else
+                Next(prev) <-- P
+                Next(P) <-- pt

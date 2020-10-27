@@ -119,37 +119,37 @@ Algoritma
         Next(Last(L)) <-- P
     Last(L) <-- P
 
-function SearchAdr (L : List, X : infotype) --> address
-{ Mengembalikan address elemen L (misalnya P), dengan Info(P)=X. Mengembalikan Nil jika
-tidak ada elemen L yang memenuhi. L mungkin kosong.
-Gunakan skema searching yang paling cocok dengan struktur ini. }
+function SearchA (L: List, X:infotype) --> boolean
+{Mencari True apabila X ada pada List L
+Skema searching dengan boolean}
 Kamus Lokal
-    P : address
+    P: address
+    found: boolean
 Algoritma
+    found <-- false
     P <-- First(L)
-    Info(Last(L)) <-- X {pasang sentinel}
-    while Info(P) ≠ X do {searching dengan sentinel, pasti ketemu}
-        P <-- Next(P)
-    {Info(P) = X}
-    if P ≠ Last(L) then {ditemukan bukan pada sentinel}
-        --> P
-    else {P = Last(L), ditemukan pada sentinel}
-        --> Nil
+    while (not found) do
+        if (Info(P) = X) then
+            found <-- True
+        else
+            P <-- Next(P)
+    {found}
+    --> found
 
-procedure SortedIns(input/output L:List, input: X:ElType)
-{List dengan Integer L terurut menaik}
-KAMUS Lokal
-    P1, P, prec: address 
+function SearchB (L: List, X:infotype) --> boolean
+{Mencari True apabila X ada pada List L
+Skema searching tanpa boolean}
+Kamus Lokal
+    P: address
 Algoritma
-    P <-- L
-    while (info(P)<X and P<>Nil) do
-        P <-- next(P)
-    {X >= X or P = Nil}
-    P1 <-- alokasi (X)
-    if (prec(P)=Nil) then
-        InsertFirst(L, P1)
+    if (IsEmpty(L)) then
+        --> false
     else
-        InsertAfter(L,prec,P1)
+        P <-- First(L)
+        while (Next(P)<>Nil and Info(P)<>X) do
+            P <-- Next(P)
+        {Next(P) = Nil or Info(P)=X}
+        --> Info(P) = X
 
 procedure UpdateList(input x,y : infotype, input/output L:List)
 {Menerima infotype x dan y dan sebuah List L dan kemudian mengganti

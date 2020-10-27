@@ -34,6 +34,23 @@ ALGORITMA
     {end while}
     --> P <> Last(L) 
 
+function SearchAdr (L : List, X : infotype) --> address
+{ Mengembalikan address elemen L (misalnya P), dengan Info(P)=X. Mengembalikan Nil jika
+tidak ada elemen L yang memenuhi. L mungkin kosong.
+Gunakan skema searching yang paling cocok dengan struktur ini. }
+Kamus Lokal
+    P : address
+Algoritma
+    P <-- First(L)
+    Info(Last(L)) <-- X {pasang sentinel}
+    while Info(P) ≠ X do {searching dengan sentinel, pasti ketemu}
+        P <-- Next(P)
+    {Info(P) = X}
+    if P ≠ Last(L) then {ditemukan bukan pada sentinel}
+        --> P
+    else {P = Last(L), ditemukan pada sentinel}
+        --> Nil
+
 procedure InsVLast(input/output L:List, input X:infotype)
 {List yang mencatat elemen pertama (First) dan elemen terakhir (Last) dan
 elemen terakhir adalah dummy.}

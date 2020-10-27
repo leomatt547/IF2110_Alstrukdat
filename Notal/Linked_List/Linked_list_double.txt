@@ -1,0 +1,14 @@
+procedure SortedIns(input/output L:List, input: X:ElType)
+{List dengan Integer L terurut menaik}
+KAMUS Lokal
+    P1, P, prec: address 
+Algoritma
+    P <-- L
+    while (info(P)<X and P<>Nil) do
+        P <-- next(P)
+    {X >= X or P = Nil}
+    P1 <-- alokasi (X)
+    if (prec(P)=Nil) then
+        InsertFirst(L, P1)
+    else
+        InsertAfter(L,prec,P1)
