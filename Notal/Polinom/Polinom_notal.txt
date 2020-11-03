@@ -21,3 +21,7 @@ while (pt1 != Nil and pt2 != Nil) do
                 Coefficient(pt1) <-- Coefficient(pt1) + Coefficient(pt2)
                 pt1 <-- Next(pt1)
                 pt2 <-- Next(pt2)
+
+while (pt2 != Nil) do
+    InsertLast(P1, pt2)
+    pt2 <-- Next(pt2)
