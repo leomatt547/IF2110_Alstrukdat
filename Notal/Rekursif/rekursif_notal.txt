@@ -25,6 +25,34 @@ dan Next(P)=Nil. Jika alokasi gagal, mengembalikan Nil. }
 procedure Dealokasi (input P : address)
 { I.S. P terdefinisi; F.S. P dikembalikan ke sistem }
 
+function Fibonancci (N):
+    if N = 0:
+        return 0
+    else if N = 1
+        return 1
+    else:
+        return Fib(N-1) + Fib(N-2)
+
+function Segitiga (N: integer) --> integer
+Kamus Lokal
+
+Algoritma
+    if N = 1 then
+        -->i
+    else
+        --> N + Segitiga(N-1)
+
+function Max(L : List, IAwal : integer) --> integer
+Kamus Lokal
+Algoritma
+    if IAwal = L.Neff then
+        --> L.TI[IAwal]
+    else
+        if L.TI[IAwal] > Max(L, IAwal + 1) then
+            --> L.TI[IAwal]
+        else
+            --> Max(L, IAwal + 1) 
+
 procedure InsertLast (input/output L : List, input X : infotype)
 { I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
 { F.S. X menjadi elemen terakhir L jika alokasi X berhasil. Jika alokasi gagal, L tetap.}

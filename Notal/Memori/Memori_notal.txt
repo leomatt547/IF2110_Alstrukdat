@@ -1,0 +1,38 @@
+KAMUS
+    constant NB : integer = 100
+    STATMEM : array [1..NB] of boolean { tabel status memori: true jika ISI, false jika kosong }
+
+procedure InitMemK
+    I.S. : Sembarang
+    F.S. : Semua blok memori dinyatakan KOSONG
+    Proses : Semua status blok dengan indeks [1..NB] dijadikan KOSONG dengan traversal
+    blok [1..NB]. Proses sekuensial tanpa penanganan kasus kosong (NB ≥ 0).
+ALGORITMA
+    Set status blok [1..NB] menjadi false
+
+procedure AlokBlokKF (input X: integer, output IAw: integer)
+
+Kamus Lokal
+
+Algoritma
+    i <-- 1
+    NKosong <-- 0
+    repeat
+        while StatMen[i] and i < NB do
+            i <-- i + 1
+        if i = NB then
+            if StatMen[i] then 
+                i <-- i + 1
+        else
+            IAw <-- i
+            NKosong <-- 1
+            while Statmem[i] and i < NB
+                NKosong <-- NKosong + 1
+                i <-- i + 1
+            if i = NB then
+                if not StatMem[i] then
+                    NKosong <-- NKosong + 1
+    until i > NB or NKosong >= X
+    if NKosong => X them
+        i traversal [IAw..IAw+X-1]
+            StatMem[i] <-- True

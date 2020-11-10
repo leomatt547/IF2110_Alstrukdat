@@ -5,7 +5,7 @@ Topik: Praktikum 9
 Deskripsi: linked list
 */
 
-#include "listlinier.c"
+#include "listlinier.h"
 #include "boolean.h"
 #include <stdio.h>
 #include <stdlib.h>
