@@ -195,13 +195,20 @@ void DelAfter (List *L, address *Pdel, address Prec){
 /*      Pdel adalah alamat elemen list yang dihapus  */
 void DelP (List *L, infotype X){
     address P = Search(*L, X);
-	if (P != Nil) {
-		address Prec = First(*L);
-		while (Next(Prec) != P) {
-			Prec = Next(Prec);
+    address Prec = First(*L);
+	if (!IsEmpty(*L)) {
+		if (Info(First(*L)) == X) {
+			DelFirst(L, &P);
+			Dealokasi(P);
+		}else{
+            if (P != Nil) {
+                while (Next(Prec) != P) {
+                    Prec = Next(Prec);
+                }
+                DelAfter(L, &P, Prec);
+                Dealokasi(P);
+            }
 		}
-		DelAfter(L, &P, Prec);
-		Dealokasi(P);
 	}
 }
 /* I.S. Sembarang */
