@@ -545,7 +545,6 @@ int NbElmt(List L) {
       P = Next(P);
     }
   }
-
   return cnt;
 }
 
