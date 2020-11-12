@@ -1,3 +1,8 @@
+/*Nama : Leonard Matheus
+NIM : 13519215
+Tanggal: 10 November 2020
+Topik: Praktikum 10
+*/
 #include "boolean.h"
 #include "listdp.h"
 #include <stdio.h>
