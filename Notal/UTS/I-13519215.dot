@@ -22,6 +22,9 @@ ALGORITMA
     {i > GetLastIdxBrs(M) atau not isTri}
     → isTri
 
+Kurang (i<j)
+
+
 procedure DetriMatriks (input M: MATRIKS, output Det: integer)
 { Menghitung nilai determinan matriks segitiga M, dimana determinant 
   dihitung berdasarkan perkalian semua elemen diagonalnya.
@@ -50,4 +53,8 @@ ALGORITMA
                 i ← i+1
         {i > GetLastIdxBrs(M) atau (nol)}
     → Det
+
+*) Tidak pakai getemltDiagonal
+
+3,5
 

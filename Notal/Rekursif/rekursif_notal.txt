@@ -67,12 +67,15 @@ function Fibonancci (N):
 function IsEqual(L1,L2:List) → boolean
 { Menghasilkan true jika L1 dan L2 adalah list yang sama,
 false jika tidak }
+Kamus Lokal:
+    equal : boolean
 Algoritma
     depend on (L1,L2)
-        IsEmpty(L1) = IsEmpty(L2) --> True
-        not(IsEmpty(L1)) = IsEmpty(L2) --> False
-        IsEmpty(L1) = not(IsEmpty(L2)) --> False
-        (Info(L1) = Info(L2)) and (isEqual(Next(L1),Next(L2))) --> True
+        (IsEmpty(L1) = IsEmpty(L2)) : equal <-- True
+        (not(IsEmpty(L1)) = IsEmpty(L2)) : equal <-- False
+        IsEmpty(L1) = not(IsEmpty(L2)) : equal <-- False
+        (Info(L1) = Info(L2)) and (isEqual(Next(L1),Next(L2))) : equal <-- True
+    --> found
 
 function IsMember (L:List, X:infotype) → boolean
 { Menghasilkan true jika X adalah salah satu anggota list L,

@@ -43,5 +43,4 @@ ALGORITMA
         else { Q1 penuh }
             Enqueue(Q2,Q[i])
 
-
-
+3-3,5

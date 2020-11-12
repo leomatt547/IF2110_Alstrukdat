@@ -91,3 +91,5 @@ ALGORITMA
             i ← i+1
         {i ≥ MaxEl or isEmpty(S)}
         output(T)
+
+3,5
