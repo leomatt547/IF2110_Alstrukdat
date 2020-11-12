@@ -111,7 +111,8 @@ Algoritma
     if (IsEmpty(L1) and IsEmpty(L2)) then
         L3 <-- Nil
     else
-        ListPlus(Next(L1), Next(L2), LTemp)
+        ListPlus(Tail(L1), Tail(L2), LTemp)
+        //AAA
         sumT <-- Info(L1) + Info(L2)
         Lout <-- Konso(sumT, LTemp)
 
@@ -142,12 +143,12 @@ Algoritma
         Min <-- Info(L)
         Max <-- Info(L)
     else
-        if (m < Min) then
+        Min, Max = MinMax(Next(L))
+        if (Info(L) < n) then
             Min <-- m
-        else if (n > Max) then
+        else if (Info(L) > n) then
             Max <-- n
-        else
-            Min, Max = MinMax(Next(L))
+           
 
 function MinList (L : List) --> address
 { Mengembalikan alamat dari elemen yang memiliki nilai terkecil. Apabila ada lebih dari
