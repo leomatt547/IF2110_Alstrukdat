@@ -4,6 +4,7 @@ type infotype : integer
 type ElmtList : < Info : infotype, Next : address >
 type address : pointer to ElmtList
 type List : < First, Last : address >
+
 { *** Selektor *** }
 { Jika L : List dan P : address, maka penulisan :
     First(L) menjadi L.First; Last(L) menjadi L.Last;
@@ -11,6 +12,7 @@ type List : < First, Last : address >
 {*** Predikat pemeriksaan *** }
 function IsEmpty (L : List) --> boolean
 { Mengirimkan true jika list kosong, false jika tidak kosong }
+
 { *** Konstruktor *** }
 procedure CreateEmpty (output L : List)
 { I.S. Sembarang; F.S. Terbentuk list L kosong sesuai definisi. Apabila gagal alokasi,

@@ -1,0 +1,144 @@
+KAMUS
+constant IndexMin : integer = 1
+constant IndexMax : integer = 100
+constant Nil : integer = 0
+type InfoType : ... { Elemen Type : terdefinisi }
+type ElmtList : < info : InfoType >
+type Address : integer [IndexMin..IndexMax, Nil]
+type List : < TabElmtList : array [IndexMin..IndexMax] of ElmtList
+                First : Address
+                Last : Address >
+{ Last: alamat elemen terakhir. Karena field NEXT tidak ada secara eksplisit,
+maka elemen terakhir dikenali dengan address-nya }
+{ *** Selektor *** }
+{ Deklarasi nama untuk variabel kerja }
+L : List
+P : address {address untuk traversal }
+{ Maka First(L)..Last(L) adalah indeks efektif elemen tabel anggota list
+First(L) menjadi L.First 
+Last(L) menjadi L.Last
+Next(P) menjadi P­.Next 
+Info(P) menjadi P­.Info}
+
+{ PROTOTYPE }
+{***************** TEST LIST KOSONG *****************}
+function IsEmpty(List L)
+{ Mengirim true jika list kosong: First(L) = dummy@
+dan Last(L) = dummy@ }
+ALGORITMA
+    --> (First(L) = Last(L))
+
+{***************** PEMBUATAN LIST KOSONG *****************}
+procedure MakeEmpty(List L)
+{ I.S. sembarang }
+{ F.S. Terbentuk list L kosong, dengan satu elemen dummy }
+{ Jika gagal maka First = Last = Nil dan list gagal terbentuk }
+KAMUS LOKAL:
+    Pdummy: address
+ALGORITMA
+    Pdummy <-- Alokasi(0)
+    if (Pdummy <> Nil) then
+        First(L) <-- Pdummy
+        Last(L) <-- Pdummy
+    else
+        First(L) <-- Nil
+        Last(L) <-- Nil
+
+{***************** SEARCHING *****************}
+function Search(List L, ElType X)
+{ Mencari apakah ada node list dengan info(P) = X }
+{ Jika ada, mengirimkan address node tersebut. }
+{ Jika tidak ada, mengirimkan Nil }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    Info(Last(L)) <-- X
+    P <-- First(L)
+    while (Info(P) <> X) do
+        P <-- Next(P)
+    if (P <> Last(L))
+        --> P
+    else
+        --> Nil
+
+procedure InsertFirst(List L, ElType X)
+{ I.S. List L terdefinisi }
+{ F.S. Menambahkan elemen X sebagai elemen pertama List L }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    P <-- Alokasi(X)
+    if (P <> Nil) then
+        Next(P) <-- First(L)
+        First(L) <-- P
+
+procedure InsertLast1(List L, ElType X)
+{Alamat Dummy TIDAK BOLEH BERUBAH}
+{ I.S. List L terdefinisi }
+{ F.S. X ditambahkan sebagai elemen terakhir yang baru, }
+{ yaitu menjadi elemen sebelum elemen dummy }
+KAMUS LOKAL
+    P, last: address
+ALGORITMA
+    if (IsEmpty(L)) then
+        InsertFirst(L,X)
+    else
+        P <-- Alokasi(X)
+        if (P <> Nil) then
+            last <-- First(L)
+            while (Next(last) <> Last(L)) do
+                last <-- Next(L)
+            {Next(last) = Last(L)}
+            Next(last) <-- P
+            Next(P) <-- Last(L)
+            or
+            InsertAfter(L,P,last)
+
+procedure InsertLast1(List L, ElType X)
+{Alamat Dummy TIDAK BOLEH BERUBAH}
+{ I.S. List L terdefinisi }
+{ F.S. X ditambahkan sebagai elemen terakhir yang baru, }
+{ yaitu menjadi elemen sebelum elemen dummy }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    if (IsEmpty(L)) then
+        InsertFirst(L,X)
+    else
+        Info(Last(L)) <-- X
+        P <-- Alokasi(X)
+        if (P <> Nil) then
+            Next(Last(L)) <-- P
+            Last(L) <-- P       
+
+procedure DeleteFirst(List L, ElType X)
+{ I.S. List tidak kosong }
+{ F.S. X adalah elemen pertama list sebelum penghapusan }
+{ Elemen list berkurang satu (mungkin menjadi kosong) }
+{ First element yg baru adalah suksesor elemen pertama yang lama }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    P <-- First(L)
+    X <-- Info(P)
+    First(L) <-- Next(First(L))
+    Dealokasi(P)
+
+procedure DeleteLast(List L, ElType X)
+{ I.S. List tidak kosong }
+{ F.S. X adalah terakhir sebelum dummy pada list sebelum penghapusan }
+{ Elemen list berkurang satu (mungkin menjadi kosong) }
+KAMUS LOKAL
+    last, preclast: address
+ALGORITMA
+    last <-- First(L)
+    preclast <-- Nil
+    while (Next(last) <> Last(L)) do
+        preclast <-- last
+        last <-- Next(last)
+    X <-- Info(last)
+    if (preclast = Nil) then
+        First(L) <-- Last(L)
+    else
+        Next(preclast) <-- Last(L)
+    Dealokasi(last)
