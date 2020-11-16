@@ -1,3 +1,118 @@
+KAMUS
+type ElType: integer
+type Address: pointer to Node
+type Node: < Info: ElType,
+            prev : address
+            Next: Address >
+type List: < First:address,
+            Last: address >
+{ *** Selektor *** }
+{ Deklarasi nama untuk variabel kerja }
+L : List
+P : address {address untuk traversal }
+{ Maka First(L)..Last(L) adalah indeks efektif elemen tabel anggota list
+First(L) menjadi L.First 
+Last(L) menjadi L.Last
+Next(P) menjadi P­.Next
+Prev(P) menjadi P.Prev
+Info(P) menjadi P­.Info}
+
+procedure InsertFirst(List L, ElType X)
+{ I.S. List L terdefinisi }
+{ F.S. Menambahkan elemen baru X sebagai elemen pertama }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    P <-- Alokasi(X)
+    if (P <> Nil) then
+        Next(P) <-- First(L)
+        if (not IsEmpty(L)) then
+            Prev(First(L)) <-- P
+        else {L Kosong}
+            Last(L) <-- P
+        First(L) <-- P
+
+procedure InsertAfter(List L, address P, address Prec)
+{ I.S. Prec pastilah node dari list P sudah dialokasi }
+{ F.S. Insert P sebagai node sesudah node beralamat Prec }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    if (Next(Prec) <> Nil) then {Prec bukan elemen terakhir}
+        Prev(Next(Prec)) <-- P
+    else {Prec elemen terakhir}
+        Last(L) <-- P
+    Next(P) <-- Next(Prec)
+    Prev(P) <-- Prec
+    Next(Prec) <-- P
+
+procedure InsertLast(List L, ElType X)
+{ I.S. List L terdefinisi }
+{ F.S. X ditambahkan sebagai elemen terakhir yang baru }
+KAMUS LOKAL
+    P: address
+Algoritma
+P <-- Alokasi(X)
+if (P != Nil) {
+    Prev(P) <-- Last(L)
+    if (not IsEmpty(L)) then
+        Next(Last(L)) <-- P
+    else {L kosong}
+        First(L) <-- P
+    Last(L) = P
+}
+
+procedure DeleteFirst(List L, ElType X)
+{ I.S. List tidak kosong }
+{ F.S. X adalah elemen pertama list sebelum penghapusan }
+{ Elemen list berkurang satu (mungkin menjadi kosong) }
+{ First element yg baru adalah suksesor elemen pertama yang lama }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    P <-- First(L)
+    X <-- Info(P)
+    if (First(L) = Last(L)) {L hanya 1 elemen}
+        Last(L) <-- Nil
+    else {L > 1 elemen}
+        Prev(Next(First(L))) <-- Nil
+    First(L) <-- Next(First(L))
+    Dealokasi(P)
+
+
+procedure DeleteLast(List L, ElType *X)
+{ I.S. List tidak kosong }
+{ F.S. X adalah elemen terakhir sebelum pada list sebelum penghapusan }
+{ Elemen list berkurang satu (mungkin menjadi kosong) }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    P <-- Last(L)
+    X <-- Info(P)
+    if (First(L) = Last(L)) {L hanya 1 elemen}
+        First(L) <-- Nil
+    else {L > 1 elemen}
+        Next(Prev(Last(L))) <-- Nil
+    Last(L) <-- Prev(Last(L))
+    Dealokasi(P)
+
+procedure DeleteAfter(List L, address *Pdel, address Prec)
+{ I.S. List tidak kosong. Prec adalah anggota list.
+    Next(Prec)!=Nil }
+{ F.S. Menghapus Next(Prec): }
+{ Pdel adalah alamat elemen list yang dihapus }
+KAMUS LOKAL
+    -
+ALGORITMA
+    Pdel <-- Next(Prec)
+    if (Next(Next(Prec)) <> Nil) {Prec tidak jadi elemen terakhir}
+        Prev(Next(Prec)) <-- Prec
+    else {Prec jadi elemen terakhir}
+        Last(L) <-- Prec
+    Next(Prec) <-- Next(Next(Prec))
+    Next(Pdel) <-- Nil
+    Prev(Pdel) <-- Nil
+
 procedure SortedIns(input/output L:List, input: X:ElType)
 {List dengan Integer L terurut menaik}
 KAMUS Lokal
@@ -12,3 +127,4 @@ Algoritma
         InsertFirst(L, P1)
     else
         InsertAfter(L,prec,P1)
+

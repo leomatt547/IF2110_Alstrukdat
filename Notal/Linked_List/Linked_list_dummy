@@ -1,13 +1,10 @@
 KAMUS
-constant IndexMin : integer = 1
-constant IndexMax : integer = 100
-constant Nil : integer = 0
-type InfoType : ... { Elemen Type : terdefinisi }
-type ElmtList : < info : InfoType >
-type Address : integer [IndexMin..IndexMax, Nil]
-type List : < TabElmtList : array [IndexMin..IndexMax] of ElmtList
-                First : Address
-                Last : Address >
+type ElType: integer
+type Address: pointer to Node
+type Node: < Info: ElType,
+            Next: Address >
+type List: < First:address,
+            Last: address >
 { Last: alamat elemen terakhir. Karena field NEXT tidak ada secara eksplisit,
 maka elemen terakhir dikenali dengan address-nya }
 { *** Selektor *** }
@@ -94,7 +91,7 @@ ALGORITMA
             or
             InsertAfter(L,P,last)
 
-procedure InsertLast1(List L, ElType X)
+procedure InsertLast2(List L, ElType X)
 {Alamat Dummy TIDAK BOLEH BERUBAH}
 { I.S. List L terdefinisi }
 { F.S. X ditambahkan sebagai elemen terakhir yang baru, }
