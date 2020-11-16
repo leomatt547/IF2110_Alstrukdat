@@ -1,0 +1,130 @@
+KAMUS
+NIL : NULL
+type ElType: integer
+type Address: pointer to Node
+type Node: < Info: ElType,
+            Next: Address >
+type List: < First:address >
+{ Last: alamat elemen terakhir. Karena field NEXT tidak ada secara eksplisit,
+maka elemen terakhir dikenali dengan address-nya }
+{ *** Selektor *** }
+{ Deklarasi nama untuk variabel kerja }
+L : List
+P : address {address untuk traversal }
+{ Maka First(L)..Last(L) adalah indeks efektif elemen tabel anggota list
+First(L) menjadi L.First 
+Next(P) menjadi P­.Next 
+Info(P) menjadi P­.Info}
+
+function FSearch(List L, address P)
+{ Mencari apakah ada elemen list yang beralamat P }
+{ Mengirimkan true jika ada, false jika tidak ada }
+KAMUS LOKAL
+    Pt : address
+ALGORIMA
+    if (IsEmpty(L)) then
+        --> false
+    else
+        Pt <-- First(L)
+        while ((Next(Pt) <> First(L)) and (Pt <> P)) do
+            Pt <-- Next(Pt)
+        {Next(Pt) = First (L) or Pt = P}
+        --> (Pt = P)
+
+procedure InsertFirst(List L, ElType X)
+{ I.S. List L terdefinisi }
+{ F.S. Menambahkan elemen ber-address P sebagai elemen pertama }
+KAMUS LOKAL
+    P,last: address
+ALGORITMA
+    P <-- Alokasi(X)
+    if (P <> Nil) then
+        if(IsEmpty(L)) then
+            Next(P) <-- P
+        else {L tidak kosong}
+            last <-- First(L)
+            while (Next(last) <> First(L))
+                last <-- Next(last)
+            {Next(last) = First(L) ==> elemen terakhir}
+            Next(P) <-- First(L)
+            Next(last) <-- P
+        First(L) <-- P
+
+procedure InsertLast(List *L, ElType X)
+{ I.S. List L terdefinisi }
+{ F.S. P ditambahkan sebagai elemen terakhir yang baru }
+KAMUS LOKAL
+    P,last: address
+ALGORITMA
+    if (IsEmpty(L)) then
+        InsertFirst(L, X)
+    else
+        P <-- Alokasi(X)
+        if (P <> Nil) then
+            last <-- FIrst(L)
+            while (next(last) <> First(L)) do
+                last <-- Next(last)
+            {Next(last) = First(L)}
+            Next(last) <-- P
+            Next(P) <-- First(L)
+            or
+            InsertAfter(L,P,last)
+
+procedure DeleteFirst(List *L, ElType *X)
+{ I.S. List tidak kosong }
+{ F.S. X adalah elemen pertama list sebelum penghapusan }
+{ Elemen list berkurang satu (mungkin menjadi kosong) }
+{ First element yg baru adalah suksesor elemen pertama yang lama }
+KAMUS LOKAL
+    P , last: address
+ALGORITMA
+    P <-- FIrst(L)
+    X <-- Info(P)
+    if (Next(First(L)) = First(L)) then {satu elemen}
+        First(L) <-- Nil
+    else
+        last <-- FIrst(L)
+        while (Next(last) <> First(L)) do
+            last <-- Next(last)
+        {Next(last) = First(L)}
+        First(L) <-- Next(First(L))
+        next(last) <-- First(L)
+    Dealokasi(P)
+
+procedure DeleteLast(List *L, ElType *X)
+{ I.S. List tidak kosong }
+{ F.S. X adalah elemen terakhir list sebelum penghapusan }
+{ Elemen list berkurang satu (mungkin menjadi kosong) }
+{ Last element baru adalah predesesor elemen pertama yg lama, jika ada }
+KAMUS LOKAL
+    PrecLast , Last: address
+ALGORITMA
+    Last <-- First(L)
+    PrecLast <-- Nil
+    while (Next(Last) <> First(L)) do
+        PrecLast <-- Last
+        Last <-- Next(Last)
+    {Next(Last) = First(L)}
+    if (PrecLast = Nil) then {kasus satu elemen}
+        First(L) <-- Nil
+    else
+        Next(PrecLast) <-- First(L)
+    X <-- Info(Last)
+    Dealokasi(Last)
+
+procedure PrintInfo(List L)
+{ I.S. List mungkin kosong }
+{ F.S. Jika list tidak kosong, }
+{ Semua info yg disimpan pada elemen list diprint }
+{ Jika list kosong, hanya menuliskan "list kosong" }
+KAMUS LOKAL
+    P: address
+ALGORITMA
+    if (IsEmpty(L)) then
+        output("List Kosong")
+    else
+        P <-- FIrst(L)
+        output("List: \n")
+        while (P <> First(L)) do
+            output(Info(P))
+            P <-- Next(P)
