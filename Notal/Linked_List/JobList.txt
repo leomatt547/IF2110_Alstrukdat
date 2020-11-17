@@ -1,0 +1,152 @@
+{ List direpresentasi dg pointer }
+type Infotype : <job_id : integer, 
+                priority : integer, 
+                time: integer>
+type ElmtList : < Info : InfoType, 
+                Next : address >
+type Address : pointer to ElmtList
+type List : address
+
+{ *** Selektor *** }
+{ Jika L : List dan P : address, maka penulisan :
+First(L) menjadi L
+Next(P) menjadi P↑.Next
+Info(P) menjadi P↑.Info }
+
+function GetJobID (job: Infotype) ) → integer
+{ Mengembalikan nilai job_id dari Infotype job }
+function GetPriority(job: Infotype) ) → integer
+{ Mengembalikan nilai priority dari Infotype job }
+function GetTime(job: Infotype) ) → integer
+{ Mengembalikan nilai time dari Infotype job }
+procedure SetTime (input/output job : Infotype, input newtime :
+integer)
+{ Mengubah nilai time dari Infotype job menjadi newtime }
+{ *** Predikat *** }
+function IsEmpty (L : List) → boolean
+{ Tes apakah sebuah list L kosong. Mengirimkan true jika list kosong,
+false jika tidak kosong }
+{ *** Konstruktor *** }
+procedure CreateEmpty (output L : List)
+{ I.S. Sembarang }
+{ F.S. Terbentuk list L kosong: First(L) diinisialisasi dengan NIL }
+
+procedure InsertJob (input/output L: List, input P: address)
+{ Memasukkan job baru ke dalam list }
+{ I.S. List L terdefinisi dan mungkin kosong. P terdefinisi;
+F.S. P menjadi elemen list L dan diletakkan berdasar
+prioritas dan kedatangan.
+KAMUS
+    Pt, Prec : address
+    found : boolean
+ALGORITMA
+    if IsEmpty(L) then
+        First(L) ← P
+        Next(P) ← Nil
+    else
+        Prec ← Nil
+        Pt ← First(L)
+        found ← false
+        while ( Pt ≠ Nil and not found) do
+            if (GetPriority(Info(P)) ≥ GetPriority(Info(Pt))) then
+                Prec ← Pt
+                Pt ← Next(Pt)
+            else
+                found ← true
+            {P = Nil or found=true}
+        if (Prec = Nil) then {Insert First P)
+            Next(P) ← First(L)
+            First(L) ← P
+        else {Prec ≠ Nil }
+            Next(P) ← Pt
+            Next(Prec) ← P
+
+procedure ConsumeJob (input/output L: List, output P: address)
+{ Mengambil job yang terpenting dan terdepan }
+{   I.S. List L tidak mungkin kosong;
+    F.S. Elemen pertama L “maju”, L mungkin menjadi kosong }
+{ Menghapus elemen pertama L, P adalah address dari elemen
+pertama L sebelum diproses, First(L) yang baru adalah Next dari
+First(L) yang lama (jika tidak menjadi list kosong }
+KAMUS LOKAL
+    -
+ALGORITMA
+    P ← First(L)
+    First(L) ← Next(P)
+    Next(P) ← Nil
+
+procedure MeanTime (input L: List)
+{ Mencetak ke layar waktu rata-rata dari job dalam List L yang
+memiliki prioritas yang sama}
+{   I.S. L terdefinisi dan mungkin kosong;
+    F.S. Waktu rata-rata dari eksekusi job per prioritas tercetak
+    di layar }
+KAMUS LOKAL
+    P: address
+    time,count : integer
+ALGORITMA
+    P ← First(L)
+    if (P ≠ Nil) then
+        Prio ← GetPriority(Info(P))
+        time ← GetTime(Info(P))
+        count ← 1
+        P ← Next(P)
+        while P ≠ Nil do
+            if ((GetPriority(Info(P)) ≠ Prio) then
+                output (“Meantime Priority”,Prio,”=“,time/count)
+                Prio ← GetPriority(Info(P));
+                time ← GetTime(Info(P))
+                count ← 1
+            else
+                time ← time + GetTime(Info(P))
+                count ← count + 1
+            P ← Next(P)
+        output (“Meantime Priority”,Prio,”=“,time/count)
+
+procedure MoveJob1 (input/output L1: List, input/output L2: List)
+{ Memindahkan job yang ada di L2 ke dalam list L1}
+{   I.S. List L1 dan L2 terdefinisi dan mungkin kosong;
+    F.S. L1 baru berisi gabungan job dari L1 dan L2, tanpa alokasi
+elemen baru. L2 menjadi List kosong }
+KAMUS
+    P : address
+ALGORITMA
+    while (not IsEmpty(L2)) do
+        ConsumeJob(L2,P)
+        InsertJob(L1,P)
+    {L2 Empty}
+
+procedure MoveJob2 (input/output L1: List, input/output L2: List)
+{ Memindahkan job yang ada di L2 ke dalam list L1}
+{Pada versi ini, List L1 dikelola sendiri}
+{   I.S. List L1 dan L2 terdefinisi dan mungkin kosong;
+    F.S. L1 baru berisi gabungan job dari L1 dan L2, tanpa alokasi
+    elemen baru. L2 menjadi List kosong }
+KAMUS
+    P1, P2, Prec1 : address
+    found : boolean
+ALGORITMA
+    if IsEmpty(L1) then {L1 kosong, L2 langsung dijadikan L1}
+        L1 ← L2
+        L2 ← Nil
+    else
+        Prec1 ← Nil
+        P1 ← First(L1)
+        while not IsEmpty(L2) do
+            ConsumeJob(L2,P2)
+            found ← false
+            while ( P1 ≠ Nil and not found) do
+                if (GetPriority(Info(P2)) ≥ GetPriority(Info(P1))) then
+                    Prec ← P1
+                    P1 ← Next(P1)
+                else
+                    found ← true
+            {P1 = Nil or found}
+            if (Prec1 = Nil) then {Insert First P2 ke L1)
+                Next(P2) ← First(L1)
+                First(L1) ← P2
+            else {Prec1 ≠ Nil, insert P2 after Prec1}
+                Next(P2) ← P1
+                Next(Prec1) ← P2
+            Prec1 ← P2 {P2 menjadi elemen sebelum P1 yang baru}
+    {IsEmpty(L2), berarti semua elemen L2 sudah dimasukkan ke L1}

@@ -118,10 +118,10 @@ KAMUS LOKAL
 ALGORITMA
     P <-- First(L)
     X <-- Info(P)
-    First(L) <-- Next(First(L))
+    First(L) <-- Next(First(L)) // bisa juga: First(L) <-- Next(P)
     Dealokasi(P)
 
-procedure DeleteLast(List L, ElType X)
+procedure DeleteLast1(List L, ElType X)
 { I.S. List tidak kosong }
 { F.S. X adalah terakhir sebelum dummy pada list sebelum penghapusan }
 { Elemen list berkurang satu (mungkin menjadi kosong) }
@@ -139,3 +139,39 @@ ALGORITMA
     else
         Next(preclast) <-- Last(L)
     Dealokasi(last)
+
+procedure DeleteLast2 (input/output L : List, output X : infotype)
+{ I.S. L terdefinisi, tidak kosong. X sembarang. }
+{ F.S. X berisi nilai elemen terakhir L. Elemen terakhir L dihapus dan didealokasi.
+L mungkin menjadi kosong. }
+Kamus Lokal
+    P, Prec : address
+Algoritma
+    if Next(First(L)) = Last(L) then {satu elemen, delete first}
+        DeleteFirst(L,X)
+    else
+        P <-- First(L)
+        while Next(P) ≠ Last(L) do {cari elemen terakhir, i.e. elemen sebelum Last(L)}
+            Prec <-- P
+            P <-- Next(P)
+        {Next(P) = Last(L), P adalah elemen terakhir}
+        Next(Prec) <-- Last(L) {atau Next(P)}
+        X <-- Info(P)
+        Dealokasi(P)
+
+function SearchAdr (L : List, X : infotype) --> address
+{ Mengembalikan address elemen L (misalnya P), dengan Info(P)=X. Mengembalikan Nil jika
+tidak ada elemen L yang memenuhi. L mungkin kosong.
+Gunakan skema searching yang paling cocok dengan struktur ini.}
+Kamus Lokal
+    P : address
+Algoritma
+    P <-- First(L)
+    Info(Last(L)) <-- X {pasang sentinel}
+    while Info(P) ≠ X do {searching dengan sentinel, pasti ketemu}
+        P <-- Next(P)
+    {Info(P) = X}
+    if (P ≠ Last(L)) then {ditemukan bukan pada sentinel}
+        --> P
+    else {P = Last(L), ditemukan pada sentinel}
+        --> Nil
