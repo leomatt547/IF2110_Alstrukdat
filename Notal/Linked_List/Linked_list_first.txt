@@ -79,25 +79,6 @@ Algoritma
     X <-- Info(P)
     Dealokasi(P)
 
-procedure DeleteLast (input/output L : List, output X : infotype)
-{ I.S. L terdefinisi, tidak kosong. X sembarang. }
-{ F.S. X berisi nilai elemen terakhir L. Elemen terakhir L dihapus dan didealokasi.
-L mungkin menjadi kosong. }
-Kamus Lokal
-    P, Prec : address
-Algoritma
-    if Next(First(L)) = Last(L) then {satu elemen, delete first}
-        DeleteFirst(L,X)
-    else
-        P <-- First(L)
-        while Next(P) ≠ Last(L) do {cari elemen terakhir, i.e. elemen sebelum Last(L)}
-            Prec <-- P
-            P <-- Next(P)
-        {Next(P) = Last(L), P adalah elemen terakhir}
-        Next(Prec) <-- Last(L) {atau Next(P)}
-        X <-- Info(P)
-        Dealokasi(P)
-
 procedure InsertFirst (input/output L : List, input X : infotype)
 { I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
 { F.S. X menjadi elemen pertama L jika alokasi X berhasil. Jika alokasi gagal, L tetap. }
