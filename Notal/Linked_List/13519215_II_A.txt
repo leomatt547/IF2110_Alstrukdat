@@ -1,0 +1,99 @@
+{ADT Stack dalam representasi berkait}
+KAMUS
+type ElType: integer
+type Address: pointer to Node
+type Node: < Info: ElType,
+            Next: Address >
+type Stack: < TOP: address >
+{ Last: alamat elemen terakhir. Karena field NEXT tidak ada secara eksplisit,
+maka elemen terakhir dikenali dengan address-nya }
+{ *** Selektor *** }
+{ Deklarasi nama untuk variabel kerja }
+L : List
+P : address {address untuk traversal }
+{ Maka First(L)..Last(L) adalah indeks efektif elemen tabel anggota list
+Top(S) menjadi S.TOP 
+InfoTop(S) menjadi S.TOP^.info
+Next(P) menjadi P^­.Next 
+Info(P) menjadi P­^.Info}
+
+{ Prototype manajemen memori }
+procedure Alokasi(address P, ElType X)
+{ I.S. Sembarang }
+{ F.S. Alamat P dialokasi, jika berhasil maka Info(P)=X dan Next(P)=Nil }
+{ P=Nil jika alokasi gagal }
+procedure Dealokasi(address P)
+{ I.S. P adalah hasil alokasi, P <> Nil }
+{ F.S. Alamat P didealokasi, dikembalikan ke sistem }
+boolean IsEmpty(Stack S)
+{ Mengirim true jika Stack kosong: TOP(S) = Nil }
+procedure CreateEmpty(Stack S)
+{ I.S. sembarang }
+{ F.S. Membuat sebuah stack S yang kosong }
+procedure Push(Stack S, ElType X)
+{ Menambahkan X sebagai elemen Stack S }
+{ I.S. S mungkin kosong, X terdefinisi }
+{ F.S. X menjadi TOP yang baru jika alokasi X berhasil, }
+{ jika tidak, S tetap }
+{ Pada dasarnya adalah operasi Insert First pada list linier }
+procedure Pop(Stack S, ElType X)
+{ Menghapus X dari Stack S. }
+{ I.S. S tidak mungkin kosong }
+{ F.S. X adalah nilai elemen TOP yang lama, }
+{ elemen TOP yang lama didealokasi }
+{ Pada dasarnya adalah operasi Delete First pada list linier }
+
+{Queue dalam representasi berkait}
+KAMUS
+type ElType: integer
+type Address: pointer to Node
+type Node: < Info: ElType,
+            Next: Address >
+type Queue: < HEAD: address
+              TAIL: address >
+{ Last: alamat elemen terakhir. Karena field NEXT tidak ada secara eksplisit,
+maka elemen terakhir dikenali dengan address-nya }
+{ *** Selektor *** }
+{ Deklarasi nama untuk variabel kerja }
+L : List
+P : address {address untuk traversal }
+{ Maka First(L)..Last(L) adalah indeks efektif elemen tabel anggota list
+Head(S) menjadi Q.HEAD 
+Tail(S) menjadi Q.TAIL 
+InfoTop(S) menjadi Q.HEAD^.info
+InfoTail(S) menjadi Q.TAIL^.info
+Next(P) menjadi P^­.Next 
+Info(P) menjadi P­^.Info}
+
+{ Prototype manajemen memori }
+procedure Alokasi(address *P, ElType X)
+{ I.S. Sembarang }
+{ F.S. Alamat P dialokasi, jika berhasil maka Info(P)=X dan Next(P)=Nil }
+{ P=Nil jika alokasi gagal }
+procedure Dealokasi(address P)
+{ I.S. P adalah hasil alokasi, P != Nil }
+{ F.S. Alamat P didealokasi, dikembalikan ke sistem }
+function IsEmpty(Queue Q)
+{ Mengirim true jika Q kosong: HEAD(Q)=Nil and TAIL(Q)=Nil }
+function NBElmt(Queue Q)
+{ Mengirimkan banyaknya elemen queue. Mengirimkan 0 jika Q kosong }
+procedure CreateEmpty(Queue *Q)
+{ I.S. sembarang }
+{ F.S. Sebuah Q kosong terbentuk }
+{** Primitif Enqueue/Dequeue **}
+procedure Enqueue(Queue *Q, ElType X)
+{ Proses: Mengalokasi X dan menambahkan X pada bagian TAIL dari Q
+jika alokasi berhasil jika alokasi gagal Q tetap }
+{ Pada dasarnya adalah proses insert last }
+{ I.S. Q mungkin kosong }
+{ F.S. X menjadi TAIL, TAIL "maju" }
+procedure Dequeue(Queue *Q, ElType *X)
+{ Proses: Menghapus X pada bagian HEAD dari Q dan mendealokasi elemen HEAD }
+{ Pada dasarnya operasi delete first }
+{ I.S. Q tidak mungkin kosong }
+{ F.S. X = nilai elemen HEAD pd I.S., HEAD "mundur" }
+
+{Spesifikasi tambahan untuk soal B}
+procedure bagiRuangMakan (input: Queue, output: Stack)
+{I.S. Queue terdefinisi dan tidak kosong}
+{F.S. menghasilkan integer untuk mengepush stack ruangan makan}

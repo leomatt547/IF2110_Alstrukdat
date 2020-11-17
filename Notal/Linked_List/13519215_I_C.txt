@@ -1,0 +1,32 @@
+procedure SortedMerge (input/output L1:List, input L2: List, output status: boolean)
+{I.S. L1, L2 terdefinisi dan tidak kosong, L1 unik dan terurut, L2 unik belum tentu terurut
+F.S. L1 sudah bertambah dengan elemen dari L2, tetap berelemen unik dan terurut membesar}
+KAMUS LOKAL
+    P1,P2, Prec : address
+    found : boolean
+ALGORITMA
+    Alokasi(Prec)
+    Alokasi(P1)
+    Alokasi(P2)
+    Prec ← Nil
+    P1 ← First(L1)
+    P2 ← First(L2)
+    status ← True
+    found ← false
+    while (Prec <> Nil) do
+        while (P <> Nil and not found) do
+            if(Info(P2) > Info(P1)) then
+                Prec ← P1
+                P1 ← Next(P1)
+            else
+                found ← True
+        if (Prec = Nil) then {Insert First P)
+            Next(P1) ← First(L)
+            First(L) ← P1
+        else {Prec ≠ Nil }
+            Next(P2) ← P1
+            Next(Prec) ← P2
+    → status
+            
+        
+            

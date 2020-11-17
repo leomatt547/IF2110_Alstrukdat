@@ -1,0 +1,46 @@
+procedure bagiRuangMakan (input: Queue, output: Stack)
+{I.S. Queue terdefinisi dan tidak kosong}
+{F.S. menghasilkan integer untuk mengepush stack ruangan makan}
+KAMUS LOKAL
+    P: address
+    USE ADT STACK, ADT QUEUE
+ALGORITMA
+    CreateEmpty(G)
+    CreateEmpty(H)
+    CreateEmpty(R)
+    CreateEmpty(S)
+    Alokasi (P)
+    while (not IsEmpty(Q)) do
+        P ← Head(Q)
+        if ((Info(P) % 9 = 0) and (Info(P)%2≠0)) then
+            Push(G, Info(P))
+        else if ((Info(P) % 2 = 0) and (Info(P)%7≠0)) then
+            Push(H, Info(P))
+        else if ((Info(P) % 7 = 0) and (Info(P)%2=0)) then
+            Push(R, Info(P))
+        else if ((Info(P) % 2 ≠ 0) and (Info(P)%9≠0)) then
+            Push(S, Info(P))
+        Head(Q) ← Next(P)
+        Dequeue(P)
+
+Program Sorting Hat
+{Menampilkan nama anak-anak yang keluar dari ruang makan menuju asrama}
+KAMUS LOKAL
+    X: infotype
+ALGORITMA
+    {Asumsi Queue sudah terisi 100 anak}
+    bagiRuangMakan(Q)
+    while (not IsEmpty(G))
+        Pop(G,X)
+        output(X)
+    while (not IsEmpty(H))
+        Pop(G,X)
+        output(X)
+    while (not IsEmpty(R))
+        Pop(G,X)
+        output(X)
+    while (not IsEmpty(S))
+        Pop(G,X)
+        output(X)
+
+    

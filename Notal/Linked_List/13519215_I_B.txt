@@ -1,0 +1,33 @@
+procedure SortedIntersect (input L1,L2:List, output L3: List)
+{I.S. L1,L2 berupa list terurut membesar, berelemen unik, dan mungkin kosong}
+{F.S. L3 berupa list dengan elemennya adalah irisan dari elemen L1 dan L2
+    dan terurut membesar. Jika alokasi elemen gagal, L3 adalah list kosong}
+KAMUS LOKAL
+    A,B: address
+ALGORITMA
+    Alokasi(A)
+    Alokasi(B)
+    CreateEmpty(L3)
+    if (not IsEmpty(L1) and not IsEmpty(L2)) then
+        A ← First(L1)
+        B ← First(L2)
+        if (Info(A) < Info(B)) then
+            A ← Next(A)
+        else if (Info(A) > Info(B)) then
+            B ← Next(B)
+        else {Info (A) = Info(B)}
+            InsertLast(L3) ← Info(A)
+            A ← Next(A)
+            B ← Next(B)
+        while ((Next(A)≠Nil) and (Next(B)≠Nil)) do
+            if (Info(A) < Info(B)) then
+                A ← Next(A)
+            else if (Info(A) > Info(B)) then
+                B ← Next(B)
+            else {Info (A) = Info(B)}
+                InsertLast(L3) ← Info(A)
+                A ← Next(A)
+                B ← Next(B)
+        {Next(A) or Next(B) = Nil}
+    → L3
+
