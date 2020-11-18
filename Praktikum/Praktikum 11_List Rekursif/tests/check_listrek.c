@@ -4,31 +4,35 @@
 #include "stdlib.h"
 #include "../src/listrek.h"
 
-void IsiList(List *L){
-  infotype i;
-  for (i = 1; i<=3; i++){
-    Alokasi(i);
-    Konso(i,*L);
-  }
-}
-
-void IsiList1(List *L){
-  Alokasi(1);
-  Konso(1,*L);
-}
-
 /****************** TEST LIST KOSONG ******************/
 /* Mengirim true jika list kosong */
 START_TEST(IsEmpty_TC1) {
-  List L;
-  IsiList(&L);
-  ck_assert_int_eq(0, IsEmpty(L));
+  List L = Nil;
+  ck_assert_int_eq(IsEmpty(L), 1);
+}
+
+START_TEST(IsEmpty_TC2) {
+  List L = Nil;
+  L = KonsB(L,2);
+  ck_assert_int_eq(IsEmpty(L), 0);
 }
 
 START_TEST(IsOneElmt_TC1) {
-  List L;
-  IsiList1(&L);
-  ck_assert_int_eq(1, IsOneElmt(L));
+  List L = Nil;
+  ck_assert_int_eq(IsOneElmt(L), 0);
+}
+
+START_TEST(IsOneElmt_TC2) {
+  List L = Nil;
+  L = KonsB(L,2);
+  ck_assert_int_eq(IsOneElmt(L), 1);
+}
+
+START_TEST(IsOneElmt_TC3) {
+  List L = Nil;
+  L = KonsB(L,2);
+  L = KonsB(L,3);
+  ck_assert_int_eq(IsOneElmt(L), 0);
 }
 
 /****************** Manajemen Memori ******************/
@@ -37,9 +41,8 @@ START_TEST(IsOneElmt_TC1) {
 /* menghasilkan P, maka P)=X, Next(P)=Nil */
 /* Jika alokasi gagal, mengirimkan Nil */
 START_TEST(Alokasi_TC1) {
-  infotype X = 2;
-  address P = Alokasi(X);
-  ck_assert_int_eq(Info(P), X);
+  address P = Alokasi(2);
+  ck_assert_int_eq(Info(P), 2);
   ck_assert_ptr_eq(Next(P), Nil);
 }
 
@@ -47,10 +50,140 @@ START_TEST(Alokasi_TC1) {
 /* F.S. P dikembalikan ke sistem */
 /* Melakukan dealokasi/pengembalian address P */
 START_TEST(Dealokasi_TC1) {
-  infotype X = 2;
-  address P = Alokasi(X);
+  address P = Alokasi(2);
   // Delokasi, seems impossible to be tested, so just check if no runtime error
   Dealokasi(P);
+}
+
+START_TEST(FirstElmt_T1) {
+  List L = Nil;
+  L = KonsB(L,1);
+  ck_assert_int_eq(FirstElmt(L), 1);
+}
+
+START_TEST(Tail_T1) {
+  List L = Nil;
+  L=KonsB(L,1);
+  L=KonsB(L,2);
+  L=KonsB(L,3);
+  ck_assert_int_eq(FirstElmt(Tail(L)),2);
+}
+
+START_TEST(Konso_T1) {
+  List L = Nil;
+  infotype X = 2;
+  L = Konso(X, L);
+  ck_assert_int_eq(FirstElmt(L), 2);
+  ck_assert_int_eq(IsOneElmt(L), 1);
+}
+
+START_TEST(Konso_T2){
+  List L=Nil;
+  L=Konso(1,L);
+  L=Konso(2,L);
+  ck_assert_int_eq(FirstElmt(L),2);
+}
+
+START_TEST(KonsB_T1) {
+  List L = Nil;
+  infotype X = 2;
+  L = KonsB(L, X);
+  ck_assert_int_eq(FirstElmt(L), 2);
+  ck_assert_int_eq(IsOneElmt(L), 1);
+}
+
+START_TEST(KonsB_T2){
+  List L=Nil;
+  L=KonsB(L,1);
+  L=KonsB(L,2);
+  ck_assert_int_eq(FirstElmt(L),1);
+}
+
+START_TEST(Copy_T1) {
+  List L1 = Nil;
+  L1=KonsB(L1,1);
+  L1=KonsB(L1,2);
+  L1=KonsB(L1,3);
+  List L2=Copy(L1);
+  for (int i=1;i<=3;i++){
+    ck_assert_int_eq(Info(L2),i);
+    L2=Next(L2);
+  }
+}
+
+START_TEST(MCopy_T1) {
+  List L1 = Nil;
+  L1=KonsB(L1,1);
+  L1=KonsB(L1,2);
+  L1=KonsB(L1,3);
+  List L2 = Nil;
+  MCopy(L1,&L2);
+  int i;
+  for (i=1;i<=3;i++){
+    ck_assert_int_eq(Info(L2),i);
+    L2=Next(L2);
+  }
+}
+
+START_TEST(Concat_T1) {
+  List L1=Nil;
+  L1=KonsB(L1,1);
+  L1=KonsB(L1,2);
+  L1=KonsB(L1,3);
+  List L2=Nil;
+  L2=KonsB(L2,4);
+  L2=KonsB(L2,5);
+  L2=KonsB(L2,6);
+  List L3=Concat(L1,L2);
+  int i;
+  for (i=1;i<=6;i++){
+    ck_assert_int_eq(Info(L3),i);
+    L3=Next(L3);
+  }
+}
+
+START_TEST(MConcat_T1) {
+  List L1=Nil;
+  L1=KonsB(L1,1);
+  L1=KonsB(L1,2);
+  L1=KonsB(L1,3);
+  List L2=Nil;
+  L2=KonsB(L2,4);
+  L2=KonsB(L2,5);
+  L2=KonsB(L2,6);
+  List L3=Nil;
+  MConcat(L1,L2,&L3);
+  int i;
+  for (i=1;i<=6;i++){
+    ck_assert_int_eq(Info(L3),i);
+    L3=Next(L3);
+  }
+}
+
+START_TEST(NbElmtList_T1) {
+  List L = Nil;
+  ck_assert_int_eq(NbElmtList(L), 0);
+}
+START_TEST(NbElmtList_T2){
+  List L=Nil;
+  L=KonsB(L,1);
+  ck_assert_int_eq(NbElmtList(L),1);
+}
+START_TEST(NbElmtList_T3){
+  List L=Nil;
+  L=KonsB(L,1);
+  L=KonsB(L,2);
+  ck_assert_int_eq(NbElmtList(L),2);
+}
+
+START_TEST(PrintList_T1) {
+  List L = Nil;
+  L=KonsB(L,1);
+  L=KonsB(L,2);
+  L=KonsB(L,3);
+  L=KonsB(L,4);
+  PrintList(L);
+  ck_assert_int_eq(FirstElmt(L), 1);
 }
 
 /****************** PENCARIAN SEBUAH ELEMEN LIST ******************/
@@ -58,105 +191,24 @@ START_TEST(Dealokasi_TC1) {
 /* Jika ada, mengirimkan address elemen tersebut. */
 /* Jika tidak ada, mengirimkan Nil */
 START_TEST(Search_T1) {
-  List L;
-  int P;
-  infotype search = 2;
-  IsiList(&L);
-  P = Search(L, search);
-  ck_assert_int_eq(P, 1);
+  List L=Nil;
+  L=KonsB(L,1);
+  L=KonsB(L,2);
+  L=KonsB(L,3);
+  ck_assert_int_eq(Search(L,2),1);
 }
 
 START_TEST(Search_T2) {
-  List L;
-  int P;
-  infotype search = 6;
-  IsiList(&L);
-  P = Search(L, search);
-  ck_assert_int_eq(P, 0);
+  List L=Nil;
+  L=KonsB(L,1);
+  L=KonsB(L,2);
+  L=KonsB(L,3);
+  ck_assert_int_eq(Search(L,4),0);
 }
 
-START_TEST(FirstElmt_T1) {
-  List L;
-  IsiList(&L);
-  ck_assert_int_eq(NbElmtList(L), 3);
-  ck_assert_int_eq(Info(L), 1);
-}
-
-START_TEST(Tail_T1) {
-  List L;
-  IsiList(&L);
-  L = Tail(L);
-  ck_assert_int_eq(NbElmtList(L), 1);
-  ck_assert_int_eq(Info(L), 2);
-}
-
-START_TEST(Konso_T1) {
-  List L;
-  infotype X = 2;
-  IsiList(&L);
-  Konso(X, L);
-  ck_assert_int_eq(NbElmtList(L), 4);
-  ck_assert_int_eq(Info(L), 2);
-}
-
-START_TEST(KonsB_T1) {
-  List L;
-  infotype X = 2;
-  IsiList(&L);
-  Konso(X, L);
-  ck_assert_int_eq(NbElmtList(L), 4);
-  ck_assert_int_eq(Info(L), 1);
-}
-
-START_TEST(Copy_T1) {
-  List L;
-  List L3;
-  IsiList(&L);
-  L3 = Copy(L);
-  ck_assert_int_eq(NbElmtList(L3), 3);
-  ck_assert_int_eq(Info(L3), 1);
-}
-
-START_TEST(MCopy_T1) {
-  List L;
-  List L3;
-  IsiList(&L);
-  MCopy(L, &L3);
-  ck_assert_int_eq(NbElmtList(L3), 3);
-  ck_assert_int_eq(Info(L3), 1);
-}
-
-START_TEST(Concat_T1) {
-  List L1,L2;
-  List L3;
-  IsiList(&L1);
-  IsiList(&L2);
-  L3 = Concat(L1,L2);
-  ck_assert_int_eq(NbElmtList(L3), 6);
-  ck_assert_int_eq(Info(L3), 1);
-}
-
-START_TEST(MConcat_T1) {
-  List L1,L2;
-  List L3;
-  IsiList(&L1);
-  IsiList(&L2);
-  MConcat(L1,L2,&L3);
-  ck_assert_int_eq(NbElmtList(L3), 6);
-  ck_assert_int_eq(Info(L3), 1);
-}
-
-START_TEST(NbElmtList_T1) {
-  List L;
-  IsiList(&L);
-  ck_assert_int_eq(NbElmtList(L), 3);
-}
-
-START_TEST(PrintList_T1) {
-  List L;
-  IsiList(&L);
-  PrintList(L);
-  ck_assert_int_eq(NbElmtList(L), 3);
+START_TEST(Search_T3) {
+  List L = Nil;
+  ck_assert_int_eq(Search(L,2), 0);
 }
 
 /* ********** SUITE DAN EKSEKUSI ********** */
@@ -166,8 +218,11 @@ Suite *listlinier_suite(void) {
   s = suite_create("listrekursif");
 
   tc_prototype = tcase_create("Prototype");
-  tcase_add_test(tc_prototype, IsOneElmt_TC1);
   tcase_add_test(tc_prototype, IsEmpty_TC1);
+  tcase_add_test(tc_prototype, IsEmpty_TC2);
+  tcase_add_test(tc_prototype, IsOneElmt_TC1);
+  tcase_add_test(tc_prototype, IsOneElmt_TC2);
+  tcase_add_test(tc_prototype, IsOneElmt_TC3);
   suite_add_tcase(s, tc_prototype);
 
   tc_memory = tcase_create("Memory");
@@ -178,18 +233,23 @@ Suite *listlinier_suite(void) {
   tc_search = tcase_create("Search");
   tcase_add_test(tc_search, Search_T1);
   tcase_add_test(tc_search, Search_T2);
+  tcase_add_test(tc_search, Search_T3);
   suite_add_tcase(s, tc_search);
 
   tc_primitif = tcase_create("Primitif");
   tcase_add_test(tc_primitif, FirstElmt_T1);
   tcase_add_test(tc_primitif, Tail_T1);
   tcase_add_test(tc_primitif, Konso_T1);
+  tcase_add_test(tc_primitif, Konso_T2);
   tcase_add_test(tc_primitif, KonsB_T1);
+  tcase_add_test(tc_primitif, KonsB_T2);
   tcase_add_test(tc_primitif, Copy_T1);
   tcase_add_test(tc_primitif, MCopy_T1);
   tcase_add_test(tc_primitif, Concat_T1);
   tcase_add_test(tc_primitif, MConcat_T1);
   tcase_add_test(tc_primitif, NbElmtList_T1);
+  tcase_add_test(tc_primitif, NbElmtList_T2);
+  tcase_add_test(tc_primitif, NbElmtList_T3);
   suite_add_tcase(s, tc_primitif);
 
   tc_proses = tcase_create("Proses");

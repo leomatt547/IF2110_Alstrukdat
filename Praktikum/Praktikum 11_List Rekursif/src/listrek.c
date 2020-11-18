@@ -39,7 +39,10 @@ int IsEmpty(List L){
 }
 /* Mengirimkan 1 jika L kosong dan 0 jika L tidak kosong */
 int IsOneElmt(List L){
-    return ((IsEmpty(Next(L))) && (!IsEmpty(L)));
+    if (IsEmpty(L)) {
+        return 0;
+    }
+    return (Next(L) == Nil);
 }
 /* Mengirimkan 1 jika L berisi 1 elemen dan 0 jika > 1 elemen atau kosong */
 
