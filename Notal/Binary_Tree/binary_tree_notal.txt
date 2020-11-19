@@ -1,3 +1,139 @@
+function Search (P: bintree, X:infotype) --> boolean
+Kamus Lokal
+-
+Algoritma
+    if (IsTreeEmpty(P)) then
+        --> False
+    else
+        if Akar(P) = X then
+            --> True
+        else
+            Search(Left(P),x) or Search(Right(P),X)
+
+function IsSkewLeft (P: BinTree) → boolean
+{ Mengirimkan true jika P adalah pohon condong kiri }
+KAMUS LOKAL
+ALGORITMA
+    if (IsTreeOneElmt(P)) then
+        --> True
+    else
+        if (Right(P) <> Nil) then
+            --> False
+        else
+            --> IsSkewLeft(Left(P))
+
+function IsSkewRight (P: BinTree) → boolean
+{ Mengirimkan true jika P adalah pohon condong kanan }
+KAMUS LOKAL
+ALGORITMA
+    if (IsTreeOneElmt(P)) then
+        --> True
+    else
+        if (Left(P) <> Nil) then
+            --> False
+        else
+            --> IsSkewRight(Right(P))
+
+function Level (P: BinTree, X: infotype) → integer
+{ Mengirimkan level dari node X yang merupakan salah satu daun
+dari pohon biner P. Akar(P) level-nya adalah 1. Pohon P tidak
+kosong dan elemen-elemennya unik. }
+KAMUS LOKAL
+ALGORITMA
+if(IsTreeOneElmt(P))then
+    --> 1
+else
+    if (Search(Left(P),X)) then
+        --> 1+Level(Left(P),X)
+    else {Search(Right(P),X)}
+        --> 1+Level(Right(P),X)
+
+procedure AddDaun (input/Output P: BinTree,input X, Y: infotype,
+input Kiri: boolean)
+{ I.S. P tidak kosong, X adalah daun Pohon Biner P }
+{ F.S. P bertambah simpulnya, dengan Y sebagai anak kiri X (jika
+Kiri), atau sebagai anak Kanan X (jika not Kiri). Jika ada lebih
+dari satu daun bernilai X, Y ditambahkan pada daun paling kiri. }
+KAMUS LOKAL
+ALGORITMA
+    if (IsTreeOneElmt(P)) then
+        P1 <-- AlokList(Y)
+        if (Kiri) then
+            Left(P) <-- P1
+        else
+            Right(P) <-- P1
+    else
+        if SearchDaun(Left(P),X) then
+            AddDaun(Left(P),X,Y,Kiri)
+        else
+            AddDaun(Right(P),X,Y,Kiri)
+
+function SearchDaun(input/output P: BinTree, input X:infotype) --> boolean
+KAMUS LOKAL
+ALGORITMA
+    if (IsTreeOneElmt(P)) then
+        --> (Akar(P) = X)
+    else
+        depend on P
+            IsUnerLeft(P) : --> SearchDaun(Left(P),X))
+            IsUnerRight(P) : --> SearchDaun(Right(P),X)
+            IsBiner(P) : --> SearchDaun(Left(P),X)) or SearchDaun(Right(P),X)
+
+procedure DelDaun (input/output P: BinTree,
+input X: infotype)
+{ I.S. P tidak kosong, minimum 1 daun bernilai X }
+{ F.S. Semua daun yang bernilai X dihapus dari P }
+KAMUS LOKAL
+ALGORITMA
+
+function MakeListDaun (P: BinTree) → ListOfNode
+{ Jika P adalah pohon kosong, maka menghasilkan list kosong. }
+{ Jika P bukan pohon kosong: menghasilkan list yang elemennya
+adalah semua daun pohon P. Diasumsikan alokasi selalu berhasil. }
+KAMUS LOKAL
+ALGORITMA
+
+function MakeListLevel (P: BinTree, N: integer) → ListOfNode
+{ Jika P adalah pohon kosong, maka menghasilkan list kosong. }
+{ Jika P bukan pohon kosong: menghasilkan list yang elemennya
+adalah semua elemen pohon P yang levelnya=N, jika semua alokasi
+berhasil. Diasumsikan alokasi selalu berhasil. }
+KAMUS LOKAL
+ALGORITMA
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function CountNonDaun --> integer ≥ 0
     {CountNonDaun(P) mengembalikan jumlah simpul yang
     bukan merupakan simpul daun pada P}
