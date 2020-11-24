@@ -1,3 +1,21 @@
+KAMUS
+{ Deklarasi TYPE POHON BINER }
+constant Nil: ... { konstanta pohon kosong, terdefinisi }
+type infotype: ... { terdefinisi }
+type address: ... { terdefinisi }
+{ Type Pohon Biner }
+type BinTree: address
+type node: < Info: infotype, { simpul/akar }
+Left: BinTree, { subpohon kiri }
+Right: BinTree { subpohon kanan } >
+{Cara akses/selektor, P: BinTree:
+Akar(P), Left(P), Right(P)}
+{ Tambahan struktur data list untuk pengelolaan elemen pohon }
+type ElmtNode: < Info: infotype,
+Next: addressList >
+type ListOfNode: addressList
+{ list linier yang elemennya adalah ElmtNode }
+
 function Search (P: bintree, X:infotype) --> boolean
 Kamus Lokal
 -
@@ -57,11 +75,11 @@ dari satu daun bernilai X, Y ditambahkan pada daun paling kiri. }
 KAMUS LOKAL
 ALGORITMA
     if (IsTreeOneElmt(P)) then
-        P1 <-- AlokList(Y)
+        P1 ← AlokList(Y)
         if (Kiri) then
-            Left(P) <-- P1
+            Left(P) ← P1
         else
-            Right(P) <-- P1
+            Right(P) ← P1
     else
         if SearchDaun(Left(P),X) then
             AddDaun(Left(P),X,Y,Kiri)
@@ -101,38 +119,70 @@ berhasil. Diasumsikan alokasi selalu berhasil. }
 KAMUS LOKAL
 ALGORITMA
 
+function BSearch (P: BinTree, X: infotype) → boolean
+{ Mengirimkan true jika ada node dari P (BST) yang bernilai X }
+KAMUS LOKAL
+ALGORITMA
+    if(IsTreeEmpty(P)) then
+        --> False
+    else
+        if (Akar(P) = X) then
+            --> True
+        else if (X > Akar(P)) then
+            BSearch(Right(P), X)
+        else (X < Akar(P)) then
+            BSearch(Left(P),X)
 
+function IsBTree (P: BinTree) → boolean
+{ Mengirimkan true jika P adalah balanced tree. Asumsi: P tidak kosong}
+KAMUS LOKAL
+ALGORITMA
+    if (IsTreeOneElmt(P)) then
+        --> True
+    else
+        nbElmtL ← NbElmt(Left(P))
+        nbElmtR ← NbElmt(Right(P))
+        heightL ← Height(Left(P))
+        heightR ← Height(Right(P))
+        if (Abs(nbElmtL-nbElmtR)>1 or Abs(heightL-heightR)>1) then
+            --> False
+        else
+            if (IsUnerRight(P) or IsUnerLeft(P)) then
+                --> True
+            else
+                --> (IsBTree(Left(P)) and IsBTree(Right(P)))
 
+function BuildBST (Infos:array [1..100] of integer,
+Neff:integer) → BinTree
+{Mengirimkan BST yang semua elemennya ada di Infos (tidak terurut dan tidak unik). Infos
+selalu diisi dari 1. Neff adalah indeks terakhir Infos yang terdefinisi, 0 jika kosong.}
+KAMUS LOKAL
+    i : integer
+ALGORITMA
+if (Neff(Infos) = 0) then
+    --> Nil
+else
+    i traversal [1..Neff]
+        InsSearchTree(Infos[i], T)
+    --> T
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+procedure InsSearchTree (input X: infotype, input/output P: BinTree)
+{ Menambahkan sebuah node X ke pohon biner pencarian P }
+{ infotype terdiri dari key dan count. Key menunjukkan nilai unik, dan }
+{ Count berapa kali muncul }
+{ Basis: Pohon kosong }
+{ Rekurens: Jika pohon tidak kosong, insert ke anak kiri jika nilai < Key(P) }
+{ Atau insert ke anak kanan jika nilai > Key(P) }
+{ Perhatikan bahwa insert selalu menjadi daun terkiri/terkanan dari subpohon }
+KAMUS LOKAL
+ALGORITMA
+    if (IsTreeEmpty(P)) then { Basis: buat hanya akar }
+        MakeTree(X,Nil,Nil,P)
+else {Rekurens}
+    depend on X, Key(P)
+        X.Key = Key(P): Count(P) ← Count(P) + 1
+        X.Key < Key(P): InsSearchTree(X,Left(P))
+        X.Key > Key(P): InsSearchTree(X,Right(P))
 
 function CountNonDaun --> integer ≥ 0
     {CountNonDaun(P) mengembalikan jumlah simpul yang
