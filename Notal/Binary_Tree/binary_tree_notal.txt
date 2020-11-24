@@ -1,25 +1,25 @@
 KAMUS
 { Deklarasi TYPE POHON BINER }
-constant Nil: ... { konstanta pohon kosong, terdefinisi }
-type infotype: ... { terdefinisi }
-type address: ... { terdefinisi }
+    constant Nil: ... { konstanta pohon kosong, terdefinisi }
+    type infotype: ... { terdefinisi }
+    type address: ... { terdefinisi }
 { Type Pohon Biner }
-type BinTree: address
-type node: < Info: infotype, { simpul/akar }
-Left: BinTree, { subpohon kiri }
-Right: BinTree { subpohon kanan } >
+    type BinTree: address
+    type node: < Info: infotype, { simpul/akar }
+    Left: BinTree, { subpohon kiri }
+    Right: BinTree { subpohon kanan } >
 {Cara akses/selektor, P: BinTree:
-Akar(P), Left(P), Right(P)}
+    Akar(P), Left(P), Right(P)}
 { Tambahan struktur data list untuk pengelolaan elemen pohon }
-type ElmtNode: < Info: infotype,
-Next: addressList >
-type ListOfNode: addressList
+    type ElmtNode: < Info: infotype,
+    Next: addressList >
+    type ListOfNode: addressList
 { list linier yang elemennya adalah ElmtNode }
 
 function Search (P: bintree, X:infotype) --> boolean
-Kamus Lokal
+KAMUS LOKAL
 -
-Algoritma
+ALGORITMA
     if (IsTreeEmpty(P)) then
         --> False
     else
@@ -28,7 +28,7 @@ Algoritma
         else
             Search(Left(P),x) or Search(Right(P),X)
 
-function IsSkewLeft (P: BinTree) → boolean
+function IsUnerLeft (P: BinTree) → boolean
 { Mengirimkan true jika P adalah pohon condong kiri }
 KAMUS LOKAL
 ALGORITMA
@@ -38,9 +38,9 @@ ALGORITMA
         if (Right(P) <> Nil) then
             --> False
         else
-            --> IsSkewLeft(Left(P))
+            --> IsUnerLeft(Left(P))
 
-function IsSkewRight (P: BinTree) → boolean
+function IsUnerRight (P: BinTree) → boolean
 { Mengirimkan true jika P adalah pohon condong kanan }
 KAMUS LOKAL
 ALGORITMA
@@ -50,7 +50,7 @@ ALGORITMA
         if (Left(P) <> Nil) then
             --> False
         else
-            --> IsSkewRight(Right(P))
+            --> IsUnerRight(Right(P))
 
 function Level (P: BinTree, X: infotype) → integer
 { Mengirimkan level dari node X yang merupakan salah satu daun
@@ -109,8 +109,10 @@ ALGORITMA
         P <-- Nil
         Dealokasi (temp)
     else
-        DelDaun(Left(P),X)
-        DelDaun(Right(P),X)
+        if SearchDaun(Left(P),X) then
+            DelDaun(Left(P),X)
+        else
+            DelDaun(Right(P),X)
 
 function MakeListDaun (P: BinTree) → ListOfNode
 { Jika P adalah pohon kosong, maka menghasilkan list kosong. }
