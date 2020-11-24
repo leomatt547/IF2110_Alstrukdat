@@ -102,14 +102,32 @@ input X: infotype)
 { I.S. P tidak kosong, minimum 1 daun bernilai X }
 { F.S. Semua daun yang bernilai X dihapus dari P }
 KAMUS LOKAL
+    temp : address
 ALGORITMA
+    if (IsTreeOneElmt(P) and (Akar(P) = X)) then
+        temp <-- P
+        P <-- Nil
+        Dealokasi (temp)
+    else
+        DelDaun(Left(P),X)
+        DelDaun(Right(P),X)
 
 function MakeListDaun (P: BinTree) → ListOfNode
 { Jika P adalah pohon kosong, maka menghasilkan list kosong. }
 { Jika P bukan pohon kosong: menghasilkan list yang elemennya
 adalah semua daun pohon P. Diasumsikan alokasi selalu berhasil. }
 KAMUS LOKAL
+    L: ListOfNode
+    R: ListOfNode
 ALGORITMA
+    if (IsTreeEmpty(P)) then
+        --> Nil
+    else if (IsTreeOneElmt(P)) then
+        --> Alokasi(Akar(P))
+    else
+        List L = MakeListDaun(Left(P))
+        List R = MakeListDaun(Right(P))
+        --> Concat(L, R)
 
 function MakeListLevel (P: BinTree, N: integer) → ListOfNode
 { Jika P adalah pohon kosong, maka menghasilkan list kosong. }
@@ -117,7 +135,17 @@ function MakeListLevel (P: BinTree, N: integer) → ListOfNode
 adalah semua elemen pohon P yang levelnya=N, jika semua alokasi
 berhasil. Diasumsikan alokasi selalu berhasil. }
 KAMUS LOKAL
+    L: ListOfNode
+    R: ListOfNode
 ALGORITMA
+    if (IsTreeEmpty(P)) then
+        --> Nil
+    else if (N = 1) then
+        --> Alokasi(Akar(P))
+    else
+        List L = MakeListLevel(Left(P), N-1)
+        List R = MakeListLevel(Right(P), N-1)
+        --> Concat(L, R)
 
 function BSearch (P: BinTree, X: infotype) → boolean
 { Mengirimkan true jika ada node dari P (BST) yang bernilai X }
