@@ -1,0 +1,32 @@
+type adrDosen
+type adrMengajar
+type adrMatkul
+type dosen:<Inisial : string
+            ListMengajar : adrMengajar
+            Next : adrDosen>
+type Mengajar :<Matkul : adrMatkul
+                Next: adrMengajar>
+type adrMatkul: <NamaMatkul :string
+                Next : adrMatkul>
+Listdosen : adrDosen
+ListMatkul : adrMatkul
+
+procedure addDosenMatkul (input/output LD : adrDosen, input/output LM : adrMatkul
+, input ID :string , input kode : string)
+KAMUS LOKAL
+    PD, P1 : adrDosen
+    PM, P2 : adrMatkul
+ALGORITMA
+    P <-- SearchDosen(LD,ID)
+    if(P <> Nil) then
+        PM <-- SearchMatkul(LM, kode)
+        if (PM <> Nil) then
+            Pt <-- AlokMengajar(PM)
+            Next(Pt) <-- ListMengajar(PD)
+            ListMengajar(PD) <-- Pt
+        else 
+            {Alokasi Matkul}
+            {Insert matkul ke dalam LM}
+    else
+        {Alokasi dosen}
+        {Cek Matkul}

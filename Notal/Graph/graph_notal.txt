@@ -1,0 +1,173 @@
+{ Graph berarah diimplementasi sebagai Multilist }
+constant Nil: ...
+type adrNode: pointer to Node
+type adrSuccNode: pointer to SuccNode
+type Node: < Id: integer, {identitas simpul}
+                NPred: integer, {jumlah busur yang masuk ke simpul =
+                jumlah simpul pred}
+                Trail: adrSuccNode, {pointer ke list trailer (simpul successor)}
+                Next: adrNode >
+type SuccNode: < Succ: adrNode, {address simpul successor}
+                Next: adrSuccNode >
+type Graph: < First: adrNode >
+
+{ *** Selektor *** }
+{ Jika G: Graph, Pn: adrNode, Pt: adrSuccNode, maka:
+    First(G) = G.First;
+    Id(Pn) = Pn↑.Id; NPred(Pn) = Pn↑.NPred;
+    Trail(Pn) = Pn↑.Trail; Next(Pn) = Pn↑.Next;
+    Succ(Pt) = Pt↑.Succ; Next(Pt) = Pt↑.Next }
+
+{ *** Konstruktor *** }
+procedure CreateGraph (input X: integer, output L: Graph)
+{ I.S. Sembarang; F.S. Terbentuk Graph dengan satu simpul dengan Id=X }
+
+{ *** Manajemen Memory List Simpul (Leader) *** }
+function AlokNode (X: integer) → adrNode
+{ Mengembalikan address hasil alokasi Simpul X. }
+{ Jika alokasi berhasil, maka address tidak Nil, misalnya
+menghasilkan P, maka Id(P)=X, Npred(P)=0, Trail(P)=Nil,
+dan Next(P)=Nil. Jika alokasi gagal, mengembalikan Nil. }
+procedure DealokNode (input P: adrNode)
+{ I.S. P terdefinisi; F.S. P dikembalikan ke sistem }
+{ *** Manajemen Memory List Successor (Trailer) *** }
+function AlokSuccNode (Pn: adrNode) → adrSuccNode
+{ Mengembalikan address hasil alokasi. }
+{ Jika alokasi berhasil, maka address tidak Nil, misalnya
+menghasilkan Pt, maka Succ(Pt)=Pn dan Next(Pt)=Nil. Jika
+alokasi gagal, mengembalikan Nil. }
+procedure DealokSuccNode (input P: adrSuccNode)
+{ I.S. P terdefinisi; F.S. P dikembalikan ke sistem }
+
+{ *** Fungsi/Prosedur Lain *** }
+function SearchNode (G: Graph, X: integer) → adrNode
+{ mengembalikan address simpul dengan Id=X jika sudah ada pada graph G,
+Nil jika belum } 
+KAMUS LOKAL
+    P : adrNode
+ALGORITMA
+    P <-- First(G)
+    while (Next(P) <> Nil) and (Id(P)<>X) do
+        P <-- Next(P)
+    if Id(P) = X then
+        --> P
+    else
+        --> Nil
+
+function SearchEdge (G: Graph, prec: integer, succ: integer) → adrSuccNode
+{ mengembalikan address trailer yang menyimpan info busur (prec,succ)
+jika sudah ada pada graph G, Nil jika belum } 
+KAMUS LOKAL
+    P,PS: adrNode
+    Pt : adrSuccNode
+ALGORITMA
+    P <-- SearchNode(G, prec)
+    if (P <> Nil) then
+        PS <-- SearchNode(G, succ)
+        if (PS <> Nil) then
+            Pt <-- Trail(P)
+            found <-- false
+            while (Pt <> Nil) and (not found) do
+                if (Succ(Pt) = PS) then
+                    found <-- true
+                else
+                    Pt <-- Next(Pt)
+            {Pt = Nil or found}
+            if (found) then
+                --> Pt 
+            else
+                --> Nil
+        else
+            --> Nil
+    else
+        --> Nil
+
+procedure InsertNode (input/output G: Graph, input X: integer, output Pn:
+adrNode)
+{ Menambahkan simpul X ke dalam graph, jika alokasi X berhasil. }
+{ I.S. G terdefinisi, X terdefinisi dan belum ada pada G. }
+{ F.S. Jika alokasi berhasil, X menjadi elemen terakhir G, Pn berisi
+address simpul X. Jika alokasi gagal, G tetap, Pn berisi Nil }
+KAMUS LOKAL
+    P : adrNode
+ALGORITMA
+    Pn <-- AlokNode(X)
+    if (Pn <> Nil) then
+        P <-- First(G)
+        while (Next(P)<>Nil) do
+            P <-- Next(P)
+        {Next(P) = Nil}
+        Next(P) <-- Pn
+
+procedure InsertEdge (input/output G: Graph, input prec, succ: integer)
+{ Menambahkan busur dari prec menuju succ ke dalam G }
+{ I.S. G, prec, succ terdefinisi. }
+{ F.S. Jika belum ada busur (prec,succ) di G, maka tambahkan busur
+(prec,succ) ke G. Jika simpul prec/succ belum ada pada G,
+tambahkan simpul tersebut dahulu. Jika sudah ada busur (prec,succ)
+di G, maka G tetap. }
+KAMUS LOKAL
+    GnodePrec , GnodeSucc : adrNode
+    EdgePrectoSucc : adrSuccNode
+ALGORITMA
+    GnodePrec <-- SearchNode(G,Prec)
+    GNodeSucc <-- SearchNode(G,Succ)
+    if (GnodePrec = Nil) then
+        InsertNode(X,GnodePrec)
+    if (GnodeSucc = Nil) then
+        InsertNode(X,GnodePrec)
+    EdgePrectoSucc <-- SearchEdge(prec,succ)
+    if (EdgePrectoSucc = Nil) then
+        EdgePrectoSucc <-- AlokSuccNode(GnodeSucc)
+        if(EdgePrectoSucc = Nil) then
+            Next(EdgePrectoSucc) <-- Trail(GnodePrec)
+            Trail(GnodePrec) <-- EdgePrectoSucc
+            NPred(GnodeSucc) <-- NPred(GnodeSucc) + 1
+
+procedure DeleteNode (input/output G: Graph, input X: integer)
+{ Menghapus simpul X dari G }
+{ I.S. G terdefinisi, X terdefinisi dan ada pada G, jumlah simpul
+pada G lebih dari 1. }
+{ F.S. simpul X dan semua busur yang terhubung ke X dihapus
+dari G. }
+KAMUS LOKAL
+    prec, Px, P : adrNode
+    PS , Pf: adrSuccNode
+ALGORITMA
+    Px <-- SearchNode(G,X)
+    prec <-- Nil
+    P <-- First(G)
+    while (P <> Nil) do 
+    { transverse ke semua node, disini hapus dulu Succ yg mengarah ke X }
+        { Menghilangkan SuccNode yang mengandung X }
+        Pi <-- SearchEdge(G,Id(P),X)
+        if (Pi <> Nil) then
+            PS <-- Trail(P)
+            while (PS <> Pi) do
+                PS <-- Next(PS)
+            { mencari adrSuccNode sebelum Pi }
+            Next(PS) <-- Next(Pi)
+            { menghubungkan PS dengan Next(Pi) }
+            DealokSuccNode(Pi)
+
+        { Menghilangkan Node X itu sendiri }
+        if (Next(P) = Px) then
+            Next(P) <-- Next(Px)
+            { menghubungkan P dengan Next(Px) }
+            DealokNode(Px)
+        
+        P <-- next(P)
+
+    ------------------- batas
+
+
+            if (PS <> Nil) do
+                DealokSuccNode(PS)
+                pred(Px) <-- pred(Px)-1
+                { untuk menghubungkan PS yang sebelumnya dan sesudahnya }
+            found <-- false
+            Pf <-- SearchEdge(G,X,Id(Px))
+                else 
+                    PS <-- Next(PS)
+                {(PS = Nil) or found}
+            P <-- Next(P)
