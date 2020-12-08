@@ -1,0 +1,147 @@
+KAMUS
+constant NB: integer = 100
+STATMEM: array [1..NB] of boolean
+{ tabel status memori:
+    true jika ISI, false jika kosong }
+
+procedure InitMemK
+{ I.S.: Sembarang }
+{ F.S.: Semua blok memori dinyatakan KOSONG }
+{ Proses: Semua status blok dengan indeks [1..NB] dijadikan
+KOSONG dengan traversal blok [1..NB].
+Proses sekuensial tanpa penanganan kasus kosong (NB  0) }
+KAMUS
+    i : integer
+ALGORITMA
+    i traversal [1..NB]
+        STATMEM[i] ← false
+
+procedure AlokBlokKF (input X : integer, output IAw : integer)
+{ Strategi pengalokasian adalah First Fit }
+{ I.S. sembarang. X adalah banyaknya blok yang diminta untuk dialokasi, yaitu
+    dijadikan isi }
+{ F.S. IAw akan berisi indeks blok kosong pertama pada tabel Status Memori jika
+    ada X blok kontigu berstatus KOSONG yang masih bisa dialokasi, kemudian
+    memutakhirkan status pemakaian memori
+    IAw bernilai 0 jika tidak ada blok kontigu berukuran minimal X }
+{ Proses : lihat penjelasan }
+KAMUS LOKAL
+    i : integer
+    NKosong : integer { banyaknya blok kosong KOSONG }
+ALGORITMA
+    { Cari apakah ada X blok KOSONG }
+    i ← 1
+    repeat
+        { Search blok KOSONG pertama, skema search tanpa boolean }
+        { Selama isi, abaikan }
+        while (i < NB) and (STATMEM[i] ) do
+            i ← i + 1
+        { i = NB or not STATMEM[i] }
+        { Hitung jumlah blok kosong konsekutif }
+        NKosong ← 0
+        IAw ← i
+        while (i < NB) and (not STATMEM[i]) and (NKosong < X) do
+            i ← i + 1
+            NKosong ← NKosong + 1
+        { i = NB or STATMEM[i] or NKosong = X: 
+        jika masih kosong, Nkosong hrs ditambah }
+        if not STATMEM[i] then
+            NKosong ← NKosong + 1
+    until (i = NB) or (NKosong ≥ X)
+    { Terminasi: Tentukan nilai IAw,
+        Ubah status jika ada zone kosong memenuhi syarat }
+    if (NKosong ≥ X) then
+        { Update status memori }
+        i traversal [IAw..IAw+X-1]
+            STATMEM[i] ← true
+    else { Tidak perlu melakukan update, namun IAw harus diisi }
+        IAw ← 0
+
+procedure AlokBlokKB (input X : integer, output IAw : integer)
+{ Strategi pengalokasian adalah Best Fit }
+{ I.S. Sembarang. X adalah banyaknya blok yang diminta untuk dialokasi, yaitu
+    dijadikan ISI }
+{ F.S. IAw akan berisi indeks blok kosong pertama pada tabel Status Memori jika
+    ada X blok kontigu berstatus KOSONG yang masih bisa dialokasi, kemudian
+    memutakhirkan status pemakaian memori
+    IAw bernilai 0 jika tidak ada blok kontigu berukuran minimal X }
+{ Proses : lihat penjelasan }
+KAMUS LOKAL
+    i : integer
+    NKosong : integer { # blok kosong KOSONG kontigu pada saat dihitung }
+    IAwMin : integer { Posisi awal blok kontigu terkecil yang diketemukan }
+    NbMin : integer { Blok kontigu terkecil yang diketemukan, 
+                        dan masih memenuhi syarat ≥ X }
+ALGORITMA
+    { Cari apakah ada X blok KOSONG }
+    i ← 1
+    IAwMin ← 0
+    repeat
+        { Search posisi KOSONG pertama, skema search tanpa boolean }
+        { Selama isi, abaikan }
+        while (i < NB) and (STATMEM[i]) do
+        i ← i + 1
+        { i = NB or not STATMEM[i]}
+        { Hitung jumlah blok konsekutif }
+        NKosong ← 0
+        IAwal ← i
+        while (i < NB) and (not STATMEM[i]) do
+            i ← i + 1
+            NKosong ← NKosong + 1
+        { i = NB or STATMEM[i] or NKosong = X :
+            jika masih kosong, Nkosong hrs ditambah }
+        if not STATMEM[i] then
+            NKosong ← NKosong + 1
+        if (Nkosong ≥ X) then { Blok memenuhi syarat }
+            if ( IAwMin = 0) then { Inisialisasi zone memenuhi syarat }
+                IAwMin ← IAwal
+                NbMin ← NKosong
+            else {mungkin zone kosong yg ditemukan < dr sebelumnya }
+                if (Nkosong < NbMin) then
+                    NbMin ← Nkosong; IAwMin ← IAwal
+    until (i = NB) or (NKosong = X)
+    { Jika NKosong = X, sudah minimum (the best)! }
+    { Terminasi: Tentukan nilai IAw,
+        ubah status jika ada zone kosong memenuhi syarat }
+    if (IAwMin ≠ 0) then { update status memori }
+        IAw ← IAwMin
+        i traversal [ IAwMin..IAwMin+X-1]
+            STATMEM[i] ← true
+    else { Tidak ada aksi, hanya beri nilai IAw }
+        IAw ← 0
+
+procedure DealokBlokK (input X, IAw : integer)
+{ I.S. X adalah ukuran zone, bilangan positif dan IAw adalah alamat blok awal
+zone tersebut, dengan IAw ∈ [1..NB-X], blok dengan indeks IAw s.d. IAw+X-1 pasti
+berstatus ISI. }
+{ F.S. Tabel status memori dengan indeks blok IAw..IAw+X-1 menjadi KOSONG }
+    { Proses: Sebuah zone berukuran X dan bebawal pada blok IAw di-dealokasi
+    (statusnya dijadikan KOSONG) }
+KAMUS LOKAL
+    i : integer
+ALGORITMA
+    i traversal [IAw..IAw+X-1]
+        STATMEM[i] ← false
+
+procedure GarbageCollectionK
+{ I.S. Sembarang }
+{ F.S. Terbentuk sebuah zone kosong di “kiri” }
+KAMUS LOKAL
+    i : integer
+    NKosong : integer
+ALGORITMA
+    NKosong ← 0
+    i traversal [1..NB]
+        if (not STATMEM[i] )then
+            NKosong ← NKosong + 1
+    { NKosong bernilai [0..NB] }
+    { Update : mungkin tidak ada zone kosong, maka skema while... }
+    i ← 1
+    while (i ≤ NKosong) do
+        STATMEM[i] ← false
+        i ← i + 1
+    { i = NKosong + 1 }
+    while (i ≤ NB) do
+        STATMEM[i] ← true
+        i ← i + 1
+    { i = NB + 1 : semua blok sudah diinisialisasi }

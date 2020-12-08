@@ -1,0 +1,208 @@
+KAMUS
+type address { type terdefinisi }
+type ZB : < Aw : integer, { indeks awal zone kontigu kosong }
+Nb : integer, { banyaknya blok zone kontigu kosong }
+Next : address >
+FIRSTZB : address { address zone kosong pertama }
+{ Elemen list terurut menurut Aw }
+{ Fungsi akses untuk penulisan algoritma secara lojik }
+{ Jika P adalah sebuah address, maka dituliskan :
+    - Next(P) adalah address elemen list sesudah elemen beralamat P
+    - Aw(P) adalah nilai blok kosong pertama pada sebuah elemen list beralamat
+        P yang mewakili sebuah zone kontigu
+    - Nb(P) adalah ukuran blok sebuah zone kosong yang disimpan informasinya
+        dalam elemen list beralamat P
+    - Allocate(P) adalah prosedur utk melakukan alokasi sebuah ZB dengan alamat
+        P, P tidak mungkinsama dengan Nil (alokasi selalu berhasil)
+    - Dealollocate(P) adalah prosedur utk men-dealokasi sebuah alamat P }
+
+procedure InitMemB { Representasi berkait zone kosong }
+{ I.S. Sembarang }
+{ F.S. Semua blok memori dinyatakan KOSONG }
+{ Proses : create list kosong, buat elemen baru, insertFirst }
+KAMUS LOKAL
+    P : address
+ALGORITMA
+    FIRSTZB ← Nil { Create list kosong }
+    { Alokasi elemen baru: }
+    Allocate(P); IAw(P) ← 1
+    Nb(P) ← NB
+    Next(P) ← Nil
+    { Insert First: }
+    FIRSTZB ← P
+
+procedure AlokBlokBF (input X : integer, output IAw : integer)
+{ Strategi pengalokasian adalah First Fit }
+{ I.S. Sembarang. X adalah banyaknya blok yang diminta untuk dialokasi, yaitu
+    dijadikan ISI }
+{ F.S. IAw adalah alamat awal sebuah zone bebas dengan X buah blok kontigu
+    kosong, zone bebas paling “kiri”, jika ada. IAw=0, jika tidak ada zone kontigu
+    berukuran Iaw }
+KAMUS LOKAL
+    P : address
+    Found : boolean
+ALGORITMA
+    { Search elemen list dengan properti Nb(P) ≥ X, }
+    { Skema search dengan boolean }
+    P ← FirstZB; PrecP ← Nil; Found ← false
+    IAw ← 0
+    while (P ≠ Nil) and not Found do
+        if (Nb(P) ≥ X) then
+            IAw ← Na(P)
+            Found ← true
+            if (Nb(P) = X) then
+                { Delete }
+                if (PrecP = Nil) then
+                    FirstZB ← Next(FirstZB) { Delete First }
+                else
+                    Next(PrecP) ← Next (P) { Delete after Prec P }
+                Deallocate(P)
+            else { Nb(P) > X, update P, kurangi Nb(P) sebanyak X }
+                Nb(P) ← Nb(P) - X
+                Aw(P) ← Aw(P) + X { update }
+        else
+            PrecP ← P
+            P ← Next (P)
+
+procedure AlokBlokBB (input X : integer, output IAw : integer)
+{ Representasi berkait zone KOSONG }
+{ I.S. Sembarang. X adalah banyaknya blok yang diminta untuk dialokasi, yaitu
+    dijadikan ISI }
+{ F.S. IAw adalah alamat awal sebuah zone bebas dengan X buah blok kontigu
+    kosong, zone bebas minimal ukurannya jika ada. IAw=0, jika tidak ada zone
+    kontigu berukuran IAw }
+{ Strategi pengalokasian adalah Best Fit, skema search dengan boolean }
+KAMUS LOKAL
+    P, PrecP : address { PrecP adalah address sebelum P }
+    Found : boolean
+    PMin : address { Posisi awal dari blok kontigu terkecil yang
+                    diketemukan }
+    PrecPMin : address { Address sebelum PMin }
+    FoundBest : boolean { Sudah ketemu yang terbaik : ukurannya = X }
+ALGORITMA
+    { Search elemen list dengan properti Nb(P) ≥ X,
+    skema search dengan boolean }
+    PrecPMin ← Nil; Pmin ← Nil
+    P ← FirstZB
+    PrecP ← Nil
+    Found ← false
+    FoundBest ← false
+    while (P ≠ Nil) and not FoundBest do
+        if (Nb(P) ≥ X) then
+            Found ← true
+            if Nb(P)=X then { Sudah terbaik }
+                FoundBest ← true
+            if Pmin = Nil then { Minimum diinisialisasi }
+                PMin ← P
+                PrecPMin ← Prec P
+            else if Nb(P) < Nb(Pmin) then {lebih baik }
+                PrecPMin ← PrecP
+                Pmin ← P
+        else
+            PrecP ← P; P ← Next (P)
+    { Semua elemen list selesai diperiksa }
+    { Delete atau update elemen list jika ketemu }
+    if Found then
+        IAw ← Aw(Pmin)
+        if (Nb(Pmin) = X ) then { delete }
+            if PrecPMin = Nil then { Delete First }
+                FirstZB ← Next (FirstZB)
+            else { Delete After PrecPMin }
+                Next(PrecPMin) ← Next (Pmin)
+            Deallocate (Pmin)
+        else {update }
+            Nb(P) ← Nb(P) - X ; Aw(P) ← Aw(P) + X { update }
+    else
+        IAw ← 0
+
+procedure DeAlokBlokB (input X, IAw : integer )
+{ Representasi berkait zone KOSONG }
+{ I.S. X adalah ukuran zone, bilangan positif dan IAw adalah alamat blok awal
+    zone tersebut, dengan IAw ∈ [1..NB-X], Blok dengan indeks IAw s.d. IAw+X-1 pasti
+    berstatus ISI. }
+{ F.S. Tabel status memori dengan indeks blok IAw..IAw+X-1menjadi KOSONG }
+{ Proses : Sebuah zone berukuran X dan bebawal pada blok IAw didealokasi
+(statusnya dijadikan kosong) }
+KAMUS LOKAL
+    P, PrecP : address
+ALGORITMA
+    if FirstZB = Nil then
+        { insert 1 elemen ke list kosong }
+        Alokasi (Pins) 
+        Nb(PIns) ← X
+        IAw(PIns) ← X
+        FirstZB ← PIns
+    else
+        P ← FirstZB
+        PrecP ← Nil
+        Found ← false
+        while (P ≠ Nil) and not Found do
+            if Aw(P) > IAw then
+                Found ← true
+            else
+                PrecP ← P; P ← Next(P)
+        { P=Nil or Found }
+        if not Found then
+            { Pasti P= Nil, insertlast atau update PrecP }
+            if Aw(PrecP)+ Nb(PrecP) = IAw then
+                Nb(PrecP) ← Nb(PrecP) + X { update PrecP }
+            else { bukan zone terkanan, isnert elmt}
+                { insert last }
+                Allocate(Pins)
+                Aw(Pins) ← IAw
+                Nb(Pins) ← X
+                Next(PrecP) ← Pins
+        else { Found, berarti Aw(P) > IAw }
+            if PrecP = Nil then { elemen list = zone terkiri }
+                { insert First, cek apakah perlu digabung dengan P }
+                if IAw+X = Aw(P) then { kontigu dengan zone I, zone digabung,
+                                        update P }
+                    Aw(P) ← IAw; Nb(P) ← Nb(P) + X { update P saja }
+                else{Insert First, bukan menjadi zone kontigu dg yg pertama }
+                    Allocate (Pins) ); Aw(Pins) ← IAw; Nb(Pins) ← X
+                    Next (Pins) ← FirstZB; FirstZB ← PIns
+            else { PrecP ≠ Nil, ada 4 kemungkinan }
+                {Jika PrecP disebut KIRI,Blok didealokasi TENGAH &P disebut KANAN }
+                depend on PrecP, P, X, IAw
+                    Aw(PrecP)+Nb(PrecP)=IAw and Aw(P) = IAw + X :
+                        { a. 3 zone digabung: KIRI, TENGAH, KANAN
+                        deleteP, update PrecP }
+                        Next(PrecP) ← Next(P)
+                        Nb(PrecP) ← Nb(PrecP)+Nb(P)+X
+                        Deallocate (P)
+                    Aw(PrecP)+ Nb(PrecP) ≠ IAw and Aw(P) ≠ IAw + X :
+                        { b. Tidak ada penggabungan blok }
+                        Allocate (Pins) ); Aw(Pins) ← IAw; Nb(Pins) ← X
+                        Next(PrecP) ← Pins
+                    Aw(PrecP)+Nb(PrecP)= IAw :
+                        { c. 2 zone KIRI dan TENGAH digabung
+                        gabung PrecP dg blok baru yg didealokasi,
+                        update PrecP }
+                        Nb(PrecP) ← Nb(PrecP) + X
+                    Aw(P) = IAw+X :
+                        { d. 2 zone TENGAH dan KANAN digabung
+                        Gabung P dengan blok baru yg didealokasi }
+                        Nb(P) ← Nb(P) + X; Aw(P) ← IAw
+
+procedure GarbageCollectionB
+{ I.S. Sembarang }
+{ F.S. }
+KAMUS LOKAL
+    P : address
+    NKosong : integer
+ALGORITMA
+    NKosong ← 0
+    { Akumulasi jumlah blok kosong
+        sambil delete list sehingga tersisa satu elemen }
+    if FirstZB ≠ Nil then {minimal ada satu elemen }
+        P ← FirstZB; PrecP ← Nil
+        while (Next(P) ≠ Nil) do
+            NKosong ← NKosong + Nb(P)
+            PrecP ← P; P ← Next(P); Deallocate(PrecP)
+        { Next(P) = Nil, elemen terakhir belum diproses
+        NKosong bernilai [0..NB] }
+        { Update elemen terakhir }
+        Nb(P) ← Nkosong + Nb(P)
+        Aw(P) ← 1
+        FirstZB ← P
+    else { tidak ada yang perlu dilakukan, karena semua zone ISI }
