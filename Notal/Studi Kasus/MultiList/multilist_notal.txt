@@ -1,0 +1,82 @@
+procedure InsertUser (input/output L: List, input x: InfoType)
+{I.S. : L terdefinisi, mungkin kosong. X terdefinisi.}
+{F.S. : Jika elemen dengan id user bernilai x belum ada di L dan alokasi}
+{x berhasil, maka elemen dengan id user bernilai x ditambahkan di} { list L dengan L tetap terurut membesar. Jika alokasi x gagal, L} { tetap. Jika sudah ada elemen dengan id user bernilai x di L, L} { tetap.}
+{Proses: Searching elemen dengan id user bernilai x di list L yang terurut membesar}
+KAMUS LOKAL
+    PU: adrUser
+    PrecUser: adrUser
+ALGORITMA
+    if (First(L)=Nil) then
+        AlokUser(x)
+    else {Search x}
+        PU <-- First(L)
+        while (X < IdUser) do
+            PrecUser <-- PU
+            PU <-- NextUser(PU)
+        {X = IdUser}
+        if (IdUser <> x) then
+            AlokUser(x)
+            Next(PU) <-- Next(PrecUser)
+            Next(PrecUser) <-- PU
+
+Function IsReciphrocal (L: List; x,y: InfoType) --> boolean
+{Menghasilkan true jika pada list L terdapat elemen dengan id user x dan y yang}
+{memiliki pertemanan yang reciphrocal, yaitu y muncul di list of friend dari x dan}
+{x juga muncul di list of friend dari y.}
+{Menghasilkan false jika kedua elemen tidak reciphrocal.}
+{Prekondisi: Pada list L,terdapat elemen dengan id user bernilai x dan y.}
+{x dan y pasti berbeda.}
+KAMUS LOKAL
+    PU: adrUser
+    PF: adrFriend
+    found1 : boolean
+    found1 : boolean
+ALGORITMA
+    PU <-- First(L)
+    while (IdUser(PU) < x) and (IdUser(PU) < y) do
+        PrecUser <-- PU
+        PU <-- NextUser(PU)
+    {X or Y = IdUser}
+    if (IdUser(PU)=x) then
+        PF <-- FirstFriend(PU)
+        while (Next(PF) <> Nil) and (not found1) do
+            if (IdUser(UserFriend(PF))=y)
+                found1 <-- True
+            else
+                PF <-- NextFriend(PF)
+    else if (IdUser(PU)=y) then
+        PF <-- FirstFriend(PU)
+        while (Next(PF) <> Nil) and (not found2) do
+            if (IdUser(UserFriend(PF))=y)
+                found2 <-- True
+            else
+                PF <-- NextFriend(PF)
+    PF <-- Nil
+    while (IdUser(PU) < x) or (IdUser(PU) < y) do
+        PrecUser <-- PU
+        PU <-- NextUser(PU)
+    {X or Y = IdUser}
+    if (IdUser(PU)=x) then
+        PF <-- FirstFriend(PU)
+        while (Next(PF) <> Nil) and (not found1) do
+            if (IdUser(UserFriend(PF))=y)
+                found1 <-- True
+            else
+                PF <-- NextFriend(PF)
+    else if (IdUser(PU)=y) then
+        PF <-- FirstFriend(PU)
+        while (Next(PF) <> Nil) and (not found2) do
+            if (IdUser(UserFriend(PF))=y)
+                found2 <-- True
+            else
+                PF <-- NextFriend(PF)
+    --> (found1) and (found2)
+
+
+    
+
+
+            
+            
+        
