@@ -1,0 +1,207 @@
+Program POLINOMIAL { Representasi KONTIGU }
+KAMUS
+    { Struktur data untuk representasi polinom secara kontigu}
+        constant Nmax : integer = 100 { Derajat tertinggi polinom yang
+                                        diproses }
+        type polinom : < Degree : integer,
+                        TabSuku : array [0..Nmax] of integer >
+        P1,P2 : polinom {Operan}
+        P3 : polinom { Hasil }
+    { Struktur data untuk interaksi }
+        Finish : boolean { Mengakhiri proses }
+        Pilihan : integer [0..5] { Nomor tawaran }
+    { Primitif operasi terhadap polinom yang dibutuhkan untuk proses }
+        procedure InitPol (output P : polinom)
+        { Membuat polinom P yang kosong }
+        procedure AdjustDegree (input/output P : polinom)
+        { Melakukan adjustment terhadap Degree. Diaktifkan jika akibat suatu
+            operasi, derajat polinom hasil berubah.
+    { Primitif operasi terhadap polinom yang disediakan untuk pemakai }
+        procedure CreatePol (output P : polinom) { Mengisi polinom P }
+        procedure TulisPol (input P : polinom) { Menulis polinom P }
+        procedure AddPol (input P1, P2 : polinom, output P3 : polinom)
+        { Menjumlahkan P1 + P2 dan menyimpan hasilnya di P3,
+            P3 ≠ P1 dan P3 ≠ P2 }
+        procedure SubPol (input P1, P2 : polinom, output P3 : polinom)
+        { Mengurangkan P1 - P2 dan menyimpan hasilnya di P3,
+            P3 ≠ P1 dan P3≠ P2 }
+        procedure DerivPol (input P : polinom, output P1 : polinom)
+        { Membuat turunan P dan menyimpan hasilnya di P1, P1 ≠ P }
+ALGORITMA
+    Finish ← false
+    repeat
+        iterate
+            output ("Ketik nomor di bawah [0..5] untuk memilih operasi")
+            output ("1. Membentuk dua buah polinom P1 dan P2")
+            output ("2. Menuliskan polinom P1,P2 dan P3")
+            output ("3. Menjumlahkan polinom P1 dan P2 menjadi P3")
+            output ("4. Mengurangkan P1 dan P2 menjadi P3")
+            output ("5. Membentuk turunan polinom P1 yaitu P3")
+            output ("0. Akhir proses")
+            input (Pilihan)
+        stop Pilihan ∈ [0..5]
+            output ("Ulangi, pilihan di luar harga yang ditawarkan")
+        { Pilihan sesuai, maka lakukan proses sesuai dengan Pilihan }
+        depend on Pilihan
+            Pilihan = 1 : CreatePol(P1); CreatePol(P2)
+            Pilihan = 2 : TulisPol(P1); TulisPol(P2); TulisPol(P3)
+            Pilihan = 3 : AddPol(P1,P2,P3)
+            Pilihan = 4 : SubPol(P1,P2,P3)
+            Pilihan = 5 : DerivPol(P1,P3)
+            Pilihan = 0 : Finish ← true
+    until Finish
+
+KAMUS
+    { Definisi sebuah polinom P adalah }
+    constant Nmax : integer = 100
+    type polinom : < Degree : integer ≥ 0,
+                    TabSuku : array [0..Nmax] of integer >
+    P1, P2, P3 : polinom
+    { P.TabSuku[i] adalah koefisien dari suku ke-i dari sebuah polinom }
+
+procedure InitPol (output P : polinom)
+{ I.S. : sembarang. F.S. Polinom P yang kosong dibentuk }
+{ Membentuk sebuah polinom kosong }
+KAMUS LOKAL
+    i : integer { indeks traversal }
+ALGORITMA
+    i traversal [0.. Nmax]
+        P.TabSuku[i] ← 0
+    P.Degree ← -999
+
+procedure CreatePol (output P : polinom)
+{ I.S. : sembarang }
+{ F.S. : Polinom P terdefinisi derajat dan koefisien-koefisiennya jika tidak
+"kosong"}
+{ Mengisi polinom P dengan membaca dari alat masukan, pemasukan harga diakhiri
+dengan mark }
+KAMUS LOKAL
+    i : integer { indeks traversal }
+    Deg, Coef : integer { input pasangan data derajat dan koefisien }
+    { pemasukan data diakhiri dengan Deg=-999,
+        mungkin terbentuk polinom kosong }
+    MaxDegree : integer { derajat masukan yang maksimum = derajat polinom }
+ALGORITMA
+    { Inisialisasi tabel penyimpan suku polinom }
+    InitPol(P)
+    { Input data : skema penanganan kasus kosong }
+    input (Deg,Coef)
+        if Deg = -999 then
+        output ("Polinom kosong")
+        P.Degree ← -999 { Definisi polinom kosong }
+    else { Deg ≠ -999 }
+        MaxDegree ← -999
+        repeat
+            P.TabSuku[Deg] ← Coef
+            if Deg > MaxDegree then
+                MaxDegree ← Deg
+            input (Deg,Coef)
+        until (Deg = -999)
+        P.Degree ← MaxDegree
+
+procedure TulisPol (input P : polinom)
+{ I.S. : P terdefinisi dan mungkin kosong }
+{ F.S. : Menulis polinom P }
+KAMUS LOKAL
+    i : integer { indeks traversal }
+ALGORITMA
+    if P.Degree ≠ -999 then
+        output ('I','P(I)')
+        i traversal [P.Degree..0]
+            if (P.TabSuku[i] ≠ 0 ) then
+                output (i,P.TabSuku[i])
+    else
+        output ("Polinom kosong")
+
+procedure AddPol (input P1, P2 : polinom, output P3 : Polinom)
+{ I.S. : P1, P2 terdefinisi dan mungkin kosong }
+{ F.S. : P3 = P1+P2, P3 adalah polinom baru }
+{ Menjumlahkan P1 + P2 dan menyimpan hasilnya di P3, P3 ≠ P1 and P3 ≠P2 }
+KAMUS LOKAL
+    i : integer { indeks traversal }
+    MaxDegree : integer { derajat masukan yang maksimum antara P1 dan P2 }
+ALGORITMA
+    InitPol (P3)
+    if P1.Degree > P2.Degree then
+        MaxDegree ← P1.Degree
+    else
+        MaxDegree ← P2.Degree
+    if MaxDegree ≠ -999 then
+        i traversal [MaxDegree..0]
+            P3.TabSuku[i] ← P1.TabSuku[i] + P2.TabSuku[i]
+            P3.Degree ← MaxDegree
+        { derajat P3 mungkin "turun" }
+        AdjustDegree(P3)
+
+procedure AddPolBis (input/output P1, P2 : polinom)
+{ I.S. P1 dan P2 terdefinisi, mungkin kosong }
+{ F.S. P1 = P1 + P2. }
+{ Representasi kontigu, menjumlahkan P1 + P2 dan menyimpan hasilnya di P1 }
+KAMUS LOKAL
+    i : integer { indeks traversal }
+    MaxDegree : integer { derajat masukan maksimum antara P1 dan P2 }
+ALGORITMA
+    if P1.Degree > P2.Degree then
+        MaxDegree ← P1.Degree
+    else
+        MaxDegree ← P2.Degree
+    if MaxDegree ≠ -9999 then
+        P1.Degree ← MaxDegree
+        i traversal [MaxDegree..0]
+            P1.TabSuku[i] ← P1.TabSuku[i] + P2.TabSuku[i]
+        AdjustDegree(P1)
+    {else : kedua polinom kosong. Tidak ada operasi.
+
+procedure SubPol (input P1, P2 : polinom, output P3 : polinom)
+{ I.S. : P1, P2 terdefinisi dan mungkin kosong }
+{ F.S. : P3 = P1-P2, P3 adalah polinom baru }
+{ Mengurangkan P1 - P2 dan menyimpan hasilnya di P3, P3 ≠ P1 and P3 ≠ P2 }
+KAMUS LOKAL
+    i : integer { indeks traversal }
+    MaxDegree : integer { derajat masukan yang maksimum antara P1 dan P2 }
+ALGORITMA
+    InitPol (P3)
+    if P1.Degree > P2.Degree then
+        MaxDegree ← P1.Degree
+    else
+        MaxDegree ← P2.Degree
+    if MaxDegree ≠ -999 then
+        i traversal [MaxDegree..0]
+            P3.TabSuku[i] ← P1.TabSuku[i] - P2.TabSuku[i]
+        { derajat polinom hasil mungkin "turun" !!!! }
+        AdjustDegree(P3)
+
+procedure DerivPol (input P : polinom, output P1 : polinom)
+{ I.S. : P terdefinisi, mungkin kosong }
+{ F.S. : P1 adalah turunan P }
+{ Membuat turunan P dan menyimpan hasilnya di P1, P1 ≠ P }
+KAMUS LOKAL
+    i : integer { indeks traversal }
+ALGORITMA
+    InitPol (P1)
+    if P.Degree ≠ -999 then
+        i traversal [P.Degree-1..1]
+            P1.TabSuku[i] ← (i+1) * P.TabSuku[i]+1
+        P.TabSuku0 ← P.TabSuku1
+        AdjustDegree(P1) { mungkin jadi kosong !!! }
+
+procedure AdjustDegree (input/output P : polinom)
+{ I.S. : P terdefinisi, mungkin kosong. P.Degree belum tentu merupakan derajat
+    polinom }
+{ F.S. : P terdefinisi, P.Degree berisi derajat polinom berdasarkan keadaan
+    P.Tabsuku }
+{ Derajat hanya mungkin "turun". Search i [P.Maxdegree} terbesar, dengan
+    TabSuku[i] ≠ 0 }
+KAMUS LOKAL
+    i : integer { indeks traversal }
+ALGORITMA
+    if P.Degree ≠ -9999 then
+        i ← P.Degree
+        while (i > 0) and (P.TabSuku[i] = 0) do
+            i ← i - 1
+        { i = 0 or P.TabSuku[i] ≠ 0 }
+        if (P.TabSuku[i] ≠ 0) then
+            P.Degree ← i
+        else
+            P.Degree ← -9999 { polinom jadi kosong !!!! }
+    { else: polinom kosong : tidak mungkin turun derajatnya }

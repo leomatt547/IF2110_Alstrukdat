@@ -1,0 +1,299 @@
+KAMUS
+{ Definisi sebuah polinom P adalah }
+type address : ... { terdefinisi alamat sebuah suku }
+type polinom : address { alamat elemen pertama list }
+type Suku : < Degree : integer, Coefficient : integer, Next : address >
+{ Polinom adalah List Suku,
+    dengan elemen yang selalu terurut menurun menurut Degree }
+P1, P2, P3 : polinom
+
+Program POLINOMIAL1
+{ Representasi BERKAIT, dengan notasi LOJIK }
+KAMUS
+    { Struktur data untuk representasi polinom }
+        type Address : ... {type terdefinisi }
+        type Suku : < Degree : integer,
+                    Coefficient : integer,
+                    Next : address >
+        type polinom : address
+        constant Nil : address { untuk address tidak terdefinisi }
+        P1, P2: polinom { operan }
+        P3 : polinom { hasil }
+    { Untuk interaksi: }
+        Finish : boolean { mengakhiri proses }
+        Pilihan : integer [0..5] { nomor tawaran }
+    { Primitif operasi polinom untuk operasi internal }
+        procedure AllocSuku (output Pt : address) { Alokasi sebuah suku }
+        procedure DeAllocSuku (input Pt : address) { Dealokasi sebuah suku }
+        procedure InitListPol (output P : polinom)
+        { Membuat polinom kosong P }
+        procedure InsertLast (input P : address, input/output P : polinom,
+                                input/output Last : address)
+        { Insert P sesudah elemen terakhir P dengan address elemen terakhir = Last }
+    { Primitif operasi polinom yang ditawarkan ke pengguna }
+        procedure CreateListPol (output P1 : polinom) { Mengisi polinom P1 }
+        procedure TulisListPol (input P : polinom) { Menulis polinom P }
+        procedure AddListPol (input P1, P2 : polinom, output P3 : polinom)
+        { Menjumlahkan P1 + P2 dan menyimpan hasilnya di P3,
+            P3 ≠ P1 dan P3 ≠P2 }
+        procedure SubListPol (input P1, P2 : polinom, output P3 : polinom)
+        { Mengurangkan P1 - P2 dan menyimpan hasilnya di P3,
+            P3 ≠ P1 dan P3 ≠P2 }
+        procedure DerivListPol (input P : polinom, output P1 : polinom)
+        { Membuat turunan P dan menyimpan hasilnya di P1, P1 ≠ P }
+ALGORITMA
+Finish ← false
+    repeat
+        iterate
+            output ("Ketik nomor di bawah [0..5] untuk memilih operasi")
+            output ("1. Membentuk dua buah polinom P1 dan P2")
+            output ("2. Menuliskan polinom P1,P2 dan P3")
+            output ("3. Menjumlahkan polinom P1 dan P2 menjadi P3")
+            output ("4. Mengurangkan P1 dan P2 menjadi P3")
+            output ("5. Membentuk turunan polinom P1 yaitu P3")
+            output ("0. Akhir proses")
+            input (Pilihan)
+        stop Pilihan ∈ [0..5]
+            output ("Ulangi, pilihan di luar harga yang ditawarkan")
+        { Pilihan sesuai, maka lakukan proses sesuai dengan Pilihan }
+        depend on Pilihan
+            Pilihan = 1 : CreatePol(P1); CreatePol(P2)
+            Pilihan = 2 : TulisPol(P1); TulisPol(P2); TulisPol(P3)
+            Pilihan = 3 : AddPol(P1,P2,P3)
+            Pilihan = 4 : SubPol(P1,P2,P3)
+            Pilihan = 5 : DerivPol(P1,P3)
+            Pilihan = 0 : Finish ← true
+    until Finish
+
+procedure InitListPol (output P : Polinom)
+{ I.S. sembarang; F.S. P polinom kosong terbentuk}
+{ Membuat polinom kosong }
+KAMUS LOKAL
+    -
+ALGORITMA
+    P ← Nil { Definisi Polinom kosong }
+
+procedure CreateListPol (output P1 : Polinom)
+{ I.S. : sembarang }
+{ F.S. : Polinom P terdefinisi derajat dan koefisien-koefisiennya jika tidak
+"kosong" }
+{ Mengisi list polinom P1 }
+KAMUS LOKAL
+    Deg, Coef : integer { input pasangan data derajat dan koefisien }
+    Pt, PrecPt : address { address traversal, PrecPt adalah sebelum Pt }
+    PNew : address { address alokasi, yang nantinya disisipkan }
+    Found : boolean
+ALGORITMA
+    { Skema proses sekuensial tanpa penanganan kasus kosong }
+    InitListPol(P1)
+    input (Deg, Coef) { Input data }
+    while (Deg ≠ -999) do
+        AllocSuku(PNew) { Alokasi sebuah suku polinom }
+        Degree(PNew) ← Deg; Coefficient(PNew) ← Coef; Next(PNew)← Nil
+        { Search tempat yang tepat, suku terurut mengecil menurut Degree }
+        { Catat address sebelumnya untuk penyisipan }
+        Pt ← P1; PrecPt ← Nil; Found ← false
+        while (Pt ≠ Nil) and (not Found) do
+            if Deg ≥ Degree(Pt) then
+                Found ← true
+            else PrecPt ← Pt; Pt ← Next(Pt)
+        { Found : Deg ≥ Degree(Pt) or Pt = Nil, sisipkan P1 setelah PrecPt }
+        if Deg > Degree(Pt) then
+            depend on PrecPt
+                PrecPt = Nil : { insert first }
+                                Next(PNew) ← P1; P1 ← PNew
+                PrecPt ≠ Nil : { insert after PrecPt }
+                                Next(PNew) ← Next(PrecPt); Next(PrecPt) ← PNew
+        { else error, duplikasi suku dengan derajat sama : tidak diproses }
+        input (Deg, Coef) { Next input data }
+
+procedure TulisListPol (input P : polinom)
+{ I.S. : P terdefinisi dan mungkin kosong }
+{ F.S. : Menulis polinom P sesuai dengan spesifikasi }
+KAMUS LOKAL
+    Pt : address { address traversal list }
+ALGORITMA
+    { Traversal list P dengan skema pemrosesan dengan penanganan kasus kosong,
+        tulis setiap suku }
+    Pt ← P
+    if ( Pt = Nil) then
+        output ("Polinom kosong")
+    else
+        output ("I","P(I)") { Inisialisasi, tulis judul }
+        repeat
+            output (Degree(Pt), Coefficient(Pt))
+            Pt ← Next(Pt)
+        until (Pt = Nil)
+
+procedure InsertLast (input Deg, Coef : integer, input/output P : polinom,
+input/output Last : address)
+{ I.S. : P mungkin kosong, <Deg, Coef> adalah derajat dan koefisien suku yang
+    akan di-insert sebagai elemen terakhir }
+{ F.S. : <Deg,Coeff> di-copy ke dalam elemen yang ditunjuk PNew, PNew di-insert
+    sebagai elemen terakhir P, Last menunjuk elemen terakhir }
+{ Alokasi elemen baru dianggap selalu berhasil }
+KAMUS LOKAL
+    PNew : address
+ALGORITMA
+    AllocSuku(PNew)
+    Degree(PNew) ← Deg
+    Coefficient(PNew) ← Coef
+    Next(PNew) ← Nil
+    if (P = Nil) then { insert first }
+        P ← PNew
+    else { insert after Last }
+        Next(Last) ← PNew
+    Last ← PNew
+
+procedure AddListPol (input P1, P2 : polinom, output P3 : polinom)
+{ I.S. : P1, P2 terdefinisi dan mungkin kosong }
+{ F.S. : P3 = P1 + P2, P3 polinom baru }
+{ Menjumlahkan P1 + P2 dan menyimpan hasilnya di P3, P3 ≠ P1 dan P3 ≠P2 }
+KAMUS LOKAL
+    Pt1, Pt2 : address
+    Last : address { alamat elemen terakhir P3 }
+    Sum : integer { penjumlahan coefficient P1 dan P2 }
+ALGORITMA
+    InitListPol(P3); Last ← Nil; Pt1 ← P1; Pt2 ← P2
+    while (Pt1 ≠ Nil) and (Pt2 ≠ Nil) do
+        depend on Pt1, Pt2
+            Degree(Pt1) > Degree(Pt2) :
+                        { Salin & insert Pt1 ke P3, Pt1 maju }
+                        InsertLast(Degree(Pt1),Coefficient(Pt1),P3,Last)
+                        Pt1 ← Next(Pt1)
+            Degree(Pt1) = Degree(Pt2) :
+                        { Jumlahkan Coefficient, salin & insert jika tidak nol,
+                            Pt1 & Pt2 maju }
+                        Sum ← Coefficient(Pt1) + Coefficient(Pt2)
+                        if (Sum ≠ 0) then
+                            InsertLast(Degree(Pt1),Sum,P3,Last)
+                        { else tidak di-insert karena Coefficient bernilai nol }
+                        Pt1 ← Next(Pt1); Pt2 ← Next(Pt2)
+            Degree(Pt1) < Degree(Pt2) :
+                        { Salin & insert Pt2, Pt2 maju }
+                        InsertLast(Degree(Pt2),Coefficient(Pt2),P3,Last)
+                        Pt2 ← Next(Pt2)
+    { Pt1 = Nil or Pt2 = Nil }
+    while (Pt1 ≠ Nil) do { proses sisa P1 }
+        InsertLast(Degree(Pt1),Coefficient(Pt1),P3,Last)
+        Pt1 ← Next(Pt1)
+    while (Pt2 ≠ Nil) do { proses sisa P2 }
+        InsertLast(Degree(Pt2),Coefficient(Pt2),P3,Last)
+        Pt2 ← Next(Pt2)
+
+procedure AddListPolBis (input/output P1, P2 : polinom)
+{ Representasi BERKAIT : }
+{ I.S. : P1 dan P2 sembarang. }
+{ F.S. : P1 = P1 + P2 }
+{ Menjumlahkan P1 + P2 dan menyimpan hasilnya di P1 }
+KAMUS LOKAL
+    Pt1, Pt2 : address { indeks traversal }
+    PrecPt1 : address
+    PDel : address { alokasi sebuah suku baru }
+ALGORITMA
+    if P1 = Nil then { kaitkan P2 ke P1 }
+    P1 ← P2
+    else { P1 minimal mempunyai 1 elemen }
+        Pt1 ← P1; PrecPt1 ← Nil { predesesor elmt pertama tak terdefinisi }
+        Pt2 ← P2
+        while (Pt1 ≠ Nil) and (Pt2 ≠ Nil) do
+            depend on Pt1, Pt2
+                Degree(Pt1) > Degree(Pt2): { Maju ke elmt P1 yg berikut }
+                            PrecPt1 ← Pt1; Pt1 ← Next(Pt1)
+                Degree(Pt1) = Degree(Pt2): { Jumlahkan koefisien, cek hasil }
+                            if Coefficient(Pt1) + Coefficient(Pt2) = 0 then
+                                { Hapus Pt1, Pt1 ke elmt berikut, PrecPt1 tetap }
+                                { Delete (PrecPt1,Pt1), mungkin delete First!!! }
+                                PDel ← Pt1
+                                if (Pt1 = P1) then
+                                    P1 ← Next(P1) { Delete first }
+                                    Pt1 ← P1
+                                else { Delete after PrecPt1 }
+                                    Next(PrecPt1) ← Next(Pt1)
+                                    Pt1 ← Next(Pt1)
+                                { Dealokasi PDel }
+                                DeallocSuku(PDel)
+                                { Hapus Pt2, maju }
+                                PDel ← Pt2
+                                Pt2 ← Next(Pt2)
+                                DeallocSuku(PDel)
+                            else { Update koefisien Pt1 }
+                                Coefficient(Pt1) ← Coefficient(Pt1) + Coefficient(Pt2)
+                                PrecPt1 ← Pt1; Pt1 ← Next(Pt1)
+                                Pt2 ← Next(Pt2)
+                Degree(Pt1) < Degree(Pt2): { Insert Pt2 sebelum Pt1 }
+                            { InsertAfter(Pt2,PrecPt1) }
+                            Temp ← Next(PrecPt1); Next(PrecPt1) ← Pt2
+                            Pt2 ← Next(Pt2); Next(Pt2) ← Temp
+                            PrecPt1 ← Pt2
+        { Pt1 = Nil or Pt2 = Nil }
+        if (Pt1 = Nil) then { gabungkan sisa Pt2 dg elemen terakhir Pt1 }
+            if (PrecPt1 ≠ Nil) then
+                Next(Pt2) ← Pt1 { insert first }
+            else
+                Next(PrecPt1) ← Pt2
+
+procedure SubListPol (input P1, P2 : polinom, output P3 : polinom)
+{ I.S. : P1, P2 terdefinisi dan mungkin kosong }
+{ F.S. : P3 = P1-P2, P3 polinom baru }
+{ Mengurangkan P1 - P2 dan menyimpan hasilnya di P3, P3 ≠ P1 dan P3 ≠ P2 }
+KAMUS LOKAL
+    Pt1, Pt2 : address { address traversal }
+    PNew : address { alokasi sebuah suku baru }
+    Last : address { alamat elemen terakhir P3 }
+    Diff : integer { pengurangan coefficient P1 dan P2 }
+ALGORITMA
+    InitListPol(P3); Last ← Nil; Pt1 ← P1; Pt2 ← P2
+    while (Pt1 ≠ Nil) and (Pt2 ≠ Nil) do
+        depend on Pt1, Pt2
+            Degree(Pt1) > Degree(Pt2) :
+                        { Salin & insert Pt1 ke P3, Pt1 maju }
+                        InsertLast(Degree(Pt1),Coefficient(Pt1),P3,Last)
+                        Pt1 ← Next(Pt1)
+            Degree(Pt1) = Degree(Pt2) :
+                        { Kurangkan Coefficient, Salin dan insert jika tidak nol,
+                            Pt1 & Pt2 maju }
+                        Diff ← abs(Coefficient(Pt1) - Coefficient(Pt2))
+                        if (Diff ≠ 0) then
+                            InsertLast(Degree(Pt1),Diff,P3,Last)
+                        { else tidak di-insert karena Coefficient bernilai nol }
+                        Pt1 ← Next(Pt1); Pt2 ← Next(Pt2)
+            Degree(Pt1) < Degree(Pt2) :
+                        { Salin&insert Pt2 ke P3,Pt2 maju }
+                        InsertLast(Degree(Pt2),Coefficient(Pt2),P3,Last)
+                        Pt2 ← Next(Pt2)
+    { Pt1 = Nil or Pt2 = Nil : tuliskan sisanya ke P3 }
+    { Proses sisa P1, jika ada }
+    while (Pt1 ≠ Nil) do { Proses sisa P1 }
+        { Alokasi sebuah suku polinom }
+        InsertLast(Degree(Pt1),Coefficient(Pt1),P3,Last)
+        Pt1 ← Next(Pt1)
+    { Proses sisa P2, jika ada }
+    while (Pt2 ≠ Nil) do { Proses sisa P2 }
+        { Alokasi sebuah suku polinom }
+        InsertLast(Degree(Pt2),Coefficient(Pt2),P3,Last)
+        Pt2 ← Next(Pt2)
+
+procedure DerivListPol (input P : polinom, output P1 : polinom)
+{ I.S. P terdefinisi, mungkin kosong }
+{ F.S. P1 adalah turunan P, polinom baru }
+{ Membuat turunan P dan menyimpan hasilnya di P1, P1 ≠ P }
+KAMUS LOKAL
+    Pt : address { address untuk traversal }
+    Last : address { alamat elemen terakhir P1 }
+ALGORITMA
+    InitListPol(P1); Last ← Nil
+    Pt ← P
+    if (Pt ≠ Nil) then
+        { Minimal satu elemen, proses elemen terakhir secara khusus }
+        while (Next(Pt) ≠ Nil) do
+            { Salin dan Insert Pt sebagai elemen terakhir P1 }
+            InsertLast(Degree(Pt)-1,Degree(Pt)*Coefficient(Pt),P1,Last)
+            { Next elemen list polinom }
+            Pt ← Next(Pt)
+        { Next(Pt) = Nil), elemen terakhir,
+            cek apakah berderajat 0, jika tidak baru diproses }
+        if (Degree(Pt) ≠ 0) then
+            InsertLast(Degree(Pt)-1,Degree(Pt)*Coefficient(Pt),P1,Last)
+
+

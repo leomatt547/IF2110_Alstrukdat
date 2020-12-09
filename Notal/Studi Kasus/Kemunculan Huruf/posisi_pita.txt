@@ -1,0 +1,147 @@
+Program MUNCULH1
+{ Diberikan sebuah pita karakter hanya berisi blank dan ‘a’..’z’, menghitung
+kemunculan setiap huruf dan posisi kemunculan, dengan output sesuai spesifikasi
+pada halaman 1 }
+KAMUS
+    N : integer { banyaknya kemunculan huruf yang sedang diproses pada
+                    pita }
+    Posisi : integer { posisi karakter yang sedang dibaca pada pita }
+ALGORITMA
+    START
+    if (CC = ‘.’) then
+        output ("Pita kosong")
+    else
+        C traversal[‘a’..’z’]
+        N ← 0 { Banyaknya kemunculan huruf C adalah Nol }
+        Posisi ← 1 { posisi pada karakter pertama }
+        repeat
+            if (CC = C) then
+                N ← N + 1 { Huruf C muncul }
+                if (N = 1) then
+                output (C) { C hanya ditulis sekali pd awal kemunculan }
+                output (posisi)
+            ADV
+            Posisi ← Posisi + 1 { Posisi bertambah 1 karena ADV }
+        until (CC = ‘.’)
+        if (N > 0) then { Hanya menulis jika C muncul minimal 1 kali}
+            output ("Muncul ", N, " kali")
+        START { untuk memproses huruf yang berikutnya }
+    { CC = ‘.’ semua huruf sudah diperiksa terhadap C dan sudah ditulis}
+
+Program Kemunculan1
+{ Representasi KONTIGU dengan matriks boolean }
+{ Skema proses sekuensial dengan mark, dengan penanganan kasus kosong }
+KAMUS
+    constant Nmax : integer = 100 { maksimum isi pita yang diproses adalah
+    100 }
+    MatMuncul : matrix ['a'..'z', 1..Nmax] of boolean
+    { MatMuncul(C,I) adalah kemunculan karakter C sebagai urutan ke-I
+    dalam pita }
+    Count : integer [1..Nmax] { jumlah kemunculan sebuah huruf }
+    Posisi : integer { posisi karakter pada pita }
+    JumlahKar : integer { banyaknya karakter pada pita }
+    C : character ['a'..'z'] { indeks traversal matriks }
+    i, j : integer [1..NMax] { kemunculan karakter,
+                                juga indeks traversal matriks }
+ALGORITMA
+    START
+    if CC = '.' then
+        output ("Pita kosong, tidak ada isinya")
+    else
+        { Inisialisasi : traversal, mengosongkan matriks kemunculan }
+        C traversal ['a'..'z']
+            i traversal [1..100]
+            MatMuncul[C,i] ← false
+        Posisi ← 1
+        { Proses sekuensial satu kali traversal isi pita }
+        repeat
+            depend on CC :
+                CC = ' ' : -
+                CC ≠ ' ' : MatMuncul [CC,Posisi] ← true
+            Posisi ← Posisi + 1
+            ADV
+        until (CC = '.') or (Posisi > 100)
+        { Penulisan hasil : traversal }
+        JumlahKar ← Posisi - 1
+        C traversal ['a'..'z']
+            { Untuk setiap karakter: }
+            { Search sampai ketemu true, berarti ada huruf ybs. muncul }
+            i ← 1
+            while (i < JumlahKar) and (not MatMuncul[C,i]) do
+                i ← i + 1
+            { i = Posisi or MatMuncul(C,i) }
+            depend on MatMuncul(C,i)
+                not MatMuncul[C,i] : - { berarti huruf C tidak muncul }
+                MatMuncul[C,i] : { berarti huruf C muncul }
+                    output (C)
+                    Count ← 1; output(i)
+                    if (i = JumlahKar) then
+                        { outputkan yg muncul ,
+                        traversal menghitung dimana saja muncul }
+                        j traversal [i +1..100]
+                            if MatMuncul C,j then
+                                Count ← Count + 1; output(j)
+                        output ("Muncul ", Count, " kali")
+
+Program Kemunculan2a
+{ Representasi list huruf kontigu, list posisi BERKAIT dengan POINTER }
+{ Skema proses sekuensial dengan mark, dengan penanganan kasus kosong }
+KAMUS
+    type Address : pointer to ElmtList
+    HeadList : array ['a'..'z'] of address { tabel alamat elemen pertama }
+    type ElmtList : < Posisi : integer [1..100], Next : address >
+    P : address
+    Count : integer [1..100] { Kemunculan setiap huruf }
+    JumlahKar : integer { Jumlah karakter pada pita }
+    C : character ['a'..'z'] { Untuk traversal karakter abjad }
+    procedure InsertLast (input/output First, P : address)
+        { Insert P sesudah elemen terakhir list First,
+        P sudah dialokasi dan informasinya terdefinisi }
+ALGORITMA
+    START
+    if CC = '.' then
+        output ("Pita kosong, tidak ada isinya")
+    else
+        { Inisialisasi : traversal untuk mengosongkan list kemunculan}
+        C traversal ['a'..'z']
+            HeadList[C] ← Nil
+        JumlahKar ← 0
+        { Proses sekuensial }
+        repeat
+            JumlahKar ← JumlahKar + 1
+            depend on CC :
+                CC = ' ' : -
+                CC ≠ ' ' : Alokasi(P)
+                        if (P ≠ Nil) then
+                            Posisi(P) ← JumlahKar
+                            Next(P) ← Nil
+                            InsertLast(HeadList[CC],P)
+            ADV
+        until (CC = '.')
+        { Penulisan hasil : traversal }
+        C traversal ['a'..'z']
+            P ← HeadList[C]
+            if (P ≠ Nil) then
+                output (C, ":"); Count ← 0
+                repeat
+                    Count ← Count + 1
+                    output (Posisi(P))
+                    P ← Next(P)
+                until (K = Nil)
+            output ("Muncul ", Count, " kali")
+
+procedure InsertLast (input/output First, P : address)
+{ Insert P sesudah elemen terakhir list First, P sudah dialokasi dan
+informasinya terdefinisi }
+KAMUS LOKAL
+    Last : address
+ALGORITMA
+    if (First = Nil) then { Insert first }
+        First ← P
+    else { traversal sampai Last dg mencatat address,
+            kemudian insert sebagai suksesor Last }
+        Last ← First
+        while (Next(Last) ≠ Nil) do
+            Last ← Next(Last)
+        { Next(Last) = Nil }
+        Next(Last) ← P
