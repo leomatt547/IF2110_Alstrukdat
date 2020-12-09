@@ -146,6 +146,25 @@ ALGORITMA
                         q ← P
                         P ← Left(P)
 
+function EvalExpTree (B: BinTree) --> real 
+{melemparkan nilai yang merupakan hasil evaluasi B. Jika kosong, melemparkan UndefVal}
+KAMUS LOKAL
+    l_var : integer
+    r_var : integer
+ALGORITMA
+    if (IsTreeEmpty(B)) then
+        --> UndefVal
+    else if (IsTreeOneElmt(B)) and (IsOperan(Akar(B))) then
+        --> getRealValue(Akar(B))
+    else {Rekurens}
+        l_var <-- EvalExpTree(Left(B))
+        r_var <-- EvalExpTree(Right(B))
+        depend on Akar(B):
+            IsAdd(Akar(B)) : --> l_var+r_var
+            IsSubstract(Akar(B)) : --> l_var-r_var
+            IsMultiply(Akar(B)) : --> l_var*r_var
+            IsDivide(Akar(B)) : --> l_var/r_var
+
 procedure InsSearchTree (input X: infotype, input/output P: BinTree)
 { Menambahkan sebuah node X ke pohon biner pencarian P }
 { infotype terdiri dari key dan count. Key menunjukkan nilai unik, dan }
@@ -340,6 +359,33 @@ ALGORITMA
         PostOrder(Right(P))
         Proses(P)
 
+procedure PrintExpTree(input B: BinTree) 
+{I.S.: B mungkin kosong} 
+{F.S.: ekspresi yang direpresentasikan oleh B tercetak. Lihat contoh dibawah ini}
+KAMUS LOKAL
+ALGORITMA
+
+procedure PrintFBS (input P: BinTree)
+{I.S. : P terdefinisi; tidak mungkin kosong dan merepresentasikan suatu}
+{ ekspresi aritmatika yang valid.}
+{F.S. : Seluruh elemen P tercetak ke layar secara Breadth-First: terurut}
+{ mulai dari level teratas sampai terbawah, dan untuk setiap level}
+{ dari node terkiri ke node terkanan.}
+{Proses : Mencetak semua elemen.}
+KAMUS LOKAL
+    Q : Queue
+    Pt : BinTree
+ALGORITMA
+    Add(Q,P)
+    if (not IsUnerLeft(Pt)) then
+        Add(Q,Right(Pt)) then
+    If (not IsUnerRight(Pt)) then
+        Add(Q,Left(Pt))
+    iterate:
+        Del(Q,Pt)
+        output (Akar(Pt))
+    stop: (IsEmpty(Q) and IsTreeEmpty(Pt))
+
 function Right (P : BinTree) → BinTree
 { Mengirimkan anak kanan dari Pohon Biner yang tidak kosong }
 KAMUS LOKAL
@@ -370,6 +416,24 @@ ALGORITMA
             IsUnerRight(P) : --> SearchDaun(Right(P),X)
             IsBiner(P) : --> SearchDaun(Left(P),X)) or SearchDaun(Right(P),X)
 
+procedure SmashedTree (input P: BinTree, output x: string)
+{I.S. : P terdefinisi; tidak mungkin kosong dan merepresentasikan suatu}
+{       ekspresi aritmatika yang valid.}
+{F.S. : Menghasilkan x dimana sebuah string yang merepresentasikan pohon P}
+{       secara linier.}
+{Proses : Menghasilkan struktur flat berdasarkan struktur bertingkat dari}
+{         sebuah pohon. Pada kasus kedua contoh pohon di atas, prosedur}
+{         akan menghasilkan string: “15*11-5”}
+KAMUS LOKAL
+    tempx : infotype
+ALGORITMA
+    if IsTreeEmpty(P) then { Basis-0 }
+        {Do Nothing}
+    else { Rekurens, tidak kosong }
+        SmashedTree(Left(P), x & tempx)
+        tempx <-- Akar(P)
+        SmashedTree(Right(P),x & tempx)
+    
 function Tinggi (R : BinTree) → integer
 { Pohon Biner mungkin kosong. Mengirim “depth” yaitu tinggi dari pohon }
 { Basis: Pohon kosong: tingginya nol }
