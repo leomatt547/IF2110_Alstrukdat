@@ -364,6 +364,19 @@ procedure PrintExpTree(input B: BinTree)
 {F.S.: ekspresi yang direpresentasikan oleh B tercetak. Lihat contoh dibawah ini}
 KAMUS LOKAL
 ALGORITMA
+    if (IsTreeEmpty(B)) then
+        {do nothing}
+    else
+        if (IsOperan(B)) then
+            output(Akar(B))
+        else
+            if(IsOperator(Akar(B))) then
+                output("(")
+            PrintExpTree(Left(B))
+            output(Akar(B))
+            PrintExpTree(Right(B))
+            if(IsOperator(Akar(B))) then
+                output(")")
 
 procedure PrintFBS (input P: BinTree)
 {I.S. : P terdefinisi; tidak mungkin kosong dan merepresentasikan suatu}
@@ -386,6 +399,22 @@ ALGORITMA
         output (Akar(Pt))
     stop: (IsEmpty(Q) and IsTreeEmpty(Pt))
 
+function RemberDaun (P : BinTree, X : infotype) --> BinTree
+{ Menghasilkan sebuah pohon biner baru yang merupakan salinan dari P 
+tanpa semua daun yang bernilai X. P mungkin kosong.
+Diasumsikan alokasi elemen baru selalu berhasil }
+KAMUS LOKAL
+    PAkhir: BinTree
+ALGORITMA
+    if (IsTreeEmpty(P)) then
+        -> Nil
+    else
+        AlokNode(PAkhir)
+        if (Akar(P)<>X) then
+            Left(PAkhir) <-- RemberDaun (Left(P),X)
+            Right(PAkhir) <-- RemberDaun (Right(P),X)
+    -->PAkhir
+
 function Right (P : BinTree) → BinTree
 { Mengirimkan anak kanan dari Pohon Biner yang tidak kosong }
 KAMUS LOKAL
@@ -402,6 +431,21 @@ ALGORITMA
     else
         if Akar(P) = X then
             --> True
+        else
+            Search(Left(P),x) or Search(Right(P),X)
+
+function SearchAdrX (P: bintree, X:infotype) --> address
+{Mengirimkan alamat X pada pohon P; mengirimkan Nil jika X tidak ada pada pohon
+Jika ada lebih dari satu X di pohon P, ambil X paling kiri}
+KAMUS LOKAL
+    found : boolean
+ALGORITMA
+    if (IsTreeEmpty(P)) then
+        --> Nil
+    else
+        if (Akar(P) = X) and (not found) then
+            found <-- True
+            --> P
         else
             Search(Left(P),x) or Search(Right(P),X)
 
@@ -457,6 +501,19 @@ ALGORITMA
         Right(P) ← R
     { end if }
     → P
+
+function TreeToQ (input P : BinTree, input/output Q : Queue)
+{I.S.: P terdefinisi
+F.S.: Seluruh Info node pada pohon P masuk ke Queue Q secara pre-order}
+KAMUS LOKAL
+ALGORITMA
+    if (IsTreeEmpty(P)) then
+        {do nothing}
+    else
+        Push(Q,Akar(P))
+        TreetoQ(Left(P),Q)
+        TreetoQ(Right(P),Q)
+
 
 List2BBST(L):
 if IsEmpty(L) then

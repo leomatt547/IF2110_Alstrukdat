@@ -129,6 +129,17 @@ KAMUS LOKAL
 ALGORITMA
     → Info(L)
 
+procedure InsertLast (input/output L : List, input X : infotype)
+{ I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
+{ F.S. X menjadi elemen terakhir L jika alokasi X berhasil. Jika alokasi gagal, L tetap.}
+Kamus Lokal
+    P : address
+Algoritma
+    if IsEmpty(L) then {basis}
+        L ← Alokasi(X)
+    else
+        InsertLast(Next(L),X)
+
 function IsEqual(L1,L2:List) → boolean
 { Menghasilkan true jika L1 dan L2 adalah list yang sama,
 false jika tidak }
@@ -151,17 +162,6 @@ Algoritma
         → False
     else
         → (Info(L)=X) or Ismember(Next(L), X)
-
-procedure InsertLast (input/output L : List, input X : infotype)
-{ I.S. L terdefinisi, mungkin kosong. X terdefinisi. }
-{ F.S. X menjadi elemen terakhir L jika alokasi X berhasil. Jika alokasi gagal, L tetap.}
-Kamus Lokal
-    P : address
-Algoritma
-    if IsEmpty(L) then {basis}
-        L ← Alokasi(X)
-    else
-        InsertLast(Next(L),X)
 
 function Konso (L : List, e : InfoType) → List
 { Mengirimkan list L dengan tambahan e sebagai elemen pertamanya }
