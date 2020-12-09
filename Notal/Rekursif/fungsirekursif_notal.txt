@@ -1,0 +1,36 @@
+procedure factorial (input N : integer, output F : integer)
+{ I.S. N>0 }
+{ F.S. F=N! }
+{ Proses:menghasilkan N! dengan memanggil prosedur iterasi yang sesuai }
+KAMUS LOKAL
+    -
+ALGORITMA
+    FactIter1 (N,1,1,F) { atau : factIter2(N,1,F ) }
+
+procedure factIter1 (input N, Count : integer,
+input/output Akumulator : integer, output F: integer)
+{ I.S. N>0; Count:pencacah; Akumulator=Count! }
+{ F.S. F=N! jika Count=N }
+{ Proses : Mengirim N! sesuai dengan definisi faktorial: }
+{ versi iteratif dengan mekanisme eksekusi rekursif }
+KAMUS LOKAL
+    -
+ALGORITMA
+    if (N=Count) then
+        F ← Akumulator * N
+    else
+        factIter1(N, Count+1, Akumulator * Count, F)
+
+procedure factIter2 (input N : integer, input/output Akumulator : integer,
+output F : integer)
+{ I.S. N>0, Akumulator=0 }
+{ F.S. Menghasilkan F=N! }
+{ Proses : Mengirim N! sesuai dengan definisi faktorial }
+{ versi iteratif dengan mekanisme eksekusi rekursif }
+KAMUS LOKAL
+ALGORITMA
+if (N=0) then
+    F ← Akumulator
+else
+    factIter(N-1, Akumulator * N, F)
+
