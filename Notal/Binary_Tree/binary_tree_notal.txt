@@ -72,6 +72,24 @@ else
         InsSearchTree(Infos[i], T)
     --> T
 
+procedure BuildTreeFromString (input str : string. input/output idx : integer, output P:BinTree)
+{Membentuk pohon biner yang merepresentasikan ekspresi aritmatika bilangan integer 1 digit
+dari string masukan dalam notasi prefix, pohon p dan subpohonnya selalu biner}
+{I.S. str dan idx terdefinisi, str bukan string kosong
+F.S. pohon biner P terbentuk}
+KAMUS LOKAL
+    Pt : address
+ALGORITMA
+    idx <-- idx + 1
+    if (str[idx] = ')') then
+        P <-- Nil
+    else
+        Pt <-- Alokasi(st[idx])
+        idx <-- idx+1
+        BuildTreeFromString(str,idx,Left(T))
+        BuildTreeFromString(str,idx,Right(T))
+    idx <-- idx + 1
+
 function CountNonDaun --> integer ≥ 0
     {CountNonDaun(P) mengembalikan jumlah simpul yang
     bukan merupakan simpul daun pada P}
