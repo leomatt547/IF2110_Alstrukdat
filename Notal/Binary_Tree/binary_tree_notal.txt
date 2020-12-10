@@ -165,6 +165,20 @@ ALGORITMA
             IsMultiply(Akar(B)) : --> l_var*r_var
             IsDivide(Akar(B)) : --> l_var/r_var
 
+procedure FindDescendantsOfX (input P : BinTree, input X: infotype, input/output Q: Queue)
+{I.S.:P terdefinisi, X pasti ada sebagai info pada salah satu node pohon P
+F.S.: Jika PtrX adalah alamat node pada pohon P dengan info=X, info dari seluruh node
+        yang merupakan descendant PtrX masuk ke Queue Q}
+KAMUS LOKAL
+    Pt: address
+ALGORITMA
+    if (IsTreeEmpty(P)) then
+        {do nothing}
+    else
+        Pt <-- SearchAdrX(P,x)
+        if (Pt <> Nil)
+            TreeToQ(Pt,Q)
+        
 procedure InsSearchTree (input X: infotype, input/output P: BinTree)
 { Menambahkan sebuah node X ke pohon biner pencarian P }
 { infotype terdiri dari key dan count. Key menunjukkan nilai unik, dan }
@@ -471,12 +485,12 @@ procedure SmashedTree (input P: BinTree, output x: string)
 KAMUS LOKAL
     tempx : infotype
 ALGORITMA
-    if IsTreeEmpty(P) then { Basis-0 }
-        {Do Nothing}
+    if IsTreeEmpty(P) then
+        --> {do nothing}
     else { Rekurens, tidak kosong }
-        SmashedTree(Left(P), x & tempx)
-        tempx <-- Akar(P)
-        SmashedTree(Right(P),x & tempx)
+        SmashedTree(Left(P), x)
+        x <-- x & Akar(P)
+        SmashedTree(Right(P),x)
     
 function Tinggi (R : BinTree) → integer
 { Pohon Biner mungkin kosong. Mengirim “depth” yaitu tinggi dari pohon }

@@ -1,0 +1,71 @@
+type adrVertex : pointer to adrVertex
+type Vertex :<Id : integer,
+            Next : adrVertex>
+type VList : <First, Last : adrVertex>
+type adrEdge : pointer to Edge
+type Edge : < Prec : adrVertex
+              Succ : adrVertex
+              Next : adrEdge >
+type EList : <First, Last : adrEdge>
+type Graph : <V: VList,E : EList>
+{Selektor}
+{Jika G : Graph, V:VList , E:Elist, Pv:adrVertex, Pe : adrEdge, maka penulisan:
+    Vertices(G) menjadi G.V
+    Edges(G) menjadi G.E
+    FirstV(V) menjadi V.First
+    LastV(V) menjadi V.Last
+    FirstE(E) menjadi E.First
+    LastE(E) menjadi E.Last
+    Id(Pv) menjadi Pv^.Id
+    Next(Pv) menjadi Pv^.Next
+    Prec(Pe)menjadi Pe^.Prec
+    Succ(Pe) menjadi Pe^.Succ
+    Next(Pe) menjadi Pe^.Next}
+
+SearchEdge (G:Graph, prec:integer, succ:integer) --> adrEdge
+{Mengembalikan address busur yang menyimpan info busur (prec,succ) jika ada 
+pada graph G, Nil jika tidak ada. prec dan succ mungkin bukan simpul pada G}
+KAMUS LOKAL
+    Pe : adrEdge
+    E : EList
+    found : boolean
+ALGORITMA
+    E <-- Edges(G)
+    if (FirstE(E)=Nil) then
+        --> Nil
+    else
+        found <-- False
+        Pe <-- Firts(E)
+        while (Pe<>dummy) and (not found) do
+            if (Id(Prec(Pe))=prec) and (Id(Succ(Pe))=succ) then
+                found <-- True
+            else 
+                Pe <-- Next(Pe)
+        if (Pe = dummy) and (found) then
+            --> Pe
+        else
+            --> Nil
+
+procedure InsEdge (G:Graph, prec:integer, succ:integer) 
+{Menambahkan busur dari prec menuju succ ke dalam G
+I.S. G terdefinisi, prec,succ adalah simpul G; busur(prec,succ) belum ada pada G
+F.S. Jika alokasi berhasil, busur (prec,succ) menjadi elemen terakhir Edges(G)
+    Jika alokasi gagal, G tetap}
+KAMUS LOKAL
+    E: EList
+    Pe : adrEdge
+ALGORITMA
+    E <-- Edges(G)
+    if (FirstE(E)=dummy) then
+        Pe <-- AlokEdge(prec,succ)
+        if (Pe <> Nil) then
+            FirstE(E) <-- Pe
+            Next(Pe) <-- Nil
+    else
+        Pe <-- AlokEdge(prec,succ)
+        if (Pe <> Nil) then
+            LastE(E) <-- Pe
+            Next(Pe) <-- LastE(E)
+        
+InsVer
+
