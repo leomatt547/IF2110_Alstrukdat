@@ -114,13 +114,15 @@ Algoritma
         else
             → 0 + CountPos(Next(L))
 
-function Fibonancci (N):
-    if N = 0:
-        return 0
-    else if N = 1
-        return 1
-    else:
-        return Fib(N-1) + Fib(N-2)
+procedure DelAllMulOfX (input/output L: List, input X :integer)
+{I.S. L terdefinisi dan mungkin kosong}
+{F.S. Seluruh elemen pada L yang merupakan kelipatan dari X sudah dihapus dari L}
+KAMUS LOKAL
+ALGORITMA
+    if (not IsEmpty(L)) then
+        if (Info(L)=X) then
+            Next(L) = Next(Next(L))
+        DelAllMulOfX(Next(L),X)
 
 function FirstElmt (L : List) → InfoType
 { Mengirimkan elemen pertama sebuah list L yang tidak kosong }
@@ -143,9 +145,9 @@ Algoritma
 function IsEqual(L1,L2:List) → boolean
 { Menghasilkan true jika L1 dan L2 adalah list yang sama,
 false jika tidak }
-Kamus Lokal:
+KAMUS LOKAL
     equal : boolean
-Algoritma
+ALGORITMA
     depend on (L1,L2)
         (IsEmpty(L1) = IsEmpty(L2)) : → True
         (not(IsEmpty(L1)) = IsEmpty(L2)):  → False
@@ -163,6 +165,16 @@ Algoritma
     else
         → (Info(L)=X) or Ismember(Next(L), X)
 
+function IsOrdered (L:List) → boolean
+{Mengirimkan true jika list terurut membesar, false jika tidak.}
+Asumsi: List tidak kosong}
+KAMUS LOKAL
+ALGORITMA
+    if (IsOneElmt(L)) then
+        --> True
+    else
+        --> IsOrdered(Next(L)) and (Info(L) < Info(Next(L)))
+        
 function Konso (L : List, e : InfoType) → List
 { Mengirimkan list L dengan tambahan e sebagai elemen pertamanya }
 { Jika alokasi gagal, mengirimkan L }
@@ -346,16 +358,21 @@ else
     else
         Search(X, L, IAwal+1, Idx, found)
 
-
-function Segitiga (N: integer) → integer
-Kamus Lokal
-
-Algoritma
-    if N = 1 then
-        →i
+function SumGenap (L:List) --> integer
+{Mengirimkan hasil penjumlahan seluruh elemen list yang bernilai genap,
+atau nol jika list kosong}
+KAMUS LOKAL
+    P : address
+ALGORITMA
+    if (IsEmpty(L)) then
+        --> 0
     else
-        → N + Segitiga(N-1)
-        
+        P <-- First(L)
+        if (Info(P) mod 2 = 0) then
+            --> Info(P) + SumGenap(Next(L))
+        else
+            --> SumGenap(Next(L))
+     
 procedure SortList (input/output L : List)
 { I.S. L terdefinisi, tidak kosong }
 { F.S. elemen-elemen L terurut membesar }

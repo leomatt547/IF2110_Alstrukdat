@@ -34,3 +34,19 @@ if (N=0) then
 else
     factIter(N-1, Akumulator * N, F)
 
+function Fibonancci (N):
+    if N = 0:
+        return 0
+    else if N = 1
+        return 1
+    else:
+        return Fib(N-1) + Fib(N-2)
+        
+function Segitiga (N: integer) → integer
+Kamus Lokal
+
+Algoritma
+    if N = 1 then
+        →i
+    else
+        → N + Segitiga(N-1)

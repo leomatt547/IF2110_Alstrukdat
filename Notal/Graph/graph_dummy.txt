@@ -46,7 +46,7 @@ ALGORITMA
         else
             --> Nil
 
-procedure InsEdge (G:Graph, prec:integer, succ:integer) 
+procedure InsEdge (input/output G:Graph, prec:integer, succ:integer) 
 {Menambahkan busur dari prec menuju succ ke dalam G
 I.S. G terdefinisi, prec,succ adalah simpul G; busur(prec,succ) belum ada pada G
 F.S. Jika alokasi berhasil, busur (prec,succ) menjadi elemen terakhir Edges(G)
@@ -67,5 +67,35 @@ ALGORITMA
             LastE(E) <-- Pe
             Next(Pe) <-- LastE(E)
         
-InsVer
+procedure DelVertex (input/output G:Graph, input X : integer)
+ {Menghapus simpul X dari G}
+ {I.S. G terdefinisi, X terdefinisi dan ada pada G, jumlah simpul pada G lebih dari 1}
+ {F.S. busur(prec,succ) dihapus dari G}
+ KAMUS LOKAL
+    E : Elist
+    V : VList
+    Pe : adrEdge
+    Pv : adrVertex
+    i : integer
+ ALGORITMA
+    if (FirstE(E)<> Nil) and (FirstV(V)<>Nil) then
+        Pv <-- SearchVertex(G,X)
+        if (Pv <> Nil) then
+            Pe <-- FirstE(E)
+            if (Prec(Pe)=Pv) or (Succ(Pe)=Pv) then
+                DelEdge(G,Prec(Pe),Succ(Pe))
+            Pe <-- Next(Pe)
+            while (Pe <> Nil) do
+            if (Prec(Pe)=Pv) or (Succ(Pe)=Pv) then
+                DelEdge(G,Prec(Pe),Succ(Pe))
+            Pe <-- Next(Pe)
+            {Pe <> Nil}
+        DealokVertex(Pv)
+
+
+                
+
+            
+
+
 
