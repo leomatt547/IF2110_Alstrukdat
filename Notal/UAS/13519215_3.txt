@@ -1,0 +1,99 @@
+function SearchEdge(G: Graph, s, t: integer) → addrEdge
+KAMUS LOKAL
+    Pe : addrEdge
+    found : boolean
+ALGORITMA
+    if (FirstEdge(G)=Nil) then
+        → Nil
+    else
+        found ← False
+        Pe ← FirstEdge(G)
+        while (Next(Pe)≠Nil) and (not found) do
+            if (Id(Source(Pe))=s) and (Id(Target(Pe))=t) then
+                found ← True
+            else 
+                Pe ← Next(Pe)
+        if (found) then
+            → Pe
+        else
+            → Nil
+
+procedure InsertEdge(input/output G: Graph, input s, t: integer)
+KAMUS LOKAL
+    Pe : addrEdge
+    sAddr: addrNode
+    tAddr : addrNode
+    ready : boolean
+ALGORITMA
+    if (FirstEdge(G)=Nil) then
+        sAddr ← SearchNode(G,s)
+        tAddr ← SearchNode(G,t)
+        {Cek apakah node s dan t benar-benar ada, bila ada ready = true}
+        depend on sAddr, tAddr:
+            sAddr = Nil: 
+                    ready ← false
+                    sAddr ← AlokNode(s)
+                    if (sAddr ≠ Nil) then
+                        ready ← true
+            tAddr = Nil: 
+                    ready ← false
+                    tAddr ← AlokNode(t)
+                    if (tAddr ≠ Nil) then
+                        ready ← true
+            (sAddr = Nil) and (tAddr = Nil) : 
+                    ready ← false
+                    sAddr ← AlokNode(s)
+                        ready ← true
+            else:
+                ready ← true
+
+        if (ready) then
+            Pe ← AlokEdge(s,t)
+            if (Pe ≠ Nil) then
+                FirstEdge(G) ← Pe
+                Next(Pe) ← Nil
+    {Kasus First kosong sudah ditangani}
+    else
+        Pe ← SearchEdge(G, s, t)
+        if (Pe = Nil) then
+            sAddr ← SearchNode(G,s)
+            tAddr ← SearchNode(G,t)
+            {Cek apakah node s dan t benar-benar ada, bila ada ready = true}
+            depend on sAddr, tAddr:
+                sAddr = Nil: 
+                        ready ← false
+                        sAddr ← AlokNode(s)
+                        if (sAddr ≠ Nil) then
+                            ready ← true
+                tAddr = Nil: 
+                        ready ← false
+                        tAddr ← AlokNode(t)
+                        if (tAddr ≠ Nil) then
+                            ready ← true
+                (sAddr = Nil) and (tAddr = Nil) : 
+                        ready ← false
+                        sAddr ← AlokNode(s)
+                            ready ← true
+                else:
+                    ready ← true
+                    
+            if (ready) then
+                Pe ← AlokEdge(s,t)
+                if (Pe ≠ Nil) then
+                    Next(Pe) ← FirstEdge(G) {ditambah di awal}
+                    Pe ← FirstEdge(G)
+
+function CountInboundEdges(G: Graph, X: integer) → integer
+KAMUS LOKAL
+    Pe : addrEdge
+    Count : integer
+ALGORITMA
+    if (FirstEdge(G) = Nil) then
+        → 0
+    else
+        Pe ← FirstEdge(G)
+        while (Next(Pe) ≠ Nil) do
+            if (Id(Target(Pe))=X) then
+                Count ← Count + 1
+            Pe ← Next(Pe)
+        → Count

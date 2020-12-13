@@ -1,0 +1,39 @@
+function SearchLessThen(P: BinTree, X:integer) → boolean
+KAMUS LOKAL
+    -
+ALGORITMA
+    if (IsTreeEmpty(P)) then
+        → False
+    depend on X, Value(P):
+        X = Value(P) : 
+            if (IsUnerRight(P)) then : → False
+            else
+                → True
+        X > Value(P) : → True
+        X < Value(P) : SearchLessThen(Left(P),X)
+
+function SumAllValue(P:BinTree) → integer
+KAMUS LOKAL
+ALGORITMA
+    if (IsTreeEmpty(P)) then
+        → 0
+    else
+        → (Value(P)*Count(P)) + SumAllValue(Left(P)) + SumAllValue(Right(P)) 
+
+function MaxOccurence (P:BinTree) → address
+KAMUS LOKAL
+    akar = address
+    kiri = address
+    kanan = address
+ALGORITMA
+    if (IsTreeEmpty(P)) then
+        → Nil
+    else
+        akar ← P
+        kiri ← MaxOccurence(Left(P))
+        kanan ← MaxOccurence(Right(P))
+        depend on akar,kiri,kanan
+            Count(kiri) > Count(akar) : → kiri
+            Count(kanan) ≥ Count(akar) : → kanan
+            Count(kiri) = Count(akar): → akar
+        {dijamin mengembalikan address terbesar}

@@ -1,0 +1,57 @@
+procedureAddTracing (input FirstPasien:ListPasien,
+                    input/output FirstKontak:ListKontak,
+                    input/output FirstTracing:ListTracing,
+                    input PP:AdrPasien, input PK:AdrKontak)
+KAMUS LOKAL
+    T : AdrTracing
+ALGORITMA
+    T ← AlokTracing(PP,KK)
+    if (T ≠ Nil) then
+        {Tambahkan di awal saja}
+        Next(T) ← FirstTracing
+        FirstTracing ← T
+        PPasien(T) ← PP
+        PKontak(T) ← PK
+        JumlahKontakPasienCovid(PK) ← JumlahKontakPasienCovid(PK) + 1
+
+function Epidemic (FirstPasien: ListPasien, FirstKontak: ListKontak,
+                    FirstTracing:ListTracing, Ps:string) → real
+KAMUS LOKAL
+    T : AdrTracing
+    K : AdrKontak
+    Total : integer
+    Kontak : integer
+ALGORITMA
+    T ← FirstTracing
+    while (Next(T)≠Nil) do
+        if (Nama(T.PPasien)=Ps) then
+            Kontak ← Kontak + JumlahKontakPasienCovid(T.PKontak)
+        T ← Next(T)
+    K ←FirstKontak
+    while (Next(K)≠Nil) do
+        Total ← Total + JumlahKontakPasienCovid(K)
+    → Kontak/Total
+
+functionIsCommon(FirstPasien:ListPasien, FirstKontak:ListKontak,
+                    FirstTracing:ListTracing, P1:string, P2:string) → boolean
+KAMUS LOKAL
+    T, T1, T2 : AdrTracing
+    found : boolean
+    K : AdrKontak
+ALGORITMA
+    T ← FirstTracing
+    found ← false
+    while (Next(T)≠Nil) and (not found) do
+        if (Nama(T.PPasien)=P1) then
+            K ← T.PKontak
+            T2 ← FirstTracing
+                while (Next(T2)≠Nil) and (not found) do
+                    if (Nama(T.PPasien)≠P1) and (T2.Kontak=K) then
+                        found ← true
+        else if (Nama(T.PPasien)=P2) then
+            K ← T.PKontak
+            T1 ← FirstTracing
+                while (Next(T1)≠Nil) and (not found) do
+                    if (Nama(T.PPasien)≠P2) and (T1.Kontak=K) then
+                        found ← true
+    → found

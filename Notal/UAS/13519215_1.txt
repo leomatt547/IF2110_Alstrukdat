@@ -1,0 +1,40 @@
+function IsMultiplied (L1, L2: List, input N: integer) → boolean
+KAMUS LOKAL
+    -
+ALGORITMA
+    if (IsEmpty(L1) = IsEmpty(L2)) then
+        → True
+    else
+        → (Info(L2) = N * Info(L1)) and (IsMultiplied(Next(L1),Next(L2),N))
+
+procedure PrintAlternate (input L:List, input isOdd : boolean)
+KAMUS LOKAL
+    P ← address
+ALGORITMA
+    if (IsEmpty(L)) or then
+        {do nothing}
+    else
+        if (isOdd) then
+            P ← L
+            output(Info(P))
+            output(,)
+            PrintAlternate(Next(Next(P)),isOdd)
+        else {not isOdd}
+            P ← Next(L)
+            output(Info(P))
+            output(,)
+            PrintAlternate(Next(P),isOdd)
+
+procedure DeleteKth (input/output L: List, input K: integer)
+KAMUS LOKAL
+ALGORITMA
+    if (IsEmpty(L)) then
+        {do nothing}
+    else
+        if (K = 1) then
+            L ← Next(L)
+        else
+            DeleteKth(Next(L),K-1)
+
+
+            
